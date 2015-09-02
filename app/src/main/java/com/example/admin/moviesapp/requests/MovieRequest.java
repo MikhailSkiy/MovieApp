@@ -42,7 +42,7 @@ public class MovieRequest extends GeneralRequest {
 
     //region Values for building query
     private String POPULARITY_DESC = "popularity.desc";
-    private String API_KEY_VALUE = "";
+    private String API_KEY_VALUE = "123";
     //endregion
 
     private RequestManager manager_;

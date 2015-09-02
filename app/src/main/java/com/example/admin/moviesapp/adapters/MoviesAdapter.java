@@ -9,8 +9,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.admin.moviesapp.R;
+import com.example.admin.moviesapp.helpers.Util;
 import com.example.admin.moviesapp.models.Movie;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,7 +51,12 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
     public void onBindViewHolder(MoviesViewHolder viewHolder,int i){
         Movie movie = movies_.get(i);
         viewHolder.movieName.setText(movie.getTitle());
-        viewHolder.movieCover.setImageDrawable(context_.getResources().getDrawable(R.mipmap.ic_launcher));
+        viewHolder.movieCover.setImageBitmap(Util.getBitmapFromBytes(movie.getCover()));
+    }
+
+    public void addMovie(Movie movie){
+        movies_.add(movie);
+        notifyDataSetChanged();
     }
 
     @Override

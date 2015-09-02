@@ -8,32 +8,63 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.admin.moviesapp.adapters.MoviesAdapter;
+import com.example.admin.moviesapp.helpers.States;
+import com.example.admin.moviesapp.interfaces.UpdateListener;
+import com.example.admin.moviesapp.managers.RequestManager;
 import com.example.admin.moviesapp.models.Movie;
+import com.example.admin.moviesapp.models.Result;
+import com.example.admin.moviesapp.requests.MovieRequest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
 
-public class MainActivity extends AppCompatActivity {
+import timber.log.Timber;
+
+public class MainActivity extends AppCompatActivity implements UpdateListener {
+
+    private MoviesAdapter moviesAdapter_;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Movie movie = new Movie();
-        movie.setTitle("Test");
+        // Get instance of RequestManger
+        RequestManager manager = RequestManager.getInstance();
+        // Initialize it by UpdateListener
+        manager.init(this);
+
+        manager.sendMessage(manager.obtainMessage(States.MOVIES_REQUEST));
+
+
 
         List<Movie> moviesList = new ArrayList<>();
-        moviesList.add(movie);
 
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recycler_view);
-        MoviesAdapter moviesAdapter = new MoviesAdapter(moviesList,R.layout.item_movie_card,this);
+        moviesAdapter_ = new MoviesAdapter(moviesList,R.layout.item_movie_card,this);
 
-        recyclerView.setAdapter(moviesAdapter);
+        recyclerView.setAdapter(moviesAdapter_);
+
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setLayoutManager(new GridLayoutManager(this,2));
+       // recyclerView.setLayoutManager(new GridLayoutManager(this,2));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    @Override
+    public void onUpdate(List<? extends Result> resultList) {
+        List<Movie> movies = (List<Movie>)resultList;
+        moviesAdapter_.addMovie(movies.get(0));
+    }
+
+    @Override
+    public void onErrorRaised(String errorMsg){
+        Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show();
     }
 
     @Override

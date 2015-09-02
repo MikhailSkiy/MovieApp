@@ -1,0 +1,83 @@
+package com.example.admin.moviesapp.models;
+
+import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
+
+/**
+ * Created by Mikhail on 02.09.2015.
+ */
+public class MovieDetails {
+
+    @SerializedName("adult")
+    private boolean adult_;
+
+    @SerializedName("backdrop_path")
+    private String backdropPath_;
+
+    @SerializedName("budget")
+    private long budget_;
+
+    @SerializedName("genres")
+    private List<Genre> genres_;
+
+    @SerializedName("homepage")
+    private String homepage_;
+
+    @SerializedName("id")
+    private long id_;
+
+    @SerializedName("imdb_id")
+    private String imdbId_;
+
+    @SerializedName("original_language")
+    private String originalLanguage_;
+
+    @SerializedName("original_title")
+    private String originalTitle_;
+
+    @SerializedName("overview")
+    private String overview_;
+
+    @SerializedName("popularity")
+    private double popularity_;
+
+    @SerializedName("poster_path")
+    private String posterPath_;
+
+    @SerializedName("production_companies")
+    private List<ProductionCompany> companies_;
+
+    @SerializedName("production_countries")
+    private List<ProductionCountry> countries_;
+
+    @SerializedName("release_date")
+    private String releaseDate_;
+
+    @SerializedName("revenue")
+    private long revenue_;
+
+    @SerializedName("runtime")
+    private int runtime_;
+
+    @SerializedName("spoken_languages")
+    private List<SpokenLanguages> languages_;
+
+    @SerializedName("status")
+    private String status_;
+
+    @SerializedName("tagline")
+    private String tagline_;
+
+    @SerializedName("title")
+    private String title_;
+
+    @SerializedName("video")
+    private boolean video_;
+
+    @SerializedName("vote_average")
+    private double voteAverage_;
+
+    @SerializedName("vote_count")
+    private long voteCount_;
+}

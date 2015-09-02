@@ -6,8 +6,10 @@ import com.google.gson.annotations.SerializedName;
  * Created by Mikhail Valuyskiy on 02.09.2015.
  */
 public class Genre {
+
     @SerializedName("id")
     private int genreId_;
+
     @SerializedName("name")
     private String genreName_;
 

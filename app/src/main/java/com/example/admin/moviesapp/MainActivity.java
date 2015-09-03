@@ -1,10 +1,9 @@
 package com.example.admin.moviesapp;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -18,14 +17,9 @@ import com.example.admin.moviesapp.interfaces.UpdateListener;
 import com.example.admin.moviesapp.managers.RequestManager;
 import com.example.admin.moviesapp.models.Movie;
 import com.example.admin.moviesapp.models.Result;
-import com.example.admin.moviesapp.requests.MovieRequest;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Timer;
-
-import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements UpdateListener {
 
@@ -43,8 +37,6 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         manager.init(this);
 
         manager.sendMessage(manager.obtainMessage(States.MOVIES_REQUEST));
-
-
 
         List<Movie> moviesList = new ArrayList<>();
 

@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by Mikhail on 02.09.2015.
  */
-public class MovieDetails {
+public class MovieDetails extends Result {
 
     @SerializedName("adult")
     private boolean adult_;
@@ -81,11 +81,46 @@ public class MovieDetails {
     @SerializedName("vote_count")
     private long voteCount_;
 
+    private byte[] cover_;
+
     public String getOriginalTitle() {
         return originalTitle_;
     }
 
     public void setOriginalTitle(String originalTitle) {
         this.originalTitle_ = originalTitle;
+    }
+
+
+    public List<ProductionCompany> getCompanies() {
+        return companies_;
+    }
+
+    public void setCompanies(List<ProductionCompany> companies) {
+        this.companies_ = companies;
+    }
+
+    public String getBackdropPath() {
+        return backdropPath_;
+    }
+
+    public void setBackdropPath(String backdropPath) {
+        this.backdropPath_ = backdropPath;
+    }
+
+    public byte[] getCover() {
+        return cover_;
+    }
+
+    public void setCover(byte[] cover) {
+        this.cover_ = cover;
+    }
+
+    public String getOverview() {
+        return overview_;
+    }
+
+    public void setOverview(String overview) {
+        this.overview_ = overview;
     }
 }

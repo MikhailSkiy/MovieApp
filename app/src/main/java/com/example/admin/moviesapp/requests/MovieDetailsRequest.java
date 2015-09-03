@@ -11,12 +11,14 @@ import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.managers.AppController;
 import com.example.admin.moviesapp.managers.RequestManager;
 import com.example.admin.moviesapp.models.MovieDetails;
+import com.example.admin.moviesapp.models.ProductionCompany;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -70,7 +72,7 @@ public class MovieDetailsRequest {
         String response = getDataFromCache(url);
         if (response != null) {
             Timber.v("Data was cashed");
-            manager_.sendMessage(manager_.obtainMessage(States.MOVIES_REQUEST_COMPLETED, response));
+            manager_.sendMessage(manager_.obtainMessage(States.MOVIE_DETAILS_REQUEST_COMPLETED, response));
         } else {
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url,
                     new Response.Listener<JSONObject>() {
@@ -121,6 +123,7 @@ public class MovieDetailsRequest {
 
         movieDetails = gson.fromJson(response,MovieDetails.class);
         Timber.v(movieDetails.getOriginalTitle());
+        List<ProductionCompany> productionCompanyList = movieDetails.getCompanies();
         return movieDetails;
         // to be contined...
     }

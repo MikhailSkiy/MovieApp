@@ -5,7 +5,9 @@ import android.os.Message;
 import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.interfaces.UpdateListener;
 import com.example.admin.moviesapp.models.Movie;
+import com.example.admin.moviesapp.models.MovieDetails;
 import com.example.admin.moviesapp.requests.GeneralRequest;
+import com.example.admin.moviesapp.requests.MovieDetailsRequest;
 import com.example.admin.moviesapp.requests.MovieRequest;
 import com.example.admin.moviesapp.requests.PhotoRequest;
 
@@ -41,6 +43,7 @@ public class RequestManager extends Handler {
     public void handleMessage(Message message){
         MovieRequest movieRequest = new MovieRequest(getInstance());
         PhotoRequest photoRequest = new PhotoRequest(getInstance());
+        MovieDetailsRequest movieDetailsRequest = new MovieDetailsRequest(getInstance());
 
         switch (message.what){
             case States.MOVIES_REQUEST:
@@ -76,6 +79,18 @@ public class RequestManager extends Handler {
                 updateListener_.onUpdate(moviesWithImages);
 
                 break;
+
+            case States.MOVIE_DETAILS_REQUEST_COMPLETED:
+                Timber.v("MOVIE_DETAILS_REQUEST_COMPLETED");
+                String movieDetailsResponse = (String) message.obj;
+                movieDetailsRequest.getMovieDetailsObject(movieDetailsResponse);
+                break;
+
+            case States.MOVIE_DETAILS_REQUEST_WAS_PARSED:
+                Timber.v("MOVIE_DETAILS_REQUEST_WAS_PARSED");
+                MovieDetails movieDetails = (MovieDetails)message.obj;
+                break;
+
 
             case States.VOLLEY_REQUEST_FAILED:
                 String errorMsg = (String)message.obj;

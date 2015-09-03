@@ -33,16 +33,16 @@ import timber.log.Timber;
 public class MovieRequest extends GeneralRequest {
 
     //region Keys for building query
-    private String BASE_URL = "http://api.themoviedb.org/3/discover/movie?";
-    private String SORT_BY = "sort_by";
-    private String WITH_GENRES = "with_genres";
-    private String API_KEY = "api_key";
+    private final String BASE_URL = "http://api.themoviedb.org/3/discover/movie?";
+    private final String SORT_BY = "sort_by";
+    private final String WITH_GENRES = "with_genres";
+    private final String API_KEY = "api_key";
 
     //endregion
 
     //region Values for building query
-    private String POPULARITY_DESC = "popularity.desc";
-    private String API_KEY_VALUE = "123";
+    private final String POPULARITY_DESC = "popularity.desc";
+    private final String API_KEY_VALUE = "0bd95c30f721d1e94381142dc1ce3d50";
     //endregion
 
     private RequestManager manager_;

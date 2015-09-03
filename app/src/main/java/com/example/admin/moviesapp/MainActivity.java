@@ -1,5 +1,6 @@
 package com.example.admin.moviesapp;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.admin.moviesapp.adapters.MoviesAdapter;
 import com.example.admin.moviesapp.helpers.States;
+import com.example.admin.moviesapp.interfaces.MovieItemClickListener;
 import com.example.admin.moviesapp.interfaces.UpdateListener;
 import com.example.admin.moviesapp.managers.RequestManager;
 import com.example.admin.moviesapp.models.Movie;
@@ -47,7 +49,14 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         List<Movie> moviesList = new ArrayList<>();
 
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recycler_view);
-        moviesAdapter_ = new MoviesAdapter(moviesList,R.layout.item_movie_card,this);
+        moviesAdapter_ = new MoviesAdapter(moviesList,R.layout.item_movie_card,this,new MovieItemClickListener(){
+            @Override
+        public void onMovieItemClick(final long movieId){
+                Intent intent = new Intent(MainActivity.this,MovieDetailsActivity.class);
+                intent.putExtra("movieId",movieId);
+                startActivity(intent);
+            }
+        });
 
         recyclerView.setAdapter(moviesAdapter_);
 

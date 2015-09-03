@@ -25,9 +25,9 @@ import timber.log.Timber;
 public class PhotoRequest {
 
     //region Keys for building query
-    public String BASE_PHOTO_URL = "http://image.tmdb.org/t/p/";
-    public String SIZE = "w185";
-    public String SIZE_W342 = "w342";
+    public final String BASE_PHOTO_URL = "http://image.tmdb.org/t/p/";
+    public final String SIZE = "w185";
+    public final String SIZE_W342 = "w342";
     //endregion
 
     private RequestManager manager_;

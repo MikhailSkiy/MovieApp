@@ -28,6 +28,15 @@ public class Movie extends Result {
 
     private byte[] cover_;
 
+
+    public long getId() {
+        return id_;
+    }
+
+    public void setId(long id) {
+        this.id_ = id;
+    }
+
     public String getTitle() {
         return originalTitle_;
     }

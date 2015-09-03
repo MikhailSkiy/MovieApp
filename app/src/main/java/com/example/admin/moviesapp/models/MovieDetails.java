@@ -80,4 +80,12 @@ public class MovieDetails {
 
     @SerializedName("vote_count")
     private long voteCount_;
+
+    public String getOriginalTitle() {
+        return originalTitle_;
+    }
+
+    public void setOriginalTitle(String originalTitle) {
+        this.originalTitle_ = originalTitle;
+    }
 }

@@ -25,7 +25,7 @@ import timber.log.Timber;
 /**
  * Created by Mikhail on 02.09.2015.
  */
-public class MovieDetailsRequest {
+public class MovieDetailsRequest implements RequestFactory {
 
     //region Keys for building query
     private final String BASE_MOVIE_DETAILS_URL = "http://api.themoviedb.org/3/movie/";
@@ -36,7 +36,7 @@ public class MovieDetailsRequest {
     private final String API_KEY_VALUE = "0bd95c30f721d1e94381142dc1ce3d50";
     //endregion
 
-    private RequestManager manager_;
+    private static RequestManager manager_;
 
     public MovieDetailsRequest(RequestManager manager){
         this.manager_ = manager;
@@ -47,7 +47,11 @@ public class MovieDetailsRequest {
         postGetRequest(url);
     }
 
-    public void getMovieDetailsObject(String response){
+    public static void getMovieObjects(String response){
+        getMovieDetailsObject(response);
+    }
+
+    private static void getMovieDetailsObject(String response){
         MovieDetails movieDetails = getMovieDetailsObjectFromJson(response);
         manager_.sendMessage(manager_.obtainMessage(States.MOVIE_DETAILS_REQUEST_WAS_PARSED, movieDetails));
     }
@@ -115,7 +119,7 @@ public class MovieDetailsRequest {
         return entry;
     }
 
-    private MovieDetails getMovieDetailsObjectFromJson(String response){
+    private static MovieDetails getMovieDetailsObjectFromJson(String response){
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setDateFormat("M/d/yy hh:mm a");
         Gson gson = gsonBuilder.create();

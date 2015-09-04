@@ -1,11 +1,12 @@
 package com.example.admin.moviesapp.models;
 
+import com.example.admin.moviesapp.helpers.States;
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Mikhail Valuyskiy on 01.09.2015.
  */
-public class Movie extends Result {
+public class Movie extends CommonMovie {
 
     @SerializedName("adult")
     private boolean adult_;
@@ -59,6 +60,14 @@ public class Movie extends Result {
 
     public void setCover(byte[] cover) {
         this.cover_ = cover;
+    }
+
+    public int getImageStatus(){
+        return States.IMAGE_DOWNLOADED;
+    }
+
+    public String getImagePath(){
+        return getPosterPath();
     }
 
 }

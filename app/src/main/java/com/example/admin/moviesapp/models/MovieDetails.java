@@ -1,5 +1,6 @@
 package com.example.admin.moviesapp.models;
 
+import com.example.admin.moviesapp.helpers.States;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.List;
 /**
  * Created by Mikhail on 02.09.2015.
  */
-public class MovieDetails extends Result {
+public class MovieDetails extends CommonMovie {
 
     @SerializedName("adult")
     private boolean adult_;
@@ -122,5 +123,13 @@ public class MovieDetails extends Result {
 
     public void setOverview(String overview) {
         this.overview_ = overview;
+    }
+
+    public int getImageStatus(){
+        return States.COVER_DOWNLOADED;
+    }
+
+    public String getImagePath(){
+      return getBackdropPath();
     }
 }

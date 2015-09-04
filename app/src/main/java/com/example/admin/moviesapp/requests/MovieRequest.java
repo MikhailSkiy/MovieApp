@@ -30,14 +30,13 @@ import timber.log.Timber;
 /**
  * Created by Mikhail Valuyskiy on 01.09.2015.
  */
-public class MovieRequest extends GeneralRequest {
+public class MovieRequest implements RequestFactory {
 
     //region Keys for building query
     private final String BASE_URL = "http://api.themoviedb.org/3/discover/movie?";
     private final String SORT_BY = "sort_by";
     private final String WITH_GENRES = "with_genres";
     private final String API_KEY = "api_key";
-
     //endregion
 
     //region Values for building query
@@ -45,19 +44,20 @@ public class MovieRequest extends GeneralRequest {
     private final String API_KEY_VALUE = "0bd95c30f721d1e94381142dc1ce3d50";
     //endregion
 
-    private RequestManager manager_;
+    private static RequestManager manager_;
+    private String serverResponse_;
 
-    public MovieRequest(RequestManager manager) {
+    public MovieRequest(RequestManager manager){
         this.manager_ = manager;
     }
 
-    public void postRequest() {
+    public void postRequest(long id) {
         String url = createMoviesUrl();
         Timber.v("Created URL", url);
         postGetRequest(url);
     }
 
-    public void getMoviesList(String response) {
+    public static void getMovieObjects(String response) {
         List<Movie> moviesList = getMoviesFromJson(response);
         manager_.sendMessage(manager_.obtainMessage(States.MOVIES_REQUEST_WAS_PARSED, moviesList));
     }
@@ -127,7 +127,7 @@ public class MovieRequest extends GeneralRequest {
     }
 
     // use GSON for parsing request
-    private List<Movie> getMoviesFromJson(String response) {
+    private static List<Movie> getMoviesFromJson(String response) {
 
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setDateFormat("M/d/yy hh:mm a");

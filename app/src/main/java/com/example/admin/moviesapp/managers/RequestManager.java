@@ -5,12 +5,12 @@ import android.os.Message;
 
 import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.interfaces.UpdateListener;
+import com.example.admin.moviesapp.models.CommonMovie;
 import com.example.admin.moviesapp.models.Movie;
 import com.example.admin.moviesapp.models.MovieDetails;
-import com.example.admin.moviesapp.requests.CoverRequest;
 import com.example.admin.moviesapp.requests.MovieDetailsRequest;
 import com.example.admin.moviesapp.requests.MovieRequest;
-import com.example.admin.moviesapp.requests.PhotoRequest;
+import com.example.admin.moviesapp.requests.ImageRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,22 +40,22 @@ public class RequestManager extends Handler {
     }
 
     public void handleMessage(Message message){
-        MovieRequest movieRequest = new MovieRequest(getInstance());
-        PhotoRequest photoRequest = new PhotoRequest(getInstance());
-        MovieDetailsRequest movieDetailsRequest = new MovieDetailsRequest(getInstance());
-        CoverRequest coverRequest = new CoverRequest(getInstance());
+
+
+        ImageRequest imageRequest = new ImageRequest(getInstance());
 
         switch (message.what){
             case States.MOVIES_REQUEST:
                 Timber.v("MOVIES_REQUEST");
                 // create appropriate request
-                movieRequest.postRequest();
+                MovieRequest movieRequest = new MovieRequest(getInstance());
+                movieRequest.postRequest(0);
                 break;
 
             case States.MOVIES_REQUEST_COMPLETED:
                 Timber.v("MOVIES_REQUEST_COMPLETED");
                 String response = (String) message.obj;
-                movieRequest.getMoviesList(response);
+                MovieRequest.getMovieObjects(response);
                 break;
             
             case States.MOVIES_REQUEST_WAS_PARSED:
@@ -63,7 +63,7 @@ public class RequestManager extends Handler {
                 List<Movie> movieList = (List<Movie>) message.obj;
                 size = movieList.size();
                 for (counter=0;counter<size;counter++){
-                    photoRequest.postPhotoRequest(movieList.get(counter));
+                    imageRequest.postImageRequest(movieList.get(counter));
                     String path = movieList.get(counter).getPosterPath();
                     Timber.v(path);
                 }
@@ -71,37 +71,37 @@ public class RequestManager extends Handler {
 
             case States.IMAGE_DOWNLOADED:
                 Timber.v("IMAGE_DOWNLOAD");
-                List<Movie> moviesWithImages = new ArrayList<>();
+                List<CommonMovie> moviesWithImages = new ArrayList<>();
                 Movie movie = (Movie)message.obj;
                 moviesWithImages.add(movie);
                 Timber.v(Integer.toString(counter));
                 Timber.v(Integer.toString(size));
                 updateListener_.onUpdate(moviesWithImages);
-
                 break;
 
             case States.MOVIES_DETAILS_REQUEST:
                 Timber.v("MOVIES_DETAILS_REQUEST");
                 long id = (long)message.obj;
                 // create appropriate request
+                MovieDetailsRequest movieDetailsRequest = new MovieDetailsRequest(getInstance());
                 movieDetailsRequest.postRequest(id);
                 break;
 
             case States.MOVIE_DETAILS_REQUEST_COMPLETED:
                 Timber.v("MOVIE_DETAILS_REQUEST_COMPLETED");
                 String movieDetailsResponse = (String) message.obj;
-                movieDetailsRequest.getMovieDetailsObject(movieDetailsResponse);
+                MovieDetailsRequest.getMovieObjects(movieDetailsResponse);
                 break;
 
             case States.MOVIE_DETAILS_REQUEST_WAS_PARSED:
                 Timber.v("MOVIE_DETAILS_REQUEST_WAS_PARSED");
                 MovieDetails movieDetails = (MovieDetails)message.obj;
-                coverRequest.postPhotoRequest(movieDetails);
+                imageRequest.postImageRequest(movieDetails);
                 break;
 
             case States.COVER_DOWNLOADED:
                 Timber.v("COVER_DOWNLOADED");
-                List<MovieDetails> moviesWithCover = new ArrayList<>();
+                List<CommonMovie> moviesWithCover = new ArrayList<>();
                 MovieDetails movieDetailsWithCover = (MovieDetails)message.obj;
                 moviesWithCover.add(movieDetailsWithCover);
                 updateListener_.onUpdate(moviesWithCover);

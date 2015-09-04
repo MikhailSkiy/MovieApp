@@ -15,8 +15,8 @@ import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.interfaces.MovieItemClickListener;
 import com.example.admin.moviesapp.interfaces.UpdateListener;
 import com.example.admin.moviesapp.managers.RequestManager;
+import com.example.admin.moviesapp.models.CommonMovie;
 import com.example.admin.moviesapp.models.Movie;
-import com.example.admin.moviesapp.models.Result;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     }
 
     @Override
-    public void onUpdate(List<? extends Result> resultList) {
+    public void onUpdate(List<? extends CommonMovie> resultList) {
         List<Movie> movies = (List<Movie>)resultList;
         moviesAdapter_.addMovie(movies.get(0));
     }

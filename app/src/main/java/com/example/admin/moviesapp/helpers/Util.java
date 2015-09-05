@@ -25,6 +25,11 @@ public class Util {
         return decodedImage;
     }
 
+    public static Drawable getDrawable(byte [] image){
+        Drawable drawable = new BitmapDrawable(BitmapFactory.decodeByteArray(image, 0, image.length));
+        return drawable;
+    }
+
     public static byte[] getBytesFromBitmap(Bitmap image) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.JPEG, 100, stream);

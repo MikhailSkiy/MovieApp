@@ -12,6 +12,7 @@
         android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
+
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
@@ -23,10 +24,11 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <ImageView
-                android:id="@+id/image"
+                android:id="@+id/coverImage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
+                android:background="@drawable/taganrog"
+                android:visibility="invisible"
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
                 app:layout_collapseMode="parallax" />
@@ -54,18 +56,24 @@
             android:layout_height="wrap_content">
 
             <LinearLayout
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+
                 <android.support.v7.widget.CardView
+
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
                     app:cardElevation="8dp"
                     app:cardUseCompatPadding="true">
 
+
                     <LinearLayout
+
+
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
@@ -118,14 +126,15 @@
                             android:layout_height="fill_parent">
 
                             <TextView
-                                android:id="@+id/released_label"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/spacing_large"
-                                android:layout_marginRight="@dimen/spacing_large"
-                                android:layout_marginTop="@dimen/spacing_medium"
-                                android:text="Released"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                            android:id="@+id/released_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/spacing_large"
+                            android:layout_marginRight="@dimen/spacing_large"
+                            android:layout_marginTop="@dimen/spacing_medium"
+                            android:text="Released"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
 
                             <TextView
                                 android:id="@+id/released_value"
@@ -148,6 +157,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="@dimen/spacing_large"
+
                                 android:layout_marginRight="@dimen/spacing_large"
                                 android:layout_marginTop="@dimen/spacing_medium"
                                 android:text="Runtime"
@@ -217,6 +227,7 @@
                                 android:layout_marginRight="@dimen/spacing_large"
                                 android:layout_marginTop="@dimen/spacing_medium"
                                 android:text="English"
+
                                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                         </RelativeLayout>
@@ -234,6 +245,7 @@
                     app:cardUseCompatPadding="true">
 
                     <LinearLayout
+                        android:id="@+id/trailers_layout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical">
@@ -249,7 +261,7 @@
                             android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
 
-                        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginBottom="@dimen/spacing_large">
@@ -278,7 +290,7 @@
                                 android:text="English"
                                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
-                        </RelativeLayout>
+                        </LinearLayout>
 
                     </LinearLayout>
 
@@ -287,6 +299,7 @@
 
 
             </LinearLayout>
+
         </FrameLayout>
 
     </android.support.v4.widget.NestedScrollView>
@@ -296,5 +309,6 @@
         style="@style/FabStyle"
         app:layout_anchor="@id/app_bar_layout"
         app:layout_anchorGravity="bottom|right|end" />
+
 
 </android.support.design.widget.CoordinatorLayout>

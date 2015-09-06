@@ -8,9 +8,11 @@ import com.example.admin.moviesapp.interfaces.UpdateListener;
 import com.example.admin.moviesapp.models.CommonMovie;
 import com.example.admin.moviesapp.models.Movie;
 import com.example.admin.moviesapp.models.MovieDetails;
+import com.example.admin.moviesapp.models.Trailer;
+import com.example.admin.moviesapp.requests.ImageRequest;
 import com.example.admin.moviesapp.requests.MovieDetailsRequest;
 import com.example.admin.moviesapp.requests.MovieRequest;
-import com.example.admin.moviesapp.requests.ImageRequest;
+import com.example.admin.moviesapp.requests.TrailerRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,6 +109,31 @@ public class RequestManager extends Handler {
                 updateListener_.onUpdate(moviesWithCover);
 
                 break;
+
+            //region Trailers requests
+            case States.TRAILERS_REQUEST:
+                Timber.v("TRAILERS_REQUEST");
+                long movieId = (long)message.obj;
+                //create trailer request
+                TrailerRequest trailerRequest = new TrailerRequest(getInstance());
+                trailerRequest.postRequest(movieId);
+                break;
+
+            case States.TRAILERS_REQUEST_COMPLETED:
+                Timber.v("TRAILERS_REQUEST_COMPLETED");
+                String trailerServerResponse = (String)message.obj;
+                TrailerRequest.getTrailersList(trailerServerResponse);
+                break;
+
+            case States.TRAILERS_REQUEST_WAS_PARSED:
+                Timber.v("TRAILERS_REQUEST_WAS_PARSED");
+                List<Trailer> trailersList = (List<Trailer>)message.obj;
+                // update fiil list of trailers with links and names
+                updateListener_.UpdateTrailers(trailersList);
+                break;
+
+            //endregion
+
 
 
             case States.VOLLEY_REQUEST_FAILED:

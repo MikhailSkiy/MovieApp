@@ -7,6 +7,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.admin.moviesapp.helpers.Constants;
 import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.managers.AppController;
 import com.example.admin.moviesapp.managers.RequestManager;
@@ -45,7 +46,6 @@ public class MovieRequest implements RequestFactory {
     //endregion
 
     private static RequestManager manager_;
-    private String serverResponse_;
 
     public MovieRequest(RequestManager manager){
         this.manager_ = manager;
@@ -128,7 +128,6 @@ public class MovieRequest implements RequestFactory {
 
     // use GSON for parsing request
     private static List<Movie> getMoviesFromJson(String response) {
-
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setDateFormat("M/d/yy hh:mm a");
         Gson gson = gsonBuilder.create();
@@ -142,7 +141,6 @@ public class MovieRequest implements RequestFactory {
         JsonElement resultsElement = jsonObject.get("results");
         movies = (List<Movie>) gson.fromJson(resultsElement, listType);
 
-
         return movies;
     }
 
@@ -150,7 +148,7 @@ public class MovieRequest implements RequestFactory {
 
     // Temporary method for getting api_key_value
     private String getApiKey() {
-        return API_KEY_VALUE;
+        return Constants.API_KEY_VALUE;
     }
 
 }

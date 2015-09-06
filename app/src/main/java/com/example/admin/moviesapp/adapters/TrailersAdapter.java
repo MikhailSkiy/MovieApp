@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.example.admin.moviesapp.R;
 import com.example.admin.moviesapp.interfaces.PlayBtnClickListener;
-import com.example.admin.moviesapp.models.Video;
+import com.example.admin.moviesapp.models.Trailer;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.TrailersViewHolder> {
 
-    private static List<Video> trailers_;
+    private static List<Trailer> trailers_;
     private int rowLayout_;
     private Context context_;
     private static PlayBtnClickListener playBtnClickListener_;
@@ -37,7 +37,7 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Traile
         }
     }
 
-    public TrailersAdapter(List<Video> trailers, int rowLayout, Context context, PlayBtnClickListener listener){
+    public TrailersAdapter(List<Trailer> trailers, int rowLayout, Context context, PlayBtnClickListener listener){
         this.trailers_ = trailers;
         this.rowLayout_ = rowLayout;
         this.context_ = context;
@@ -52,7 +52,7 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Traile
 
     @Override
     public void onBindViewHolder(TrailersViewHolder viewHolder, int i){
-        Video trailer = trailers_.get(i);
+        Trailer trailer = trailers_.get(i);
         viewHolder.trailerName.setText(trailer.getName());
     }
 

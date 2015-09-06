@@ -92,7 +92,6 @@ public class MovieDetails extends CommonMovie {
         this.originalTitle_ = originalTitle;
     }
 
-
     public List<ProductionCompany> getCompanies() {
         return companies_;
     }
@@ -131,5 +130,29 @@ public class MovieDetails extends CommonMovie {
 
     public String getImagePath(){
       return getBackdropPath();
+    }
+
+    public int getRuntime() {
+        return runtime_;
+    }
+
+    public void setRuntime(int runtime) {
+        this.runtime_ = runtime;
+    }
+
+    public String getOriginalLanguage() {
+        return originalLanguage_;
+    }
+
+    public void setOriginalLanguage(String originalLanguage) {
+        this.originalLanguage_ = originalLanguage;
+    }
+
+    public List<Genre> getGenres() {
+        return genres_;
+    }
+
+    public void setGenres(List<Genre> genres) {
+        this.genres_ = genres;
     }
 }

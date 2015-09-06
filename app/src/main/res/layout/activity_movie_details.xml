@@ -261,36 +261,36 @@
                             android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
 
-                        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginBottom="@dimen/spacing_large">
+                        <!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="match_parent"-->
+                            <!--android:layout_marginBottom="@dimen/spacing_large">-->
 
-                            <FrameLayout
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:layout_marginLeft="@dimen/spacing_large"
-                                android:layout_marginRight="@dimen/spacing_large"
-                                android:layout_marginTop="@dimen/spacing_medium">
+                            <!--<FrameLayout-->
+                                <!--android:layout_width="50dp"-->
+                                <!--android:layout_height="50dp"-->
+                                <!--android:layout_marginLeft="@dimen/spacing_large"-->
+                                <!--android:layout_marginRight="@dimen/spacing_large"-->
+                                <!--android:layout_marginTop="@dimen/spacing_medium">-->
 
-                                <Button
-                                    android:id="@+id/play_trailer_button"
-                                    style="@style/FabStyle"
-                                    android:background="@drawable/btn_play_big" />
-                            </FrameLayout>
+                                <!--<Button-->
+                                    <!--android:id="@+id/play_trailer_button"-->
+                                    <!--style="@style/FabStyle"-->
+                                    <!--android:background="@drawable/btn_play_big" />-->
+                            <!--</FrameLayout>-->
 
-                            <TextView
-                                android:id="@+id/trailer_name"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentRight="true"
-                                android:layout_marginLeft="@dimen/spacing_medium"
-                                android:layout_marginRight="@dimen/spacing_large"
-                                android:layout_marginTop="@dimen/spacing_medium"
-                                android:text="English"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                            <!--<TextView-->
+                                <!--android:id="@+id/trailer_name"-->
+                                <!--android:layout_width="wrap_content"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:layout_alignParentRight="true"-->
+                                <!--android:layout_marginLeft="@dimen/spacing_medium"-->
+                                <!--android:layout_marginRight="@dimen/spacing_large"-->
+                                <!--android:layout_marginTop="@dimen/spacing_medium"-->
+                                <!--android:text="English"-->
+                                <!--android:textAppearance="@style/TextAppearance.AppCompat.Medium" />-->
 
-                        </LinearLayout>
+                        <!--</RelativeLayout>-->
 
                     </LinearLayout>
 

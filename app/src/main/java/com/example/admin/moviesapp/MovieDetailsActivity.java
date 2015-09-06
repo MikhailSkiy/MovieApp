@@ -1,11 +1,13 @@
 package com.example.admin.moviesapp;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,9 +27,8 @@ import com.example.admin.moviesapp.interfaces.UpdateListener;
 import com.example.admin.moviesapp.managers.RequestManager;
 import com.example.admin.moviesapp.models.CommonMovie;
 import com.example.admin.moviesapp.models.MovieDetails;
-import com.example.admin.moviesapp.models.Video;
+import com.example.admin.moviesapp.models.Trailer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
@@ -37,10 +38,13 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
     private CollapsingToolbarLayout collapsingToolbarLayout_;
     private long selectedMovieId_;
     private ImageView cover_;
-    private ImageView cover2_;
+
     private CardView movieCard_;
     private TextView title_;
     private TextView description_;
+    private TextView runtime_;
+    private TextView genres_;
+    private TextView language_;
 
     private TrailersAdapter trailersAdapter_;
 
@@ -65,12 +69,16 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         // Initialize it by UpdateListener
         manager.init(this);
         manager.sendMessage(manager.obtainMessage(States.MOVIES_DETAILS_REQUEST, selectedMovieId_));
+        manager.sendMessage(manager.obtainMessage(States.TRAILERS_REQUEST, selectedMovieId_));
 
         cover_ = (ImageView) findViewById(R.id.coverImage);
 
          movieCard_ = (CardView) findViewById(R.id.movie_card);
          title_ = (TextView) findViewById(R.id.title);
          description_ = (TextView) findViewById(R.id.description);
+        runtime_ = (TextView)findViewById(R.id.runtime_value);
+        genres_ = (TextView)findViewById(R.id.genre_value);
+        language_ = (TextView)findViewById(R.id.language_value);
 
         String itemTitle = "Item Name";
         collapsingToolbarLayout_ = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
@@ -78,100 +86,88 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         collapsingToolbarLayout_.setExpandedTitleColor(getResources().getColor(R.color.background_floating_material_dark));
         collapsingToolbarLayout_.setCollapsedTitleTextColor(getResources().getColor(R.color.accent_material_dark));
 
-        // Trailers adapter
-        List<Video> trailers = new ArrayList<>();
-        Video trailer = new Video();
-        trailer.setName("Traile Name");
-        trailer.setKey("sdsd");
+        ViewServer.get(this).addWindow(this);
+    }
 
+    private void createTrailerItem(Trailer trailer){
 
-        Video trailer1 = new Video();
-        trailer.setName("Traile Name2");
-        trailer.setKey("sdsd");
-
-
-        Video trailer2 = new Video();
-        trailer.setName("Traile Name3");
-        trailer.setKey("sdsd");
-
-        trailers.add(trailer);
-        trailers.add(trailer1);
-        trailers.add(trailer2);
-
+        //region Create Trailer Layout
+        // Find Trailer Layout
         LinearLayout trailerLayout = (LinearLayout) findViewById(R.id.trailers_layout);
+        //endregion
 
-        LinearLayout trailerItem = new LinearLayout(getApplicationContext());
-        trailerItem.setOrientation(LinearLayout.HORIZONTAL);
+        //region Create trailer item (PlayBtn TrailerName)
+        // And set params
+        RelativeLayout trailerItem = new RelativeLayout(getApplicationContext());
+        RelativeLayout.LayoutParams trailerItemParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+        trailerItemParams.setMargins(0, 0, 0, 16);
+        //endregion
 
-
-        int width = 50;
-        int height = 50;
+        //region Create FrameLayout and set params
+        // Set size for FrameLayout width and height
+        int frameLayoutSize = getResources().getDimensionPixelOffset(R.dimen.frame_layout_size);
+        // Create FrameLayout width size (width and height)
         FrameLayout frameLayout = new FrameLayout(getApplicationContext());
-        FrameLayout.LayoutParams frameParams =
-                new FrameLayout.LayoutParams(width, height);
+        frameLayout.setId(R.id.frameId);
+        FrameLayout.LayoutParams frameParams = new FrameLayout.LayoutParams(frameLayoutSize, frameLayoutSize);
 
         // Set margins for FrameLayout
         int marginLeft = getResources().getDimensionPixelSize(R.dimen.spacing_large);
         int marginRight = getResources().getDimensionPixelOffset(R.dimen.spacing_large);
         int marginTop = getResources().getDimensionPixelOffset(R.dimen.spacing_medium);
-
         frameParams.setMargins(marginLeft, marginTop, marginRight, 0);
+        //endregion
 
-        // Create PlayButton
-        Button playButton = new Button(getApplicationContext());
-        playButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_play_mid));
+        //region Create PlayButton
+        final Button playButton = new Button(getApplicationContext());
+        playButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_play_big));
+        playButton.setTag(trailer.getKey());
+        // Set onClickListener
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openBrowser((String)playButton.getTag());
+            }
+        });
+        //endregion
 
+        // Add PlayButton into FrameLayout with appropriate params (margins etc)
         frameLayout.addView(playButton,frameParams);
 
-
-        FrameLayout.LayoutParams frameParams2 =
-                new FrameLayout.LayoutParams(width, height);
-
-        // Set margins for FrameLayout
-        int marginLeft2 = getResources().getDimensionPixelSize(R.dimen.spacing_medium);
-        int marginRight2 = getResources().getDimensionPixelOffset(R.dimen.spacing_large);
-        int marginTop2 = getResources().getDimensionPixelOffset(R.dimen.spacing_medium);
-
-        frameParams2.setMargins(marginLeft2, marginTop2, marginRight2, 0);
-
-
-
         TextView textView = new TextView(getApplicationContext());
-        textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        textView.setText("Text1");
+        textView.setText(trailer.getName());
+        textView.setTextAppearance(getApplicationContext(), android.R.style.TextAppearance_DeviceDefault_Medium);
+        textView.setTextColor(getResources().getColor(android.R.color.primary_text_light));
+        textView.setMaxLines(1);
+        textView.setEllipsize(TextUtils.TruncateAt.END);
 
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.MATCH_PARENT,
+        // Set margins for textView
+        int textViewMarginLeft = getResources().getDimensionPixelSize(R.dimen.spacing_medium);
+        int textViewMarginRight = getResources().getDimensionPixelOffset(R.dimen.spacing_large);
+        int textViewMarginTop = getResources().getDimensionPixelOffset(R.dimen.spacing_medium);
+
+        // Create params for textView
+        RelativeLayout.LayoutParams textViewLayoutParams = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
 
-        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        textViewLayoutParams.setMargins(textViewMarginLeft, textViewMarginRight, textViewMarginTop, 0);
+       // textViewLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 1);
+        textViewLayoutParams.addRule(RelativeLayout.RIGHT_OF,frameLayout.getId());
+        //endregion
 
+        // Add frameLayout with playButton into trailerItem
+        trailerItem.addView(frameLayout);
+        // Add trailer name into trailerItem
+        trailerItem.addView(textView, textViewLayoutParams);
 
-
-
-        frameLayout.addView(textView,layoutParams);
-
-        trailerLayout.addView(frameLayout);
-
-
-//        RecyclerView trailerRecyclerView = (RecyclerView)findViewById(R.id.trailer_list);
-//        trailersAdapter_ = new TrailersAdapter(trailers, R.layout.item_trailer, this, new PlayBtnClickListener() {
-//            @Override
-//            public void onPlayTrailerClick(String trailerId) {
-//                Toast.makeText(getApplicationContext(),"Hi Play Trailer",Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//
-//        trailerRecyclerView.setAdapter(trailersAdapter_);
-//        trailerRecyclerView.setItemAnimator(new DefaultItemAnimator());
-//        trailerRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-
+        // Add trailerItem into Layout
+        trailerLayout.addView(trailerItem);
     }
 
     @Override
     public void onUpdate(List<? extends CommonMovie> resultList) {
-
         List<MovieDetails> movies = (List<MovieDetails>) resultList;
         cover_.setImageDrawable(Util.getDrawable(movies.get(0).getCover()));
         cover_.setVisibility(View.VISIBLE);
@@ -180,11 +176,53 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         title_.setText(movies.get(0).getOriginalTitle());
         description_.setText(movies.get(0).getOverview());
 
+        runtime_.setText(Util.getUserFriendlyRuntime(Integer.toString(movies.get(0).getRuntime()), this));
+        genres_.setText(Util.getGenres(movies.get(0).getGenres()));
+        language_.setText(Util.getUserFriendlyOrLanguage(movies.get(0).getOriginalLanguage(),this));
+    }
+
+    private void openBrowser(String key){
+        Uri url = createYoutubeUrl(key);
+        Intent intent = new Intent(Intent.ACTION_VIEW, url);
+
+        if (intent.resolveActivity(getPackageManager()) != null){
+            startActivity(intent);
+        } else {
+            Timber.v("Couldn't call because no receiving apps installed!");
+        }
+    }
+
+    private Uri createYoutubeUrl(String key){
+        String BaseUrl = "http://www.youtube.com/watch";
+        Uri url = Uri.parse(BaseUrl).buildUpon()
+                .appendQueryParameter("v",key)
+                .build();
+        return url;
+    }
+
+
+    @Override
+    public void UpdateTrailers(List<Trailer> trailers){
+        for (int i=0;i<trailers.size();i++){
+            createTrailerItem(trailers.get(i));
+        }
     }
 
     @Override
     public void onErrorRaised(String errorMsg) {
         Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ViewServer.get(this).removeWindow(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ViewServer.get(this).setFocusedWindow(this);
     }
 
     @Override

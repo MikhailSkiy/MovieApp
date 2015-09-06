@@ -18,6 +18,11 @@ public class States {
     public static final int MOVIE_DETAILS_REQUEST_WAS_PARSED = 21;
     public static final int MOVIES_DETAILS_REQUEST = 22;
 
+    // Trailers requests
+    public static final int TRAILERS_REQUEST = 30;
+    public static final int TRAILERS_REQUEST_COMPLETED = 31;
+    public static final int TRAILERS_REQUEST_WAS_PARSED = 32;
+
     // Error msgs starts from 90-99
     public static final int VOLLEY_REQUEST_FAILED = 90;
 }

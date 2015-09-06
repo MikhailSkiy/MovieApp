@@ -12,4 +12,8 @@
     <dimen name="elevation_high">12dp</dimen>
     <dimen name="status_bar_height">25dp</dimen>
     <dimen name="fab_compat_margin">0dp</dimen>
+
+    <!-- Dimens for Frame Layout which contains Play button -->
+    <dimen name="frame_layout_size">50dp</dimen>
+
 </resources>

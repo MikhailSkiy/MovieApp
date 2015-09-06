@@ -1,15 +1,24 @@
 package com.example.admin.moviesapp.models;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Mikhail Valuyskiy on 04.09.2015.
  */
-public class Video {
+public class Trailer {
+    @SerializedName("id")
     private String id_;
+    @SerializedName("iso_639_1")
     private String iso_639_1_;
+    @SerializedName("key")
     private String key_;
+    @SerializedName("name")
     private String name_;
+    @SerializedName("site")
     private String site_;
+    @SerializedName("size")
     private int size_;
+    @SerializedName("type")
     private String type_;
 
     public String getId() {

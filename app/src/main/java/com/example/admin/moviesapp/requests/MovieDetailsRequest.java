@@ -7,6 +7,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.admin.moviesapp.helpers.Constants;
 import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.managers.AppController;
 import com.example.admin.moviesapp.managers.RequestManager;
@@ -30,10 +31,6 @@ public class MovieDetailsRequest implements RequestFactory {
     //region Keys for building query
     private final String BASE_MOVIE_DETAILS_URL = "http://api.themoviedb.org/3/movie/";
     private final String API_KEY = "api_key";
-    //endregion
-
-    //region Values for building query
-    private final String API_KEY_VALUE = "0bd95c30f721d1e94381142dc1ce3d50";
     //endregion
 
     private static RequestManager manager_;
@@ -134,9 +131,7 @@ public class MovieDetailsRequest implements RequestFactory {
 
     // Temporary method for getting api_key_value
     private String getApiKey() {
-        return API_KEY_VALUE;
+        return Constants.API_KEY_VALUE;
     }
-
-
 
 }

@@ -58,29 +58,31 @@ public class ImageRequest {
         List<Movie> movieList = new ArrayList<>();
         // Create appropriate URL for getting image
         String url = createMoviesUrl(movie.getImagePath());
-        // Take image from cache
-        Bitmap photoFromCache = getPhotoFromCache(url);
+        if (url!=null) {
+            // Take image from cache
+            Bitmap photoFromCache = getPhotoFromCache(url);
 
-        if (photoFromCache != null) {
-            movie.setCover(Util.getBytesFromBitmap(photoFromCache));
-            manager_.sendMessage(manager_.obtainMessage(movie.getImageStatus(), movie));
+            if (photoFromCache != null) {
+                movie.setCover(Util.getBytesFromBitmap(photoFromCache));
+                manager_.sendMessage(manager_.obtainMessage(movie.getImageStatus(), movie));
 
-        } else {
-            imageLoader.get(url, new ImageLoader.ImageListener() {
-                @Override
-                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                    if (response.getBitmap() != null) {
-                        movie.setCover(Util.getBytesFromBitmap(response.getBitmap()));
-                        manager_.sendMessage(manager_.obtainMessage(movie.getImageStatus(), movie));
+            } else {
+                imageLoader.get(url, new ImageLoader.ImageListener() {
+                    @Override
+                    public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                        if (response.getBitmap() != null) {
+                            movie.setCover(Util.getBytesFromBitmap(response.getBitmap()));
+                            manager_.sendMessage(manager_.obtainMessage(movie.getImageStatus(), movie));
+                        }
                     }
-                }
 
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    manager_.sendMessage(manager_.obtainMessage(States.VOLLEY_REQUEST_FAILED, error.getMessage()));
-                }
-            });
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        manager_.sendMessage(manager_.obtainMessage(States.VOLLEY_REQUEST_FAILED, error.getMessage()));
+                    }
+                });
 
+            }
         }
 
     }

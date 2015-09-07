@@ -21,4 +21,9 @@
 
     <!--> Values for original language <-->
     <string name="original_en_language">English</string>
+    <string name="title_activity_cast_details">CastDetailsActivity</string>
+
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+
 </resources>

@@ -206,12 +206,14 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         castProfileImage.setImageBitmap(Util.getRoundedCroppedBitmap(Util.getBitmapFromBytes(cast.getCover()), Constants.DEFAULT_CROPPING_RADIUS));
         castProfileImage.setTag(cast.getCreditId());
         // Set onClickListener
-//        playButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                openBrowser((String)playButton.getTag());
-//            }
-//        });
+        castProfileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MovieDetailsActivity.this,CastDetailsActivity.class);
+                intent.putExtra("castId",castProfileImage.getTag().toString());
+                startActivity(intent);
+            }
+        });
         //endregion
 
         // Add PlayButton into FrameLayout with appropriate params (margins etc)

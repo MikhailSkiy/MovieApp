@@ -23,6 +23,10 @@
             android:name=".MovieDetailsActivity"
             android:label="@string/title_activity_movie_details" >
         </activity>
+        <activity
+            android:name=".CastDetailsActivity"
+            android:label="@string/title_activity_cast_details" >
+        </activity>
     </application>
 
 </manifest>

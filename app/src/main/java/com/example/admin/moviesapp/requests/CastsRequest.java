@@ -11,7 +11,8 @@ import com.example.admin.moviesapp.helpers.Constants;
 import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.managers.AppController;
 import com.example.admin.moviesapp.managers.RequestManager;
-import com.example.admin.moviesapp.models.Movie;
+import com.example.admin.moviesapp.models.Cast;
+import com.example.admin.moviesapp.models.Trailer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -29,64 +30,51 @@ import java.util.List;
 import timber.log.Timber;
 
 /**
- * Created by Mikhail Valuyskiy on 01.09.2015.
+ * Created by Mikhail Valuyskiy on 07.09.2015.
  */
-public class MovieRequest implements RequestFactory {
+public class CastsRequest implements RequestFactory {
 
     //region Keys for building query
-    private final String BASE_URL = "http://api.themoviedb.org/3/discover/movie?";
-    private final String SORT_BY = "sort_by";
-    private final String WITH_GENRES = "with_genres";
-    private final String LANGUAGE = "language";
+    private final String BASE_URL = "http://api.themoviedb.org/3/movie/";
+    private final String CASTS = "casts";
     private final String API_KEY = "api_key";
-    //endregion
-
-    //region Values for building query
-    private final String POPULARITY_DESC = "popularity.desc";
-    private final String LANGUAGE_VALUE = "ru";
-    private final String API_KEY_VALUE = "0bd95c30f721d1e94381142dc1ce3d50";
     //endregion
 
     private static RequestManager manager_;
 
-    public MovieRequest(RequestManager manager){
+    public CastsRequest(RequestManager manager){
         this.manager_ = manager;
     }
 
-    public void postRequest(long id) {
-        String url = createMoviesUrl();
-        Timber.v("Created URL", url);
+    public void postRequest(long id){
+        String url = createCastsUrl(id);
+        Timber.v("Created Casts Url", url);
         postGetRequest(url);
     }
 
-    public static void getMovieObjects(String response) {
-        List<Movie> moviesList = getMoviesFromJson(response);
-        manager_.sendMessage(manager_.obtainMessage(States.MOVIES_REQUEST_WAS_PARSED, moviesList));
-    }
-
-    // Creates url for movies request
-    private String createMoviesUrl() {
+    // Creates url for casts request
+    private String createCastsUrl(long id){
         String url = null;
         Uri builtUri = Uri.parse(BASE_URL).buildUpon()
-                .appendQueryParameter(LANGUAGE,LANGUAGE_VALUE)
-                .appendQueryParameter(SORT_BY, POPULARITY_DESC)
-                .appendQueryParameter(API_KEY, getApiKey())
+                .appendEncodedPath(Long.toString(id))
+                .appendEncodedPath(CASTS)
+                .appendQueryParameter(API_KEY,getApiKey())
                 .build();
+        Timber.v(builtUri.toString());
         url = builtUri.toString();
-        Timber.v(url);
         return url;
     }
 
     // use Volley for sending request
     private void postGetRequest(final String url) {
-        String tag = "movie_request";
+        String tag = "casts_request";
         // Check if there is saved data in the cache
         // If so, there is no need to send same request, just take it from cache
         // Otherwise, send request
         String response = getDataFromCache(url);
         if (response != null) {
             Timber.v("Data was cashed");
-            manager_.sendMessage(manager_.obtainMessage(States.MOVIES_REQUEST_COMPLETED, response));
+            manager_.sendMessage(manager_.obtainMessage(States.CASTS_REQUEST_COMPLETED, response));
         } else {
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url,
                     new Response.Listener<JSONObject>() {
@@ -94,7 +82,7 @@ public class MovieRequest implements RequestFactory {
                         public void onResponse(JSONObject response) {
                             Timber.v("Data was not cashed");
                             String responseString = response.toString();
-                            manager_.sendMessage(manager_.obtainMessage(States.MOVIES_REQUEST_COMPLETED, responseString));
+                            manager_.sendMessage(manager_.obtainMessage(States.CASTS_REQUEST_COMPLETED, responseString));
                         }
                     },
                     new Response.ErrorListener() {
@@ -129,29 +117,30 @@ public class MovieRequest implements RequestFactory {
         return entry;
     }
 
-    // use GSON for parsing request
-    private static List<Movie> getMoviesFromJson(String response) {
+    public static void getCastsList(String castsResponse){
+        List<Cast> casts = getCastsFromJson(castsResponse);
+        manager_.sendMessage(manager_.obtainMessage(States.CASTS_REQUEST_WAS_PARSED,casts));
+    }
+
+    private static List<Cast> getCastsFromJson(String response){
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setDateFormat("M/d/yy hh:mm a");
         Gson gson = gsonBuilder.create();
 
-        Type listType = new TypeToken<List<Movie>>() {
+        Type listType = new TypeToken<List<Cast>>() {
         }.getType();
-        List<Movie> movies = new ArrayList<Movie>();
+        List<Cast> casts = new ArrayList<Cast>();
 
         JsonParser parser = new JsonParser();
         JsonObject jsonObject = parser.parse(response).getAsJsonObject();
-        JsonElement resultsElement = jsonObject.get("results");
-        movies = (List<Movie>) gson.fromJson(resultsElement, listType);
-
-        return movies;
+        JsonElement resultElement = jsonObject.get("cast");
+        casts = (List<Cast>)gson.fromJson(resultElement,listType);
+        return casts;
     }
 
-    // after that, when we got path of image, make request by means of Picasso for getting cover
-
-    // Temporary method for getting api_key_value
     private String getApiKey() {
         return Constants.API_KEY_VALUE;
     }
+
 
 }

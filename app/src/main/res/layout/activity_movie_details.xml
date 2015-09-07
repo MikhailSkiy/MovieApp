@@ -118,7 +118,7 @@
                             android:layout_marginLeft="@dimen/spacing_large"
                             android:layout_marginRight="@dimen/spacing_large"
                             android:layout_marginTop="@dimen/spacing_large"
-                            android:text="Details"
+                            android:text="@string/details_label"
                             android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
                         <RelativeLayout
@@ -132,7 +132,7 @@
                             android:layout_marginLeft="@dimen/spacing_large"
                             android:layout_marginRight="@dimen/spacing_large"
                             android:layout_marginTop="@dimen/spacing_medium"
-                            android:text="Released"
+                            android:text="@string/released_label"
                             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
 
@@ -160,7 +160,7 @@
 
                                 android:layout_marginRight="@dimen/spacing_large"
                                 android:layout_marginTop="@dimen/spacing_medium"
-                                android:text="Runtime"
+                                android:text="@string/runtime_label"
                                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                             <TextView
@@ -187,7 +187,7 @@
                                 android:layout_marginLeft="@dimen/spacing_large"
                                 android:layout_marginRight="@dimen/spacing_large"
                                 android:layout_marginTop="@dimen/spacing_medium"
-                                android:text="Genres"
+                                android:text="@string/genres_label"
                                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                             <TextView
@@ -257,7 +257,7 @@
                             android:layout_marginLeft="@dimen/spacing_large"
                             android:layout_marginRight="@dimen/spacing_large"
                             android:layout_marginTop="@dimen/spacing_large"
-                            android:text="Trailers"
+                            android:text="@string/trailers_label"
                             android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
 
@@ -291,6 +291,34 @@
                                 <!--android:textAppearance="@style/TextAppearance.AppCompat.Medium" />-->
 
                         <!--</RelativeLayout>-->
+
+                    </LinearLayout>
+
+
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    app:cardElevation="8dp"
+                    app:cardUseCompatPadding="true">
+
+                    <LinearLayout
+                        android:id="@+id/cast_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/casts_label"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/spacing_large"
+                            android:layout_marginRight="@dimen/spacing_large"
+                            android:layout_marginTop="@dimen/spacing_large"
+                            android:text="@string/casts_label"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
                     </LinearLayout>
 

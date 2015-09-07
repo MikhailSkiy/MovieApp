@@ -5,6 +5,20 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_movie_details">MovieDetailsActivity</string>
 
-    <string name="runtime_label">min</string>
-    <string name="original_language">English</string>
+    <!--> Details card view <-->
+    <string name="details_label">Details</string>
+    <string name="released_label">Released</string>
+    <string name="runtime_label">Runtime</string>
+    <string name="genres_label">Genres</string>
+    <string name="original_language_label">Original language</string>
+    <string name="runtime_tag">min</string>
+
+    <!--> Trailers card view <-->
+    <string name="trailers_label">Trailers</string>
+
+    <!--> Casts card view <-->
+    <string name="casts_label">Casts</string>
+
+    <!--> Values for original language <-->
+    <string name="original_en_language">English</string>
 </resources>

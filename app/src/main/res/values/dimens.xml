@@ -15,5 +15,6 @@
 
     <!-- Dimens for Frame Layout which contains Play button -->
     <dimen name="frame_layout_size">50dp</dimen>
+    <dimen name="frame2_layout_size">70dp</dimen>
 
 </resources>

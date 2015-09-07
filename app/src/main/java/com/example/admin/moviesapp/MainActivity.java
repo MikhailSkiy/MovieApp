@@ -15,6 +15,7 @@ import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.interfaces.MovieItemClickListener;
 import com.example.admin.moviesapp.interfaces.UpdateListener;
 import com.example.admin.moviesapp.managers.RequestManager;
+import com.example.admin.moviesapp.models.Cast;
 import com.example.admin.moviesapp.models.CommonMovie;
 import com.example.admin.moviesapp.models.Movie;
 import com.example.admin.moviesapp.models.Trailer;
@@ -67,6 +68,9 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     @Override
     public void UpdateTrailers(List<Trailer> trailers){
     }
+
+    @Override
+    public void UpdateCasts(List<? extends CommonMovie> casts){}
 
     @Override
     public void onErrorRaised(String errorMsg){

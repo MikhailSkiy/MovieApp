@@ -31,6 +31,11 @@ public class MovieDetailsRequest implements RequestFactory {
     //region Keys for building query
     private final String BASE_MOVIE_DETAILS_URL = "http://api.themoviedb.org/3/movie/";
     private final String API_KEY = "api_key";
+    private final String LANGUAGE = "language";
+    //endregion
+
+    //region Values for building query
+    private final String LANGUAGE_VALUE = "ru";
     //endregion
 
     private static RequestManager manager_;
@@ -57,7 +62,8 @@ public class MovieDetailsRequest implements RequestFactory {
         String url = null;
         Uri builtUri = Uri.parse(BASE_MOVIE_DETAILS_URL).buildUpon()
                 .appendPath(Long.toString(id))
-                .appendQueryParameter(API_KEY,getApiKey())
+                .appendQueryParameter(LANGUAGE, LANGUAGE_VALUE)
+                .appendQueryParameter(API_KEY, getApiKey())
                 .build();
         url = builtUri.toString();
         Timber.v(url);

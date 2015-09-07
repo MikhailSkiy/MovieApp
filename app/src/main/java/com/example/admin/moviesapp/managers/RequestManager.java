@@ -5,10 +5,12 @@ import android.os.Message;
 
 import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.interfaces.UpdateListener;
+import com.example.admin.moviesapp.models.Cast;
 import com.example.admin.moviesapp.models.CommonMovie;
 import com.example.admin.moviesapp.models.Movie;
 import com.example.admin.moviesapp.models.MovieDetails;
 import com.example.admin.moviesapp.models.Trailer;
+import com.example.admin.moviesapp.requests.CastsRequest;
 import com.example.admin.moviesapp.requests.ImageRequest;
 import com.example.admin.moviesapp.requests.MovieDetailsRequest;
 import com.example.admin.moviesapp.requests.MovieRequest;
@@ -29,6 +31,9 @@ public class RequestManager extends Handler {
 
     int size=0;
     int counter=0;
+
+    int castSize = 0;
+    int castCounter = 0;
 
     public void init (UpdateListener listener){
         this.updateListener_ = listener;
@@ -133,6 +138,43 @@ public class RequestManager extends Handler {
                 break;
 
             //endregion
+
+            //region Casts request
+            case States.CASTS_REQUEST:
+                Timber.v("CASTS_REQUEST");
+                long movieCastId = (long)message.obj;
+                // create casts request
+                CastsRequest castsRequest = new CastsRequest(getInstance());
+                castsRequest.postRequest(movieCastId);
+                break;
+
+            case States.CASTS_REQUEST_COMPLETED:
+                Timber.v("CASTS_REQUEST_COMPLETED");
+                String castServerResponse = (String)message.obj;
+                CastsRequest.getCastsList(castServerResponse);
+                break;
+
+            case States.CASTS_REQUEST_WAS_PARSED:
+                List<Cast> castList = (List<Cast>) message.obj;
+                castSize = castList.size();
+                for (castCounter=0;castCounter<castSize;castCounter++){
+                    imageRequest.postImageRequest(castList.get(castCounter));
+                    String path = castList.get(castCounter).getProfilePath();
+                    Timber.v(path);
+                }
+                break;
+
+            case States.CAST_PROFILE_DOWNLOADED:
+                Timber.v("CAST_PROFILE_DOWNLOADED");
+                List<CommonMovie> castsWithImages = new ArrayList<>();
+                Cast cast = (Cast)message.obj;
+                castsWithImages.add(cast);
+                Timber.v(Integer.toString(castCounter));
+                Timber.v(Integer.toString(castSize));
+                updateListener_.UpdateCasts(castsWithImages);
+                break;
+            //endregion
+
 
 
 

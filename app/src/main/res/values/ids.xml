@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="frameId" type="id"/>
+    <item name="frameId2" type="id"/>
+
+    <item name="cast_name" type="id"/>
 </resources>

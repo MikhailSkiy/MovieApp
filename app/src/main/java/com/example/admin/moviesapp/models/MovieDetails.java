@@ -155,4 +155,20 @@ public class MovieDetails extends CommonMovie {
     public void setGenres(List<Genre> genres) {
         this.genres_ = genres;
     }
+
+    public String getReleaseDate() {
+        return releaseDate_;
+    }
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate_ = releaseDate;
+    }
+
+    public String getTitle() {
+        return title_;
+    }
+
+    public void setTitle(String title) {
+        this.title_ = title;
+    }
 }

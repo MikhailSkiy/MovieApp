@@ -5,4 +5,6 @@ package com.example.admin.moviesapp.helpers;
  */
 public class Constants {
     public final static String API_KEY_VALUE = "0bd95c30f721d1e94381142dc1ce3d50";
+
+    public static final int DEFAULT_CROPPING_RADIUS = 100;
 }

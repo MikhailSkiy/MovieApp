@@ -5,9 +5,16 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.example.admin.moviesapp.R;
@@ -15,6 +22,9 @@ import com.example.admin.moviesapp.models.Genre;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,25 +33,76 @@ import java.util.List;
 public class Util {
 
     public static String getUserFriendlyRuntime(String runtime,Context context){
-        String userFriendlyRuntime = runtime + " " + context.getResources().getString(R.string.runtime_label);
+        String userFriendlyRuntime = runtime + " " + context.getResources().getString(R.string.runtime_tag);
         return userFriendlyRuntime;
     }
 
     public static String getUserFriendlyOrLanguage(String original,Context context){
         String originalLanguage = "English";
         if (original == "en"){
-           originalLanguage = context.getResources().getString(R.string.original_language);
+           originalLanguage = context.getResources().getString(R.string.original_en_language);
         }
         return originalLanguage;
     }
 
+    public static String getUIFriendlyData(String data){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = null;
+        try {
+            date = dateFormat.parse(data);
+        } catch (ParseException e){
+
+        }
+        dateFormat.applyPattern("dd MMM yyyy");
+        String result = dateFormat.format(date);
+        return result;
+    }
+
     public static String getGenres(List<Genre> genres){
         String allGenres = "";
-        for (int i=0;i<genres.size();i++){
+        int genresCount =0;
+        if (genres.size() >2){
+            genresCount = 2;
+        } else {
+            genresCount = genres.size();
+        }
+
+        for (int i=0;i<genresCount;i++){
            String genre =  genres.get(i).getGenreName();
-            allGenres +=genre + ",";
+            String separator = "";
+            if (genresCount-1 == i) {
+                allGenres += genre + separator;
+            } else {
+                separator = ",";
+                allGenres += genre + separator;
+            }
         }
         return allGenres;
+    }
+
+    public static Bitmap getRoundedCroppedBitmap(Bitmap bitmap,int radius){
+        Bitmap finalBitmap;
+        if (bitmap.getWidth()!=radius || bitmap.getHeight() != radius)
+            finalBitmap = Bitmap.createScaledBitmap(bitmap,radius,radius,false);
+        else
+            finalBitmap = bitmap;
+        Bitmap output = Bitmap.createBitmap(finalBitmap.getWidth(),finalBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0,0,finalBitmap.getWidth(),finalBitmap.getHeight());
+        paint.setAntiAlias(true);
+        paint.setFilterBitmap(true);
+        paint.setDither(true);
+        canvas.drawARGB(0,0,0,0);
+        paint.setColor(Color.parseColor("#BAB399"));
+        canvas.drawCircle(finalBitmap.getWidth() / 2 + 0.7f,
+                finalBitmap.getHeight() / 2 + 0.7f,
+                finalBitmap.getWidth() / 2 + 0.1f, paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(finalBitmap, rect, rect, paint);
+
+        return output;
     }
 
     /**

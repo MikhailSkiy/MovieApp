@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">MoviesApp</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_movie_details">MovieDetailsActivity</string>
+
+    <!--> Details card view <-->
+    <string name="details_label">Детали</string>
+    <string name="released_label">Дата выхода</string>
+    <string name="runtime_label">Продолжительность</string>
+    <string name="genres_label">Жанр</string>
+    <string name="original_language_label">Язык оригинала</string>
+    <string name="runtime_tag">мин</string>
+    <string name="original_language">Английский</string>
+
+    <!--> Trailers card view <-->
+    <string name="trailers_label">Трейлеры</string>
+
+    <!--> Values for original language <-->
+    <string name="original_en_language">Английский</string>
+</resources>

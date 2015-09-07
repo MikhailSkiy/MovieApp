@@ -20,6 +20,8 @@ public class Movie extends CommonMovie {
     private String releaseDate_;
     @SerializedName("poster_path")
     private String posterPath_;
+    @SerializedName("title")
+    private String title_;
     @SerializedName("video")
     private boolean video_;
     @SerializedName("vote_average")
@@ -38,12 +40,20 @@ public class Movie extends CommonMovie {
         this.id_ = id;
     }
 
-    public String getTitle() {
+    public String getOriginalTitle() {
         return originalTitle_;
     }
 
+    public void setOriginalTitle(String originalTitle) {
+        this.originalTitle_ = originalTitle;
+    }
+
+    public String getTitle() {
+        return title_;
+    }
+
     public void setTitle(String title) {
-        this.originalTitle_ = title;
+        this.title_ = title;
     }
 
     public String getPosterPath() {

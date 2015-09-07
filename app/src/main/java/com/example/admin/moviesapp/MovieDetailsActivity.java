@@ -21,10 +21,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.admin.moviesapp.adapters.TrailersAdapter;
+import com.example.admin.moviesapp.helpers.Constants;
 import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.helpers.Util;
 import com.example.admin.moviesapp.interfaces.UpdateListener;
 import com.example.admin.moviesapp.managers.RequestManager;
+import com.example.admin.moviesapp.models.Cast;
 import com.example.admin.moviesapp.models.CommonMovie;
 import com.example.admin.moviesapp.models.MovieDetails;
 import com.example.admin.moviesapp.models.Trailer;
@@ -42,6 +44,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
     private CardView movieCard_;
     private TextView title_;
     private TextView description_;
+    private TextView released_;
     private TextView runtime_;
     private TextView genres_;
     private TextView language_;
@@ -70,6 +73,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         manager.init(this);
         manager.sendMessage(manager.obtainMessage(States.MOVIES_DETAILS_REQUEST, selectedMovieId_));
         manager.sendMessage(manager.obtainMessage(States.TRAILERS_REQUEST, selectedMovieId_));
+        manager.sendMessage(manager.obtainMessage(States.CASTS_REQUEST,selectedMovieId_));
 
         cover_ = (ImageView) findViewById(R.id.coverImage);
 
@@ -79,6 +83,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         runtime_ = (TextView)findViewById(R.id.runtime_value);
         genres_ = (TextView)findViewById(R.id.genre_value);
         language_ = (TextView)findViewById(R.id.language_value);
+        released_ = (TextView) findViewById(R.id.released_value);
 
         String itemTitle = "Item Name";
         collapsingToolbarLayout_ = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
@@ -135,6 +140,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         // Add PlayButton into FrameLayout with appropriate params (margins etc)
         frameLayout.addView(playButton,frameParams);
 
+        //region Create TextView for Trailer name
         TextView textView = new TextView(getApplicationContext());
         textView.setText(trailer.getName());
         textView.setTextAppearance(getApplicationContext(), android.R.style.TextAppearance_DeviceDefault_Medium);
@@ -153,7 +159,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
 
         textViewLayoutParams.setMargins(textViewMarginLeft, textViewMarginRight, textViewMarginTop, 0);
-       // textViewLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 1);
         textViewLayoutParams.addRule(RelativeLayout.RIGHT_OF,frameLayout.getId());
         //endregion
 
@@ -166,16 +171,125 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         trailerLayout.addView(trailerItem);
     }
 
+    private void createCastItem(Cast cast){
+
+        //region Create Cast Layout
+        // Find Cast Layout
+        LinearLayout castLayout = (LinearLayout) findViewById(R.id.cast_layout);
+        //endregion
+
+        //region Create cast item (Profile Name)
+        // And set params
+        RelativeLayout castItem = new RelativeLayout(getApplicationContext());
+        RelativeLayout.LayoutParams castItemParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+        castItemParams.setMargins(0, 0, 0, 16);
+        //endregion
+
+        //region Create FrameLayout and set params
+        // Set size for FrameLayout width and height
+        int frameLayoutSize = getResources().getDimensionPixelOffset(R.dimen.frame2_layout_size);
+        // Create FrameLayout width size (width and height)
+        FrameLayout frameLayout = new FrameLayout(getApplicationContext());
+        frameLayout.setId(R.id.frameId2);
+        FrameLayout.LayoutParams frameParams = new FrameLayout.LayoutParams(frameLayoutSize, frameLayoutSize);
+
+        // Set margins for FrameLayout
+        int marginLeft = getResources().getDimensionPixelSize(R.dimen.spacing_large);
+        int marginRight = getResources().getDimensionPixelOffset(R.dimen.spacing_large);
+        int marginTop = getResources().getDimensionPixelOffset(R.dimen.spacing_medium);
+        frameParams.setMargins(marginLeft, marginTop, marginRight, 0);
+        //endregion
+
+        //region Create CastProfile
+        final ImageView castProfileImage = new ImageView(getApplicationContext());
+        castProfileImage.setImageBitmap(Util.getRoundedCroppedBitmap(Util.getBitmapFromBytes(cast.getCover()), Constants.DEFAULT_CROPPING_RADIUS));
+        castProfileImage.setTag(cast.getCreditId());
+        // Set onClickListener
+//        playButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                openBrowser((String)playButton.getTag());
+//            }
+//        });
+        //endregion
+
+        // Add PlayButton into FrameLayout with appropriate params (margins etc)
+        frameLayout.addView(castProfileImage,frameParams);
+
+
+
+        //region Create TextView for name of cast
+        TextView textView = new TextView(getApplicationContext());
+        textView.setId(R.id.cast_name);
+        textView.setText(cast.getName());
+        textView.setTextAppearance(getApplicationContext(), android.R.style.TextAppearance_DeviceDefault_Medium);
+        textView.setTextColor(getResources().getColor(android.R.color.primary_text_light));
+        textView.setMaxLines(1);
+        textView.setEllipsize(TextUtils.TruncateAt.END);
+
+        // Set margins for textView
+        int textViewMarginLeft = getResources().getDimensionPixelSize(R.dimen.spacing_medium);
+        int textViewMarginRight = getResources().getDimensionPixelOffset(R.dimen.spacing_large);
+        int textViewMarginTop = getResources().getDimensionPixelOffset(R.dimen.spacing_xsmall);
+
+        // Create params for textView
+        RelativeLayout.LayoutParams textViewLayoutParams = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+        textViewLayoutParams.setMargins(textViewMarginLeft, textViewMarginRight, textViewMarginTop, 0);
+        // textViewLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 1);
+        textViewLayoutParams.addRule(RelativeLayout.RIGHT_OF,frameLayout.getId());
+        //endregion
+
+        //region Create TextView for character of cast
+        TextView characterTextView = new TextView(getApplicationContext());
+        characterTextView.setText(cast.getCharacter());
+        characterTextView.setTextAppearance(getApplicationContext(), android.R.style.TextAppearance_DeviceDefault_Medium);
+        characterTextView.setTextColor(getResources().getColor(android.R.color.primary_text_light));
+        characterTextView.setMaxLines(1);
+        characterTextView.setEllipsize(TextUtils.TruncateAt.END);
+
+        // Set margins for textView
+        int characterTextViewMarginLeft = getResources().getDimensionPixelSize(R.dimen.spacing_medium);
+        int characterTextViewMarginRight = getResources().getDimensionPixelOffset(R.dimen.spacing_large);
+        int characterTextViewMarginTop = getResources().getDimensionPixelOffset(R.dimen.spacing_xsmall);
+
+        // Create params for textView
+        RelativeLayout.LayoutParams characterTextViewLayoutParams = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+
+        characterTextViewLayoutParams.setMargins(characterTextViewMarginLeft, characterTextViewMarginRight, 0, 0);
+        characterTextViewLayoutParams.addRule(RelativeLayout.RIGHT_OF,frameLayout.getId());
+        characterTextViewLayoutParams.addRule(RelativeLayout.BELOW, textView.getId());
+
+        //endregion
+
+
+        // Add frameLayout with playButton into trailerItem
+        castItem.addView(frameLayout);
+        // Add trailer name into trailerItem
+        castItem.addView(textView, textViewLayoutParams);
+        castItem.addView(characterTextView,characterTextViewLayoutParams);
+
+        // Add trailerItem into Layout
+        castLayout.addView(castItem);
+    }
+
     @Override
     public void onUpdate(List<? extends CommonMovie> resultList) {
         List<MovieDetails> movies = (List<MovieDetails>) resultList;
         cover_.setImageDrawable(Util.getDrawable(movies.get(0).getCover()));
         cover_.setVisibility(View.VISIBLE);
 
-        collapsingToolbarLayout_.setTitle(movies.get(0).getOriginalTitle());
-        title_.setText(movies.get(0).getOriginalTitle());
+        collapsingToolbarLayout_.setTitle(movies.get(0).getTitle());
+        title_.setText(movies.get(0).getTitle());
         description_.setText(movies.get(0).getOverview());
 
+        released_.setText(Util.getUIFriendlyData(movies.get(0).getReleaseDate()));
         runtime_.setText(Util.getUserFriendlyRuntime(Integer.toString(movies.get(0).getRuntime()), this));
         genres_.setText(Util.getGenres(movies.get(0).getGenres()));
         language_.setText(Util.getUserFriendlyOrLanguage(movies.get(0).getOriginalLanguage(),this));
@@ -200,13 +314,21 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         return url;
     }
 
-
     @Override
     public void UpdateTrailers(List<Trailer> trailers){
         for (int i=0;i<trailers.size();i++){
             createTrailerItem(trailers.get(i));
         }
     }
+
+    @Override
+    public void UpdateCasts(List<? extends CommonMovie> casts){
+        List<Cast> castList = (List<Cast>)casts;
+        for (int i=0;i<casts.size();i++){
+            createCastItem(castList.get(i));
+        }
+    }
+
 
     @Override
     public void onErrorRaised(String errorMsg) {

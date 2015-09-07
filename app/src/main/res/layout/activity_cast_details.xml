@@ -30,7 +30,7 @@
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="192dp"
+                    android:layout_height="wrap_content"
                     android:scaleType="centerCrop"
                     android:background="@drawable/taganrog"
                     android:visibility="invisible"

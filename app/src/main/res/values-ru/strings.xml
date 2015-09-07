@@ -12,11 +12,17 @@
     <string name="genres_label">Жанр</string>
     <string name="original_language_label">Язык оригинала</string>
     <string name="runtime_tag">мин</string>
-    <string name="original_language">Английский</string>
 
     <!--> Trailers card view <-->
     <string name="trailers_label">Трейлеры</string>
 
     <!--> Values for original language <-->
     <string name="original_en_language">Английский</string>
+
+    <!--> Labels for Details Cast ViewPager <-->
+    <string name="view_pager_title_biography">Биография</string>
+    <string name="view_pager_title_movies">Фильмы</string>
+
+    <!--> Details Casts card view <-->
+    <string name="biography_label">Биография</string>
 </resources>

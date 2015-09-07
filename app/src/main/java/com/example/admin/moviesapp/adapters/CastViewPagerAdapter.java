@@ -4,24 +4,20 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.example.admin.moviesapp.CastDetailsActivity;
 import com.example.admin.moviesapp.R;
-
-import java.util.ArrayList;
 
 /**
  * Created by Mikhail Valuyskiy on 07.09.2015.
  */
 public class CastViewPagerAdapter extends FragmentStatePagerAdapter {
 
-    public CastViewPagerAdapter(FragmentManager fm) {
+    Context context_;
+
+    public CastViewPagerAdapter(FragmentManager fm,Context context) {
         super(fm);
+        this.context_ = context;
     }
 
     @Override
@@ -32,12 +28,24 @@ public class CastViewPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 4;
+        return 2;
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return "Tab " + (position + 1);
+        String title = "";
+        switch (position) {
+            /** Android tab is selected */
+            case 0:
+                title =  context_.getResources().getString(R.string.view_pager_title_biography);
+                break;
+            case 1:
+                title = context_.getResources().getString(R.string.view_pager_title_movies);
+                break;
+            default:
+                break;
+        }
+        return title;
     }
 }
 

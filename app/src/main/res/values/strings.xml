@@ -26,4 +26,15 @@
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
 
+    <!--> Labels for Details Cast ViewPager <-->
+    <string name="view_pager_title_biography">Biography</string>
+    <string name="view_pager_title_movies">Movies</string>
+
+    <!--> Details Casts card view <-->
+    <string name="biography_label">Biography</string>
+
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

@@ -29,8 +29,9 @@
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                 <ImageView
+                    android:id="@+id/profile_image"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="292dp"
                     android:scaleType="centerCrop"
                     android:background="@drawable/taganrog"
                     android:visibility="invisible"
@@ -70,8 +71,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-
 
     </android.support.design.widget.CoordinatorLayout>
 

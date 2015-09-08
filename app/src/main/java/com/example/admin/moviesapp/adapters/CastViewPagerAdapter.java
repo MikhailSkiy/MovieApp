@@ -5,7 +5,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.example.admin.moviesapp.CastDetailsActivity;
+import com.example.admin.moviesapp.activities.BiographyFragment;
+import com.example.admin.moviesapp.activities.CastDetailsActivity;
 import com.example.admin.moviesapp.R;
 
 /**
@@ -22,8 +23,17 @@ public class CastViewPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        CastDetailsActivity.MyFragment myFragment = CastDetailsActivity.MyFragment.newInstance(position);
-        return myFragment;
+        switch (position){
+            case 0:
+                BiographyFragment biographyFragment = BiographyFragment.newInstance(position);
+                return biographyFragment;
+
+            case 1:
+                CastDetailsActivity.MyFragment myFragment = CastDetailsActivity.MyFragment.newInstance(position);
+                return myFragment;
+        }
+
+        return null;
     }
 
     @Override

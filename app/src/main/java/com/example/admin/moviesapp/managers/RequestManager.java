@@ -3,13 +3,17 @@ package com.example.admin.moviesapp.managers;
 import android.os.Handler;
 import android.os.Message;
 
+import com.example.admin.moviesapp.events.UpdateCastDetailsImageEvent;
+import com.example.admin.moviesapp.events.UpdateCastDetailsUI;
 import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.interfaces.UpdateListener;
 import com.example.admin.moviesapp.models.Cast;
+import com.example.admin.moviesapp.models.CastDetails;
 import com.example.admin.moviesapp.models.CommonMovie;
 import com.example.admin.moviesapp.models.Movie;
 import com.example.admin.moviesapp.models.MovieDetails;
 import com.example.admin.moviesapp.models.Trailer;
+import com.example.admin.moviesapp.requests.CastDetailsRequest;
 import com.example.admin.moviesapp.requests.CastsRequest;
 import com.example.admin.moviesapp.requests.ImageRequest;
 import com.example.admin.moviesapp.requests.MovieDetailsRequest;
@@ -19,6 +23,7 @@ import com.example.admin.moviesapp.requests.TrailerRequest;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
 import timber.log.Timber;
 
 /**
@@ -173,6 +178,32 @@ public class RequestManager extends Handler {
                 Timber.v(Integer.toString(castSize));
                 updateListener_.UpdateCasts(castsWithImages);
                 break;
+            //endregion
+
+            //region CastDetails
+
+            case States.CAST_DETAILS_REQUEST:
+                Timber.v("CAST_DETAILS_REQUEST");
+                String casrId = (String)message.obj;
+                CastDetailsRequest newCastDetReq = new CastDetailsRequest(getInstance());
+                newCastDetReq.postRequest(casrId);
+                break;
+
+            case States.CAST_DETAILS_REQUEST_COMPLETED:
+                Timber.v("CAST_DETAILS_REQUEST_COMPLETED");
+                CastDetails castDetails = (CastDetails)message.obj;
+
+                // Send through EventBus updateUI event
+                EventBus.getDefault().post(new UpdateCastDetailsUI(castDetails));
+                imageRequest.postImageRequest(castDetails);
+                break;
+
+            case States.CAST_DETAILS_IMAGE_DOWNLOADED:
+                Timber.v("CAST_DETAILS_IMAGE_DOWNLOADED");
+                CastDetails castDetailsWithImage = (CastDetails)message.obj;
+                EventBus.getDefault().post(new UpdateCastDetailsImageEvent(castDetailsWithImage.getCover()));
+                break;
+
             //endregion
 
 

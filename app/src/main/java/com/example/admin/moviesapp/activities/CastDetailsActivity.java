@@ -1,5 +1,7 @@
-package com.example.admin.moviesapp;
+package com.example.admin.moviesapp.activities;
 
+import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -10,17 +12,41 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
 
+import com.example.admin.moviesapp.R;
+import com.example.admin.moviesapp.adapters.CastRecyclerViewAdapter;
 import com.example.admin.moviesapp.adapters.CastViewPagerAdapter;
+import com.example.admin.moviesapp.events.UpdateCastDetailsImageEvent;
+import com.example.admin.moviesapp.events.UpdateCastDetailsUI;
+import com.example.admin.moviesapp.helpers.States;
+import com.example.admin.moviesapp.helpers.Util;
+import com.example.admin.moviesapp.interfaces.UpdateListener;
+import com.example.admin.moviesapp.managers.RequestManager;
+import com.example.admin.moviesapp.models.CastDetails;
+import com.example.admin.moviesapp.models.CommonMovie;
+import com.example.admin.moviesapp.models.Trailer;
+
+import org.w3c.dom.Text;
+
+import java.util.List;
+
+import de.greenrobot.event.EventBus;
+import timber.log.Timber;
 
 
-public class CastDetailsActivity extends AppCompatActivity {
+public class CastDetailsActivity extends AppCompatActivity implements UpdateListener{
 
     // Need this to link with the Snackbar
     private CoordinatorLayout mCoordinator;
@@ -33,12 +59,31 @@ public class CastDetailsActivity extends AppCompatActivity {
     private ViewPager mPager;
     private CastViewPagerAdapter mAdapter;
     private TabLayout mTabLayout;
+    private ImageView profileImage_;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cast_details);
+
+        //Register EventBus
+        EventBus.getDefault().register(this);
+
+        // Get selected movie Id
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        String selectedCastId = extras.getString("castId");
+        Timber.v(selectedCastId);
+
+        // Get instance of RequestManger
+        RequestManager manager = RequestManager.getInstance();
+        // Initialize it by UpdateListener
+        manager.init(this);
+
+        manager.sendMessage(manager.obtainMessage(States.CAST_DETAILS_REQUEST,selectedCastId));
+
+        profileImage_ = (ImageView)findViewById(R.id.profile_image);
 
         ViewCompat.setTransitionName(findViewById(R.id.app_bar_layout), "Lalal");
         supportPostponeEnterTransition();
@@ -68,6 +113,20 @@ public class CastDetailsActivity extends AppCompatActivity {
         mCollapsingToolbarLayout.setTitle(getResources().getString(R.string.hello_world));
     }
 
+    public void onEvent(UpdateCastDetailsImageEvent e){
+        updateImage(e.getImage());
+    }
+
+    private void updateImage(byte[] image){
+        profileImage_.setImageBitmap(Util.getBitmapFromBytes(image));
+        profileImage_.setVisibility(View.VISIBLE);
+    }
+
+    public void onUpdate(List<? extends CommonMovie> resultList){}
+    public void UpdateTrailers(List<Trailer> trailersList){}
+    public void UpdateCasts(List<? extends CommonMovie> casts){}
+    public void onErrorRaised(String errorMsg){}
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -90,8 +149,20 @@ public class CastDetailsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onDestroy() {
+        // Unregister this activity
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
+    }
+
     public static class MyFragment extends Fragment {
         public static final java.lang.String ARG_PAGE = "arg_page";
+
+        private CastRecyclerViewAdapter adapter_;
+        private RecyclerView listView_;
+        private TextView bioDescription_;
+        private ImageView profileImage_;
 
         public MyFragment() {
 
@@ -106,14 +177,48 @@ public class CastDetailsActivity extends AppCompatActivity {
         }
 
         @Override
+        public void onCreate(Bundle savedInstance){
+            super.onCreate(savedInstance);
+            // Register EventBus
+           // EventBus.getDefault().register(this);
+
+        }
+
+        @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             Bundle arguments = getArguments();
             int pageNumber = arguments.getInt(ARG_PAGE);
+            adapter_ = new CastRecyclerViewAdapter(getActivity());
+
 //            RecyclerView recyclerView = new RecyclerView(getActivity());
 //            recyclerView.setAdapter(new CastRecyclerViewAdapter(getActivity()));
 //            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            View view = inflater.inflate(R.layout.fragment_biography,container,false);
+            View view = inflater.inflate(R.layout.fragment_movies_credits,container,false);
+            listView_ = (RecyclerView)view.findViewById(R.id.movies_credits_list);
+            listView_.setAdapter(adapter_);
+            listView_.setItemAnimator(new DefaultItemAnimator());
+            listView_.setLayoutManager(new LinearLayoutManager(getActivity()));
             return view;
+        }
+
+//        public void onEvent(UpdateCastDetailsUI e){
+//            updateCastDetailsInfo(e.getCastDetails());
+//        }
+
+        @Override
+        public void onDestroy() {
+            super.onDestroy();
+
+            // Unregister EventBus
+           // EventBus.getDefault().unregister(this);
+        }
+
+        private void updateCastDetailsInfo(CastDetails castDetails){
+            bioDescription_.setText(castDetails.getBiography());
+        }
+
+        private void updateImage(byte[] image){
+
         }
     }
 }

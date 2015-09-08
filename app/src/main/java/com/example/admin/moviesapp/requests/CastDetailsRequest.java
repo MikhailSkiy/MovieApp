@@ -11,6 +11,8 @@ import com.example.admin.moviesapp.helpers.Constants;
 import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.managers.AppController;
 import com.example.admin.moviesapp.managers.RequestManager;
+import com.example.admin.moviesapp.models.Cast;
+import com.example.admin.moviesapp.models.CastDetails;
 import com.example.admin.moviesapp.models.MovieDetails;
 import com.example.admin.moviesapp.models.ProductionCompany;
 import com.google.gson.Gson;
@@ -24,50 +26,58 @@ import java.util.List;
 import timber.log.Timber;
 
 /**
- * Created by Mikhail on 02.09.2015.
+ * Created by Mikhail Valuyskiy on 08.09.2015.
  */
-public class MovieDetailsRequest implements RequestFactory {
+public class CastDetailsRequest  {
 
     //region Keys for building query
-    private final String BASE_MOVIE_DETAILS_URL = "http://api.themoviedb.org/3/movie/";
+    private final String BASE_CAST_DETAILS_REQUEST_URL = "http://api.themoviedb.org/3/person/";
     private final String API_KEY = "api_key";
-    private final String LANGUAGE = "language";
-    //endregion
-
-    //region Values for building query
-    private final String LANGUAGE_VALUE = "ru";
     //endregion
 
     private static RequestManager manager_;
 
-    public MovieDetailsRequest(RequestManager manager){
+    public CastDetailsRequest(RequestManager manager){
         this.manager_ = manager;
     }
 
-    public void postRequest(long id){
-        String url = createMovieDetailsUrl(id);
+    public void postRequest(String castId) {
+        String url = createCastDetailsUrl(castId);
         postGetRequest(url);
     }
 
-    public static void getMovieObjects(String response){
-        getMovieDetailsObject(response);
-    }
-
-    private static void getMovieDetailsObject(String response){
-        MovieDetails movieDetails = getMovieDetailsObjectFromJson(response);
-        manager_.sendMessage(manager_.obtainMessage(States.MOVIE_DETAILS_REQUEST_WAS_PARSED, movieDetails));
-    }
-
-    private String createMovieDetailsUrl(long id){
+    private String createCastDetailsUrl(String castId) {
         String url = null;
-        Uri builtUri = Uri.parse(BASE_MOVIE_DETAILS_URL).buildUpon()
-                .appendPath(Long.toString(id))
-                .appendQueryParameter(LANGUAGE, LANGUAGE_VALUE)
+        Uri builtUri = Uri.parse(BASE_CAST_DETAILS_REQUEST_URL).buildUpon()
+                .appendPath(castId)
                 .appendQueryParameter(API_KEY, getApiKey())
                 .build();
         url = builtUri.toString();
         Timber.v(url);
         return url;
+    }
+
+    private void getCastDetailsObject(String response){
+        CastDetails castDetails = getCastDetailsFromJson(response);
+        // Send event through eventBus
+    }
+
+    private CastDetails getCastDetailsFromJson(String response){
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.setDateFormat("M/d/yy hh:mm a");
+        Gson gson = gsonBuilder.create();
+        CastDetails castDetails = new CastDetails();
+
+        castDetails = gson.fromJson(response,CastDetails.class);
+        Timber.v(castDetails.getName());
+        return castDetails;
+    }
+
+
+
+    // Temporary method for getting api_key_value
+    private String getApiKey() {
+        return Constants.API_KEY_VALUE;
     }
 
     // use Volley for sending request
@@ -79,7 +89,8 @@ public class MovieDetailsRequest implements RequestFactory {
         String response = getDataFromCache(url);
         if (response != null) {
             Timber.v("Data was cashed");
-            manager_.sendMessage(manager_.obtainMessage(States.MOVIE_DETAILS_REQUEST_COMPLETED, response));
+            CastDetails cashedCastDetails = getCastDetailsFromJson(response);
+            manager_.sendMessage(manager_.obtainMessage(States.CAST_DETAILS_REQUEST_COMPLETED, cashedCastDetails));
         } else {
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url,
                     new Response.Listener<JSONObject>() {
@@ -87,7 +98,8 @@ public class MovieDetailsRequest implements RequestFactory {
                         public void onResponse(JSONObject response) {
                             Timber.v("Data was not cashed");
                             String responseString = response.toString();
-                            manager_.sendMessage(manager_.obtainMessage(States.MOVIE_DETAILS_REQUEST_COMPLETED, responseString));
+                            CastDetails returnedCastDetails = getCastDetailsFromJson(responseString);
+                            manager_.sendMessage(manager_.obtainMessage(States.CAST_DETAILS_REQUEST_COMPLETED, returnedCastDetails));
                         }
                     },
                     new Response.ErrorListener() {
@@ -121,22 +133,7 @@ public class MovieDetailsRequest implements RequestFactory {
         Cache.Entry entry = cache.get(url);
         return entry;
     }
-
-    private static MovieDetails getMovieDetailsObjectFromJson(String response){
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.setDateFormat("M/d/yy hh:mm a");
-        Gson gson = gsonBuilder.create();
-        MovieDetails movieDetails = new MovieDetails();
-
-        movieDetails = gson.fromJson(response,MovieDetails.class);
-        Timber.v(movieDetails.getOriginalTitle());
-        return movieDetails;
-        // to be contined...
-    }
-
-    // Temporary method for getting api_key_value
-    private String getApiKey() {
-        return Constants.API_KEY_VALUE;
-    }
-
 }
+
+
+

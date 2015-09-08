@@ -29,6 +29,11 @@ public class States {
     public static final int CASTS_REQUEST_COMPLETED = 41;
     public static final int CASTS_REQUEST_WAS_PARSED = 42;
 
+    // Cast Details request
+    public static final int CAST_DETAILS_REQUEST = 50;
+    public static final int CAST_DETAILS_REQUEST_COMPLETED=51;
+    public static final int CAST_DETAILS_IMAGE_DOWNLOADED = 52;
+
     // Error msgs starts from 90-99
     public static final int VOLLEY_REQUEST_FAILED = 90;
 }

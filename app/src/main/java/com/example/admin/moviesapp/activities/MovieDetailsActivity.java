@@ -1,4 +1,4 @@
-package com.example.admin.moviesapp;
+package com.example.admin.moviesapp.activities;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -20,6 +20,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.admin.moviesapp.R;
+import com.example.admin.moviesapp.ViewServer;
 import com.example.admin.moviesapp.adapters.TrailersAdapter;
 import com.example.admin.moviesapp.helpers.Constants;
 import com.example.admin.moviesapp.helpers.States;
@@ -204,7 +206,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         //region Create CastProfile
         final ImageView castProfileImage = new ImageView(getApplicationContext());
         castProfileImage.setImageBitmap(Util.getRoundedCroppedBitmap(Util.getBitmapFromBytes(cast.getCover()), Constants.DEFAULT_CROPPING_RADIUS));
-        castProfileImage.setTag(cast.getCreditId());
+        castProfileImage.setTag(cast.getId());
         // Set onClickListener
         castProfileImage.setOnClickListener(new View.OnClickListener() {
             @Override

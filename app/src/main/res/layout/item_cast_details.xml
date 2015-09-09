@@ -1,13 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/text_superhero"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="4dp"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="4dp"
-    android:text="Superhero"
-    android:textColor="@color/material_blue_grey_800">
 
-</TextView>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:orientation="horizontal"
+    android:padding="5dp">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/spacing_large">
+
+        <FrameLayout
+            android:id="@+id/movie_cover_frame"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginLeft="@dimen/spacing_large"
+            android:layout_marginRight="@dimen/spacing_large"
+            android:layout_marginTop="@dimen/spacing_medium">
+
+            <ImageView
+                android:id="@+id/coverImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fitsSystemWindows="true"
+                android:scaleType="centerCrop" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/movie_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/movie_cover_frame"
+            android:layout_marginLeft="@dimen/spacing_medium"
+            android:layout_marginRight="@dimen/spacing_large"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:text="English"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+    </RelativeLayout>
+
+    <!--<FrameLayout-->
+        <!--android:layout_width="50dp"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:layout_marginLeft="@dimen/spacing_large"-->
+        <!--android:layout_marginRight="@dimen/spacing_large"-->
+        <!--android:layout_marginTop="@dimen/spacing_medium">-->
+
+
+        <!--<ImageView-->
+            <!--android:id="@+id/coverImage"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="@drawable/taganrog"-->
+            <!--android:fitsSystemWindows="true"-->
+            <!--android:scaleType="centerCrop"-->
+            <!--android:visibility="visible" />-->
+
+    <!--</FrameLayout>-->
+
+    <!--<LinearLayout-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_weight="1"-->
+        <!--android:orientation="vertical"-->
+        <!--android:paddingLeft="5dp">-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/movie_title"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Таганрог Раневской" />-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/track_description"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Много слов слов слов слов слов" />-->
+
+    <!--</LinearLayout>-->
+</LinearLayout>
+

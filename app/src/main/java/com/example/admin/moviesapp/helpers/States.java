@@ -34,6 +34,11 @@ public class States {
     public static final int CAST_DETAILS_REQUEST_COMPLETED=51;
     public static final int CAST_DETAILS_IMAGE_DOWNLOADED = 52;
 
+    // Movie Credits request
+    public static final int MOVIE_CREDITS_REQUEST = 60;
+    public static final int MOVIE_CREDITS_REQUEST_COMPLETED = 61;
+    public static final int MOVIE_CREDITS_IMAGE_DOWNLOADED = 62;
+
     // Error msgs starts from 90-99
     public static final int VOLLEY_REQUEST_FAILED = 90;
 }

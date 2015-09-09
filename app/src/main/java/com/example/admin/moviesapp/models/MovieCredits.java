@@ -1,11 +1,12 @@
 package com.example.admin.moviesapp.models;
 
+import com.example.admin.moviesapp.helpers.States;
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Mikhail Valuyskiy on 08.09.2015.
  */
-public class MovieCredits {
+public class MovieCredits extends CommonMovie{
     @SerializedName("adult")
     private boolean adult_;
     @SerializedName("character")
@@ -22,6 +23,8 @@ public class MovieCredits {
     private String releaseDate_;
     @SerializedName("title")
     private String title_;
+
+    private byte[] cover_;
 
     public boolean isAdult() {
         return adult_;
@@ -85,5 +88,21 @@ public class MovieCredits {
 
     public void setTitle(String title) {
         this.title_ = title;
+    }
+
+    public byte[] getCover() {
+        return cover_;
+    }
+
+    public void setCover(byte[] cover) {
+        this.cover_ = cover;
+    }
+
+    public  String getImagePath(){
+        return getPosterPath();
+    }
+
+    public int getImageStatus(){
+        return States.MOVIE_CREDITS_IMAGE_DOWNLOADED;
     }
 }

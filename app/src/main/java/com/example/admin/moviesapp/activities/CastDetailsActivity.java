@@ -30,16 +30,20 @@ import com.example.admin.moviesapp.adapters.CastRecyclerViewAdapter;
 import com.example.admin.moviesapp.adapters.CastViewPagerAdapter;
 import com.example.admin.moviesapp.events.UpdateCastDetailsImageEvent;
 import com.example.admin.moviesapp.events.UpdateCastDetailsUI;
+import com.example.admin.moviesapp.events.UpdateMovieCreditsListEvent;
 import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.helpers.Util;
 import com.example.admin.moviesapp.interfaces.UpdateListener;
 import com.example.admin.moviesapp.managers.RequestManager;
 import com.example.admin.moviesapp.models.CastDetails;
 import com.example.admin.moviesapp.models.CommonMovie;
+import com.example.admin.moviesapp.models.MovieCredits;
 import com.example.admin.moviesapp.models.Trailer;
+import com.example.admin.moviesapp.requests.MovieCreditsRequest;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
@@ -62,6 +66,8 @@ public class CastDetailsActivity extends AppCompatActivity implements UpdateList
     private ImageView profileImage_;
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +87,8 @@ public class CastDetailsActivity extends AppCompatActivity implements UpdateList
         // Initialize it by UpdateListener
         manager.init(this);
 
-        manager.sendMessage(manager.obtainMessage(States.CAST_DETAILS_REQUEST,selectedCastId));
+        manager.sendMessage(manager.obtainMessage(States.CAST_DETAILS_REQUEST, selectedCastId));
+        manager.sendMessage(manager.obtainMessage(States.MOVIE_CREDITS_REQUEST,selectedCastId));
 
         profileImage_ = (ImageView)findViewById(R.id.profile_image);
 
@@ -109,11 +116,10 @@ public class CastDetailsActivity extends AppCompatActivity implements UpdateList
         //Notice how The Tab Layout adn View Pager object are linked
         mTabLayout.setupWithViewPager(mPager);
         mPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
-        //Notice how the title is set on the Collapsing Toolbar Layout instead of the Toolbar
-        mCollapsingToolbarLayout.setTitle(getResources().getString(R.string.hello_world));
     }
 
     public void onEvent(UpdateCastDetailsImageEvent e){
+        Timber.v("Event in activity");
         updateImage(e.getImage());
     }
 
@@ -163,6 +169,11 @@ public class CastDetailsActivity extends AppCompatActivity implements UpdateList
         private RecyclerView listView_;
         private TextView bioDescription_;
         private ImageView profileImage_;
+        RequestManager manager_ ;
+
+
+
+        private List<MovieCredits> movieCreditsList_ = new ArrayList<>();
 
         public MyFragment() {
 
@@ -176,19 +187,32 @@ public class CastDetailsActivity extends AppCompatActivity implements UpdateList
             return myFragment;
         }
 
+//        @Override
+//        public void onActivityCreated(Bundle savedInstanceState) {
+//            super.onActivityCreated(savedInstanceState);
+//            manager_ = RequestManager.getInstance();
+//            manager_.init((CastDetailsActivity)getActivity());
+//            manager_.sendMessage(manager_.obtainMessage(States.MOVIE_CREDITS_REQUEST,selectedCastId));
+//        }
+
         @Override
         public void onCreate(Bundle savedInstance){
             super.onCreate(savedInstance);
             // Register EventBus
-           // EventBus.getDefault().register(this);
+            EventBus.getDefault().register(this);
+        }
 
+
+        public void onEvent(UpdateMovieCreditsListEvent e){
+            movieCreditsList_.add(e.getMovieCredits());
+            adapter_.notifyDataSetChanged();
         }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             Bundle arguments = getArguments();
             int pageNumber = arguments.getInt(ARG_PAGE);
-            adapter_ = new CastRecyclerViewAdapter(getActivity());
+            adapter_ = new CastRecyclerViewAdapter(getActivity(),movieCreditsList_);
 
 //            RecyclerView recyclerView = new RecyclerView(getActivity());
 //            recyclerView.setAdapter(new CastRecyclerViewAdapter(getActivity()));
@@ -201,16 +225,44 @@ public class CastDetailsActivity extends AppCompatActivity implements UpdateList
             return view;
         }
 
-//        public void onEvent(UpdateCastDetailsUI e){
-//            updateCastDetailsInfo(e.getCastDetails());
+
+//        public void onEvent(UpdateCastDetailsImageEvent e){
+//            Timber.v("Event in fragment");
+//            Timber.v("UpdateCastDetailsImageEvent");
+//            for (int i=0;i<3;i++){
+//
+//                if ( movieCreditsList_.get(i).getPosterPath() == e.getPath()){
+//                    movieCreditsList_.get(i).setCover(e.getImage());
+//
+//                }
+//            }
+//
 //        }
+
+//        public void onEvent(UpdateCreditsImageEvent e){
+//            Timber.v("Event in fragment");
+//            Timber.v("UpdateCastDetailsImageEvent");
+//            for (int i=0;i<3;i++){
+//
+//                if ( movieCreditsList_.get(i).getPosterPath() == e.getPath()){
+//                    movieCreditsList_.get(i).setCover(e.getImage());
+//
+//                }
+//            }
+//
+//        }
+
+        private void setRecyclerView(List<MovieCredits> movies){
+            adapter_ = new CastRecyclerViewAdapter(getActivity(),movieCreditsList_);
+
+        }
 
         @Override
         public void onDestroy() {
             super.onDestroy();
 
             // Unregister EventBus
-           // EventBus.getDefault().unregister(this);
+            EventBus.getDefault().unregister(this);
         }
 
         private void updateCastDetailsInfo(CastDetails castDetails){

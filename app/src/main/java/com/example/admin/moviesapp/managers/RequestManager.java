@@ -5,23 +5,27 @@ import android.os.Message;
 
 import com.example.admin.moviesapp.events.UpdateCastDetailsImageEvent;
 import com.example.admin.moviesapp.events.UpdateCastDetailsUI;
+import com.example.admin.moviesapp.events.UpdateMovieCreditsListEvent;
 import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.interfaces.UpdateListener;
 import com.example.admin.moviesapp.models.Cast;
 import com.example.admin.moviesapp.models.CastDetails;
 import com.example.admin.moviesapp.models.CommonMovie;
 import com.example.admin.moviesapp.models.Movie;
+import com.example.admin.moviesapp.models.MovieCredits;
 import com.example.admin.moviesapp.models.MovieDetails;
 import com.example.admin.moviesapp.models.Trailer;
 import com.example.admin.moviesapp.requests.CastDetailsRequest;
 import com.example.admin.moviesapp.requests.CastsRequest;
 import com.example.admin.moviesapp.requests.ImageRequest;
+import com.example.admin.moviesapp.requests.MovieCreditsRequest;
 import com.example.admin.moviesapp.requests.MovieDetailsRequest;
 import com.example.admin.moviesapp.requests.MovieRequest;
 import com.example.admin.moviesapp.requests.TrailerRequest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import de.greenrobot.event.EventBus;
 import timber.log.Timber;
@@ -203,6 +207,33 @@ public class RequestManager extends Handler {
                 CastDetails castDetailsWithImage = (CastDetails)message.obj;
                 EventBus.getDefault().post(new UpdateCastDetailsImageEvent(castDetailsWithImage.getCover()));
                 break;
+
+            //endregion
+
+            //region Movie Credits Request
+
+
+            case States.MOVIE_CREDITS_REQUEST:
+                Timber.v("MOVIE_CREDITS_REQUEST");
+                String movieCreditId = (String)message.obj;
+                MovieCreditsRequest creditsRequest = new MovieCreditsRequest(getInstance());
+                creditsRequest.postRequest(movieCreditId);
+                break;
+
+            case States.MOVIE_CREDITS_REQUEST_COMPLETED:
+                Timber.v("MOVIE_CREDITS_REQUEST_COMPLETED");
+                List<MovieCredits> movieCreditsList = (List<MovieCredits>)message.obj;
+                for (int i=0; i<movieCreditsList.size();i++){
+                    imageRequest.postImageRequest(movieCreditsList.get(i));
+                }
+                break;
+
+            case States.MOVIE_CREDITS_IMAGE_DOWNLOADED:
+                Timber.v("MOVIE_CREDITS_IMAGE_DOWNLOADED");
+                MovieCredits returnedMovieCredits = (MovieCredits) message.obj;
+                EventBus.getDefault().post(new UpdateMovieCreditsListEvent(returnedMovieCredits));
+                break;
+
 
             //endregion
 

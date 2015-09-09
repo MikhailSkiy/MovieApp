@@ -28,7 +28,7 @@ public class CastDetails extends CommonMovie {
     @SerializedName("name")
     private String name_;
     @SerializedName("place_of_birth")
-    private String PlaceOfBirth_;
+    private String placeOfBirth_;
     @SerializedName("popularity")
     private double popularity_;
     @SerializedName("profile_path")
@@ -109,11 +109,11 @@ public class CastDetails extends CommonMovie {
     }
 
     public String getPlaceOfBirth() {
-        return PlaceOfBirth_;
+        return placeOfBirth_;
     }
 
     public void setPlaceOfBirth(String placeOfBirth) {
-        PlaceOfBirth_ = placeOfBirth;
+        this.placeOfBirth_ = placeOfBirth;
     }
 
     public double getPopularity() {

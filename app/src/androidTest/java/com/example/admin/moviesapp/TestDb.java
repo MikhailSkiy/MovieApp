@@ -68,7 +68,7 @@ public class TestDb extends AndroidTestCase {
             fail("No data returned");
         }
         try {
-            assertEquals(cursor.getString(cursor.getColumnIndex(Contract.MoviesEntry._ID)),MOVIE_ID);
+            assertEquals(cursor.getInt(cursor.getColumnIndex(Contract.MoviesEntry._ID)),MOVIE_ID);
 
             boolean isAdult = cursor.getInt(cursor.getColumnIndex(Contract.MoviesEntry.COLUMN__ADULT))==1?true:false;
             assertEquals(isAdult,MOVIE_ADULT);

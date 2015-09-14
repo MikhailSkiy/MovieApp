@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.example.admin.moviesapp.R;
 import com.example.admin.moviesapp.adapters.MoviesAdapter;
+import com.example.admin.moviesapp.database.DbHelper;
 import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.interfaces.MovieItemClickListener;
 import com.example.admin.moviesapp.interfaces.UpdateListener;
@@ -23,9 +24,13 @@ import com.example.admin.moviesapp.models.Trailer;
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
+
 public class MainActivity extends AppCompatActivity implements UpdateListener {
 
     private MoviesAdapter moviesAdapter_;
+    private DbHelper helper_ = new DbHelper(this);
+    private List<Movie> moviesList_ = new ArrayList<>();
 
 
     @Override
@@ -33,21 +38,12 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Get instance of RequestManger
-        RequestManager manager = RequestManager.getInstance();
-        // Initialize it by UpdateListener
-        manager.init(this);
-
-        manager.sendMessage(manager.obtainMessage(States.MOVIES_REQUEST));
-
-        List<Movie> moviesList = new ArrayList<>();
-
-        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recycler_view);
-        moviesAdapter_ = new MoviesAdapter(moviesList,R.layout.item_movie_card,this,new MovieItemClickListener(){
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        moviesAdapter_ = new MoviesAdapter(moviesList_, R.layout.item_movie_card, this, new MovieItemClickListener() {
             @Override
-        public void onMovieItemClick(final long movieId){
-                Intent intent = new Intent(MainActivity.this,MovieDetailsActivity.class);
-                intent.putExtra("movieId",movieId);
+            public void onMovieItemClick(final long movieId) {
+                Intent intent = new Intent(MainActivity.this, MovieDetailsActivity.class);
+                intent.putExtra("movieId", movieId);
                 startActivity(intent);
             }
         });
@@ -55,25 +51,45 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         recyclerView.setAdapter(moviesAdapter_);
 
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-       // recyclerView.setLayoutManager(new GridLayoutManager(this,2));
+        // recyclerView.setLayoutManager(new GridLayoutManager(this,2));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // Check if there are any movies in database
+        // If so get list of movies and update recyclerView
+        moviesList_ = helper_.getAllMovies();
+        if (moviesList_.size() != 0) {
+            Timber.v(Integer.toString(moviesList_.size()));
+            onUpdate(moviesList_);
+        } else {
+            // Get instance of RequestManger
+            RequestManager manager = RequestManager.getInstance();
+            // Initialize it by UpdateListener
+            manager.init(this);
+            manager.sendMessage(manager.obtainMessage(States.MOVIES_REQUEST));
+        }
     }
 
     @Override
     public void onUpdate(List<? extends CommonMovie> resultList) {
-        List<Movie> movies = (List<Movie>)resultList;
-        moviesAdapter_.addMovie(movies.get(0));
+        List<Movie> movies = (List<Movie>) resultList;
+        for (int i = 0; i < movies.size(); i++) {
+            moviesAdapter_.addMovie(movies.get(i));
+            // Add items into database
+            helper_.insertMovie(movies.get(i));
+        }
+
     }
 
     @Override
-    public void UpdateTrailers(List<Trailer> trailers){
+    public void UpdateTrailers(List<Trailer> trailers) {
     }
 
     @Override
-    public void UpdateCasts(List<? extends CommonMovie> casts){}
+    public void UpdateCasts(List<? extends CommonMovie> casts) {
+    }
 
     @Override
-    public void onErrorRaised(String errorMsg){
+    public void onErrorRaised(String errorMsg) {
         Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show();
     }
 

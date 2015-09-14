@@ -8,14 +8,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.admin.moviesapp.database.Contract.MoviesEntry;
 import com.example.admin.moviesapp.helpers.Util;
-import com.example.admin.moviesapp.models.Cast;
-import com.example.admin.moviesapp.models.CastDetails;
 import com.example.admin.moviesapp.models.Movie;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.admin.moviesapp.database.Contract.*;
+import static com.example.admin.moviesapp.database.Contract.CastDetailsEntry;
+import static com.example.admin.moviesapp.database.Contract.CastEntry;
+import static com.example.admin.moviesapp.database.Contract.TrailersEntry;
 
 /**
  * Created by Mikhail Valuyskiy on 14.09.2015.
@@ -80,6 +80,8 @@ public class DbHelper extends SQLiteOpenHelper {
                 TrailersEntry.COLUMN_SIZE + " SIZE, " +
                 TrailersEntry.COLUMN_TYPE + " TYPE);";
 
+        sqLiteDatabase.execSQL(SQL_CREATE_MOVIES_TABLE);
+
     }
 
     @Override
@@ -142,13 +144,15 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
     public void insertMovie(Movie movie) {
-        if (movie != null) {
-            SQLiteDatabase database = this.getWritableDatabase();
-            ContentValues values = insertMovieInContentValues(movie);
-            database.insert(MoviesEntry.TABLE_NAME, null, values);
-            database.close();
+        if (movie != null)  {
+            if (!isMovieExists(movie.getId())) {
+                SQLiteDatabase database = this.getWritableDatabase();
+                ContentValues values = insertMovieInContentValues(movie);
+                database.insert(MoviesEntry.TABLE_NAME, null, values);
+                database.close();
+            }
         } else {
-            throw new IllegalArgumentException("Passed movie object is null");
+            throw new IllegalArgumentException("Passed movie object is null or already exist");
         }
     }
 
@@ -164,8 +168,22 @@ public class DbHelper extends SQLiteOpenHelper {
         values.put(MoviesEntry.COLUMN_VIDEO, movie.isVideo() ? 1 : 0);
         values.put(MoviesEntry.COLUMN_VOTE_AVERAGE,movie.getVoteAverage());
         values.put(MoviesEntry.COLUMN_VOTE_COUNT,movie.getVoteCount());
+        values.put(MoviesEntry.COLUMN_COVER,movie.getCover());
 
         return values;
+    }
+
+    public boolean isMovieExists(long movieId){
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        String query = "SELECT * FROM " + MoviesEntry.TABLE_NAME + " WHERE " + MoviesEntry._ID + " = " + movieId;
+        Cursor cursor = sqLiteDatabase.rawQuery(query,null);
+        if (cursor.getCount()<=0){
+            cursor.close();
+            return false;
+        }
+        cursor.close();
+        return true;
+
     }
 
 }

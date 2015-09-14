@@ -31,6 +31,13 @@ public class Movie extends CommonMovie {
 
     private byte[] cover_;
 
+    public boolean isAdult() {
+        return adult_;
+    }
+
+    public void setAdult(boolean adult) {
+        this.adult_ = adult;
+    }
 
     public long getId() {
         return id_;
@@ -54,6 +61,46 @@ public class Movie extends CommonMovie {
 
     public void setTitle(String title) {
         this.title_ = title;
+    }
+
+    public boolean isVideo() {
+        return video_;
+    }
+
+    public void setVideo(boolean video) {
+        this.video_ = video;
+    }
+
+    public double getVoteAverage() {
+        return voteAverage_;
+    }
+
+    public void setVoteAverage(double voteAverage) {
+        this.voteAverage_ = voteAverage;
+    }
+
+    public int getVoteCount() {
+        return voteCount_;
+    }
+
+    public void setVoteCount(int voteCount) {
+        this.voteCount_ = voteCount;
+    }
+
+    public String getOverview() {
+        return overview_;
+    }
+
+    public void setOverview(String overview) {
+        this.overview_ = overview;
+    }
+
+    public String getReleaseDate() {
+        return releaseDate_;
+    }
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate_ = releaseDate;
     }
 
     public String getPosterPath() {

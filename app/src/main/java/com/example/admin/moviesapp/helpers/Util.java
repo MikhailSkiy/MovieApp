@@ -24,6 +24,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -56,6 +57,24 @@ public class Util {
         dateFormat.applyPattern("dd MMM yyyy");
         String result = dateFormat.format(date);
         return result;
+    }
+
+    public static long getUnixDate(String data){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = null;
+        try {
+            date = dateFormat.parse(data);
+        } catch (ParseException e){
+
+        }
+        return date.getTime();
+    }
+
+    public static String getDateFromUnix(long date){
+        Calendar myDate = Calendar.getInstance();
+        myDate.setTimeInMillis(date*1000);
+        String convertedDate = myDate.get(Calendar.DAY_OF_MONTH) + "." + myDate.get(Calendar.MONTH) + "." + myDate.get(Calendar.YEAR);
+        return convertedDate;
     }
 
     public static String getGenres(List<Genre> genres){

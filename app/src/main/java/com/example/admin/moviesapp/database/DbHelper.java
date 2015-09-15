@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.example.admin.moviesapp.database.Contract.MoviesEntry;
 import com.example.admin.moviesapp.helpers.Util;
 import com.example.admin.moviesapp.models.Movie;
+import com.example.admin.moviesapp.models.MovieDetails;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -146,6 +147,7 @@ public class DbHelper extends SQLiteOpenHelper {
         context.deleteDatabase(DbHelper.DATABASE_NAME);
     }
 
+    //region Movie operations
     public List<Movie> getAllMovies(){
         SQLiteDatabase database = this.getWritableDatabase();
         List<Movie> movieList= new ArrayList<>();
@@ -192,7 +194,7 @@ public class DbHelper extends SQLiteOpenHelper {
         return movie;
     }
 
-    public void insertMovie(Movie movie) {
+    public void addMovie(Movie movie) {
         if (movie != null)  {
             if (!isMovieExists(movie.getId())) {
                 SQLiteDatabase database = this.getWritableDatabase();
@@ -234,5 +236,24 @@ public class DbHelper extends SQLiteOpenHelper {
         return true;
 
     }
+
+    //endregion
+
+    //region Movie Details operations
+
+    public void addMovieDetails(MovieDetails movieDetails){
+        if (movieDetails != null){
+            if (!isMovieDetailsExists) {
+                SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+                ContentValues values = insertMovieDetailsInCntnValues(movieDetails);
+                sqLiteDatabase.insert(MoviesDetailsEntry.TABLE_NAME, null, values);
+                sqLiteDatabase.close();
+            }
+        }
+        else {
+            throw new IllegalArgumentException("Passed movie object is null or already exist");
+        }
+    }
+    //endregion
 
 }

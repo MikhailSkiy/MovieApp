@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         for (int i = 0; i < movies.size(); i++) {
             moviesAdapter_.addMovie(movies.get(i));
             // Add items into database
-            helper_.insertMovie(movies.get(i));
+            helper_.addMovie(movies.get(i));
         }
 
     }

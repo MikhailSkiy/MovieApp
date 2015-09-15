@@ -72,11 +72,12 @@ public class DbHelper extends SQLiteOpenHelper {
 
         final String SQL_CREATE_MOVIE_GENRE_TABLE = "CREATE TABLE " + MovieGenreEntry.TABLE_NAME + " (" +
                 MovieGenreEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                MovieGenreEntry.COLUMN_MOVIE_ID + " INTEGER " +
+                MovieGenreEntry.COLUMN_MOVIE_ID + " INTEGER, " +
+                MovieGenreEntry.COLUMN_GENRE_ID + " INTEGER, " +
                 // Set up the movie_id column as a foreign key to moviedetails table
                 " FOREIGN KEY (" + MovieGenreEntry.COLUMN_MOVIE_ID + ") REFERENCES " +
                 MoviesDetailsEntry.TABLE_NAME + " (" + MoviesDetailsEntry._ID + "), " +
-                MovieGenreEntry.COLUMN_GENRE_ID + " INTEGER " +
+
                 " FOREIGN KEY (" + MovieGenreEntry.COLUMN_GENRE_ID + ") REFERENCES " +
                 GenreEntry.TABLE_NAME + " (" + GenreEntry._ID + ")" + " );";
 

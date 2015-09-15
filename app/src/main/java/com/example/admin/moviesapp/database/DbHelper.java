@@ -13,6 +13,7 @@ import com.example.admin.moviesapp.models.Movie;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.admin.moviesapp.database.Contract.*;
 import static com.example.admin.moviesapp.database.Contract.CastDetailsEntry;
 import static com.example.admin.moviesapp.database.Contract.CastEntry;
 import static com.example.admin.moviesapp.database.Contract.TrailersEntry;
@@ -23,7 +24,7 @@ import static com.example.admin.moviesapp.database.Contract.TrailersEntry;
 public class DbHelper extends SQLiteOpenHelper {
 
     // When the database schema was changed, you must increment the database version
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "movies.db";
 
     public DbHelper(Context context) {
@@ -45,6 +46,44 @@ public class DbHelper extends SQLiteOpenHelper {
                 MoviesEntry.COLUMN_VOTE_AVERAGE + " REAL, " +
                 MoviesEntry.COLUMN_VOTE_COUNT + " INTEGER, " +
                 MoviesEntry.COLUMN_COVER + " BLOB);";
+
+        final String SQL_CREATE_MOVIES_DETAILS_TABLE = "CREATE TABLE " + MoviesDetailsEntry.TABLE_NAME + " (" +
+                MoviesDetailsEntry._ID + " INTEGER PRIMARY KEY, " +
+                MoviesDetailsEntry.COLUMN_ADULT + " INTEGER, " +
+                MoviesDetailsEntry.COLUMN_BACKDROP_PATH + " TEXT, " +
+                MoviesDetailsEntry.COLUMN_BUDGET + " INTEGER, " +
+                MoviesDetailsEntry.COLUMN_HOMEPAGE + " TEXT, " +
+                MoviesDetailsEntry.COLUMN_IMDB_ID + " TEXT, " +
+                MoviesDetailsEntry.COLUMN_ORIGINAL_LANGUAGE + " TEXT, " +
+                MoviesDetailsEntry.COLUMN_ORIGINAL_TITLE + " TEXT, " +
+                MoviesDetailsEntry.COLUMN_OVERVIEW + " TEXT, " +
+                MoviesDetailsEntry.COLUMN_POPULARITY + " REAL, " +
+                MoviesDetailsEntry.COLUMN_POSTER_PATH + " TEXT, " +
+                MoviesDetailsEntry.COLUMN_RELEASE_DATE + " TEXT, " +
+                MoviesDetailsEntry.COLUMN_REVENUE + " INTEGER, " +
+                MoviesDetailsEntry.COLUMN_RUNTIME + " INTEGER, " +
+                MoviesDetailsEntry.COLUMN_STATUS + " TEXT, " +
+                MoviesDetailsEntry.COLUMN_TAGLINE + " TEXT, " +
+                MoviesDetailsEntry.COLUMN_TITLE + " TEXT, " +
+                MoviesDetailsEntry.COLUMN_VIDEO + " INTEGER, " +
+                MoviesDetailsEntry.COLUMN_VOTE_AVERAGE + " REAL, " +
+                MoviesDetailsEntry.COLUMN_VOTE_COUNT + " INTEGER, " +
+                MoviesDetailsEntry.COLUMN_COVER + " BLOB);";
+
+        final String SQL_CREATE_MOVIE_GENRE_TABLE = "CREATE TABLE " + MovieGenreEntry.TABLE_NAME + " (" +
+                MovieGenreEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                MovieGenreEntry.COLUMN_MOVIE_ID + " INTEGER " +
+                // Set up the movie_id column as a foreign key to moviedetails table
+                " FOREIGN KEY (" + MovieGenreEntry.COLUMN_MOVIE_ID + ") REFERENCES " +
+                MoviesDetailsEntry.TABLE_NAME + " (" + MoviesDetailsEntry._ID + "), " +
+                MovieGenreEntry.COLUMN_GENRE_ID + " INTEGER " +
+                " FOREIGN KEY (" + MovieGenreEntry.COLUMN_GENRE_ID + ") REFERENCES " +
+                GenreEntry.TABLE_NAME + " (" + GenreEntry._ID + ")" + " );";
+
+        final String SQL_CREATE_GENRES_TABLE = "CREATE TABLE " + GenreEntry.TABLE_NAME + " (" +
+                GenreEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                GenreEntry.COLUMN_NAME + " TEXT );";
+
 
         final String SQL_CREATE_CAST_DETAILS_TABLE = "CREATE TABLE " + CastDetailsEntry.TABLE_NAME + " (" +
                 CastDetailsEntry._ID + " INTEGER PRIMARY KEY," +
@@ -78,9 +117,15 @@ public class DbHelper extends SQLiteOpenHelper {
                 TrailersEntry.COLUMN_NAME + " TEXT, " +
                 TrailersEntry.COLUMN_SITE + " SITE, " +
                 TrailersEntry.COLUMN_SIZE + " SIZE, " +
-                TrailersEntry.COLUMN_TYPE + " TYPE);";
+                TrailersEntry.COLUMN_TYPE + " TYPE, " +
+                TrailersEntry.COLUMN_MOVIE_ID + " INTEGER " +
+                " FOREIGN KEY (" + TrailersEntry.COLUMN_MOVIE_ID + ") REFERENCES " +
+                MoviesDetailsEntry.TABLE_NAME + " (" + MoviesDetailsEntry._ID + ")" + " );";
 
         sqLiteDatabase.execSQL(SQL_CREATE_MOVIES_TABLE);
+        sqLiteDatabase.execSQL(SQL_CREATE_MOVIES_DETAILS_TABLE);
+        sqLiteDatabase.execSQL(SQL_CREATE_GENRES_TABLE);
+        sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_GENRE_TABLE);
 
     }
 
@@ -90,6 +135,9 @@ public class DbHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + CastEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + CastDetailsEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TrailersEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MoviesDetailsEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + GenreEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MovieGenreEntry.TABLE_NAME);
         onCreate(sqLiteDatabase);
     }
 

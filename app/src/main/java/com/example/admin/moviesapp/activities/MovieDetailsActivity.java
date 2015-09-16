@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.example.admin.moviesapp.R;
 import com.example.admin.moviesapp.ViewServer;
 import com.example.admin.moviesapp.adapters.TrailersAdapter;
+import com.example.admin.moviesapp.database.DbHelper;
 import com.example.admin.moviesapp.helpers.Constants;
 import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.helpers.Util;
@@ -33,6 +34,7 @@ import com.example.admin.moviesapp.models.CommonMovie;
 import com.example.admin.moviesapp.models.MovieDetails;
 import com.example.admin.moviesapp.models.Trailer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
@@ -42,6 +44,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
     private CollapsingToolbarLayout collapsingToolbarLayout_;
     private long selectedMovieId_;
     private ImageView cover_;
+    private DbHelper helper_ = new DbHelper(this);
 
     private CardView movieCard_;
     private TextView title_;
@@ -68,23 +71,14 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         selectedMovieId_ = extras.getLong("movieId", 0);
         Timber.v(Long.toString(selectedMovieId_));
 
-        // Send MovieDetailsRequest
-        // Get instance of RequestManger
-        RequestManager manager = RequestManager.getInstance();
-        // Initialize it by UpdateListener
-        manager.init(this);
-        manager.sendMessage(manager.obtainMessage(States.MOVIES_DETAILS_REQUEST, selectedMovieId_));
-        manager.sendMessage(manager.obtainMessage(States.TRAILERS_REQUEST, selectedMovieId_));
-        manager.sendMessage(manager.obtainMessage(States.CASTS_REQUEST,selectedMovieId_));
-
         cover_ = (ImageView) findViewById(R.id.coverImage);
 
-         movieCard_ = (CardView) findViewById(R.id.movie_card);
-         title_ = (TextView) findViewById(R.id.title);
-         description_ = (TextView) findViewById(R.id.description);
-        runtime_ = (TextView)findViewById(R.id.runtime_value);
-        genres_ = (TextView)findViewById(R.id.genre_value);
-        language_ = (TextView)findViewById(R.id.language_value);
+        movieCard_ = (CardView) findViewById(R.id.movie_card);
+        title_ = (TextView) findViewById(R.id.title);
+        description_ = (TextView) findViewById(R.id.description);
+        runtime_ = (TextView) findViewById(R.id.runtime_value);
+        genres_ = (TextView) findViewById(R.id.genre_value);
+        language_ = (TextView) findViewById(R.id.language_value);
         released_ = (TextView) findViewById(R.id.released_value);
 
         String itemTitle = "Item Name";
@@ -94,9 +88,31 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         collapsingToolbarLayout_.setCollapsedTitleTextColor(getResources().getColor(R.color.accent_material_dark));
 
         ViewServer.get(this).addWindow(this);
+
+        // Get instance of RequestManger
+        RequestManager manager = RequestManager.getInstance();
+        // Initialize it by UpdateListener
+        manager.init(this);
+
+        List<MovieDetails> movieDetailsList = new ArrayList<>();
+        MovieDetails movieDetails = new MovieDetails();
+        movieDetails = helper_.getMovieDetails(selectedMovieId_);
+        if (movieDetails != null){
+            movieDetailsList.add(movieDetails);
+            Timber.v(movieDetails.getOriginalTitle());
+            onUpdate(movieDetailsList);
+        } else {
+            manager.sendMessage(manager.obtainMessage(States.MOVIES_DETAILS_REQUEST, selectedMovieId_));
+        }
+
+        // Send MovieDetailsRequest
+
+        //manager.sendMessage(manager.obtainMessage(States.MOVIES_DETAILS_REQUEST, selectedMovieId_));
+        manager.sendMessage(manager.obtainMessage(States.TRAILERS_REQUEST, selectedMovieId_));
+        manager.sendMessage(manager.obtainMessage(States.CASTS_REQUEST, selectedMovieId_));
     }
 
-    private void createTrailerItem(Trailer trailer){
+    private void createTrailerItem(Trailer trailer) {
 
         //region Create Trailer Layout
         // Find Trailer Layout
@@ -134,13 +150,13 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openBrowser((String)playButton.getTag());
+                openBrowser((String) playButton.getTag());
             }
         });
         //endregion
 
         // Add PlayButton into FrameLayout with appropriate params (margins etc)
-        frameLayout.addView(playButton,frameParams);
+        frameLayout.addView(playButton, frameParams);
 
         //region Create TextView for Trailer name
         TextView textView = new TextView(getApplicationContext());
@@ -161,7 +177,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
 
         textViewLayoutParams.setMargins(textViewMarginLeft, textViewMarginRight, textViewMarginTop, 0);
-        textViewLayoutParams.addRule(RelativeLayout.RIGHT_OF,frameLayout.getId());
+        textViewLayoutParams.addRule(RelativeLayout.RIGHT_OF, frameLayout.getId());
         //endregion
 
         // Add frameLayout with playButton into trailerItem
@@ -173,7 +189,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         trailerLayout.addView(trailerItem);
     }
 
-    private void createCastItem(Cast cast){
+    private void createCastItem(Cast cast) {
 
         //region Create Cast Layout
         // Find Cast Layout
@@ -211,16 +227,15 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         castProfileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MovieDetailsActivity.this,CastDetailsActivity.class);
-                intent.putExtra("castId",castProfileImage.getTag().toString());
+                Intent intent = new Intent(MovieDetailsActivity.this, CastDetailsActivity.class);
+                intent.putExtra("castId", castProfileImage.getTag().toString());
                 startActivity(intent);
             }
         });
         //endregion
 
         // Add PlayButton into FrameLayout with appropriate params (margins etc)
-        frameLayout.addView(castProfileImage,frameParams);
-
+        frameLayout.addView(castProfileImage, frameParams);
 
 
         //region Create TextView for name of cast
@@ -244,7 +259,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
 
         textViewLayoutParams.setMargins(textViewMarginLeft, textViewMarginRight, textViewMarginTop, 0);
         // textViewLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 1);
-        textViewLayoutParams.addRule(RelativeLayout.RIGHT_OF,frameLayout.getId());
+        textViewLayoutParams.addRule(RelativeLayout.RIGHT_OF, frameLayout.getId());
         //endregion
 
         //region Create TextView for character of cast
@@ -267,7 +282,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
 
 
         characterTextViewLayoutParams.setMargins(characterTextViewMarginLeft, characterTextViewMarginRight, 0, 0);
-        characterTextViewLayoutParams.addRule(RelativeLayout.RIGHT_OF,frameLayout.getId());
+        characterTextViewLayoutParams.addRule(RelativeLayout.RIGHT_OF, frameLayout.getId());
         characterTextViewLayoutParams.addRule(RelativeLayout.BELOW, textView.getId());
 
         //endregion
@@ -277,7 +292,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         castItem.addView(frameLayout);
         // Add trailer name into trailerItem
         castItem.addView(textView, textViewLayoutParams);
-        castItem.addView(characterTextView,characterTextViewLayoutParams);
+        castItem.addView(characterTextView, characterTextViewLayoutParams);
 
         // Add trailerItem into Layout
         castLayout.addView(castItem);
@@ -289,6 +304,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         cover_.setImageDrawable(Util.getDrawable(movies.get(0).getCover()));
         cover_.setVisibility(View.VISIBLE);
 
+        helper_.addMovieDetails(movies.get(0));
+
         collapsingToolbarLayout_.setTitle(movies.get(0).getTitle());
         title_.setText(movies.get(0).getTitle());
         description_.setText(movies.get(0).getOverview());
@@ -296,39 +313,39 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         released_.setText(Util.getUIFriendlyData(movies.get(0).getReleaseDate()));
         runtime_.setText(Util.getUserFriendlyRuntime(Integer.toString(movies.get(0).getRuntime()), this));
         genres_.setText(Util.getGenres(movies.get(0).getGenres()));
-        language_.setText(Util.getUserFriendlyOrLanguage(movies.get(0).getOriginalLanguage(),this));
+        language_.setText(Util.getUserFriendlyOrLanguage(movies.get(0).getOriginalLanguage(), this));
     }
 
-    private void openBrowser(String key){
+    private void openBrowser(String key) {
         Uri url = createYoutubeUrl(key);
         Intent intent = new Intent(Intent.ACTION_VIEW, url);
 
-        if (intent.resolveActivity(getPackageManager()) != null){
+        if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         } else {
             Timber.v("Couldn't call because no receiving apps installed!");
         }
     }
 
-    private Uri createYoutubeUrl(String key){
+    private Uri createYoutubeUrl(String key) {
         String BaseUrl = "http://www.youtube.com/watch";
         Uri url = Uri.parse(BaseUrl).buildUpon()
-                .appendQueryParameter("v",key)
+                .appendQueryParameter("v", key)
                 .build();
         return url;
     }
 
     @Override
-    public void UpdateTrailers(List<Trailer> trailers){
-        for (int i=0;i<trailers.size();i++){
+    public void UpdateTrailers(List<Trailer> trailers) {
+        for (int i = 0; i < trailers.size(); i++) {
             createTrailerItem(trailers.get(i));
         }
     }
 
     @Override
-    public void UpdateCasts(List<? extends CommonMovie> casts){
-        List<Cast> castList = (List<Cast>)casts;
-        for (int i=0;i<casts.size();i++){
+    public void UpdateCasts(List<? extends CommonMovie> casts) {
+        List<Cast> castList = (List<Cast>) casts;
+        for (int i = 0; i < casts.size(); i++) {
             createCastItem(castList.get(i));
         }
     }

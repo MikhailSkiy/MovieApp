@@ -84,20 +84,13 @@ public class MovieDetails extends CommonMovie {
 
     private byte[] cover_;
 
-    public String getOriginalTitle() {
-        return originalTitle_;
+
+    public boolean isAdult() {
+        return adult_;
     }
 
-    public void setOriginalTitle(String originalTitle) {
-        this.originalTitle_ = originalTitle;
-    }
-
-    public List<ProductionCompany> getCompanies() {
-        return companies_;
-    }
-
-    public void setCompanies(List<ProductionCompany> companies) {
-        this.companies_ = companies;
+    public void setAdult(boolean adult) {
+        this.adult_ = adult;
     }
 
     public String getBackdropPath() {
@@ -108,44 +101,12 @@ public class MovieDetails extends CommonMovie {
         this.backdropPath_ = backdropPath;
     }
 
-    public byte[] getCover() {
-        return cover_;
+    public long getBudget() {
+        return budget_;
     }
 
-    public void setCover(byte[] cover) {
-        this.cover_ = cover;
-    }
-
-    public String getOverview() {
-        return overview_;
-    }
-
-    public void setOverview(String overview) {
-        this.overview_ = overview;
-    }
-
-    public int getImageStatus(){
-        return States.COVER_DOWNLOADED;
-    }
-
-    public String getImagePath(){
-      return getBackdropPath();
-    }
-
-    public int getRuntime() {
-        return runtime_;
-    }
-
-    public void setRuntime(int runtime) {
-        this.runtime_ = runtime;
-    }
-
-    public String getOriginalLanguage() {
-        return originalLanguage_;
-    }
-
-    public void setOriginalLanguage(String originalLanguage) {
-        this.originalLanguage_ = originalLanguage;
+    public void setBudget(long budget) {
+        this.budget_ = budget;
     }
 
     public List<Genre> getGenres() {
@@ -156,12 +117,124 @@ public class MovieDetails extends CommonMovie {
         this.genres_ = genres;
     }
 
+    public String getHomepage() {
+        return homepage_;
+    }
+
+    public void setHomepage(String homepage) {
+        this.homepage_ = homepage;
+    }
+
+    public long getId() {
+        return id_;
+    }
+
+    public void setId(long id) {
+        this.id_ = id;
+    }
+
+    public String getImdbId() {
+        return imdbId_;
+    }
+
+    public void setImdbId(String imdbId) {
+        this.imdbId_ = imdbId;
+    }
+
+    public String getOriginalLanguage() {
+        return originalLanguage_;
+    }
+
+    public void setOriginalLanguage(String originalLanguage) {
+        this.originalLanguage_ = originalLanguage;
+    }
+
+    public String getOriginalTitle() {
+        return originalTitle_;
+    }
+
+    public void setOriginalTitle(String originalTitle) {
+        this.originalTitle_ = originalTitle;
+    }
+
+    public String getOverview() {
+        return overview_;
+    }
+
+    public void setOverview(String overview) {
+        this.overview_ = overview;
+    }
+
+    public double getPopularity() {
+        return popularity_;
+    }
+
+    public void setPopularity(double popularity) {
+        this.popularity_ = popularity;
+    }
+
+    public String getPosterPath() {
+        return posterPath_;
+    }
+
+    public void setPosterPath(String posterPath) {
+        this.posterPath_ = posterPath;
+    }
+
+    public List<ProductionCompany> getCompanies() {
+        return companies_;
+    }
+
+    public void setCompanies(List<ProductionCompany> companies) {
+        this.companies_ = companies;
+    }
+
+    public List<ProductionCountry> getCountries() {
+        return countries_;
+    }
+
+    public void setCountries(List<ProductionCountry> countries) {
+        this.countries_ = countries;
+    }
+
     public String getReleaseDate() {
         return releaseDate_;
     }
 
     public void setReleaseDate(String releaseDate) {
         this.releaseDate_ = releaseDate;
+    }
+
+    public long getRevenue() {
+        return revenue_;
+    }
+
+    public void setRevenue(long revenue) {
+        this.revenue_ = revenue;
+    }
+
+    public int getRuntime() {
+        return runtime_;
+    }
+
+    public void setRuntime(int runtime) {
+        this.runtime_ = runtime;
+    }
+
+    public String getStatus() {
+        return status_;
+    }
+
+    public void setStatus(String status) {
+        this.status_ = status;
+    }
+
+    public String getTagline() {
+        return tagline_;
+    }
+
+    public void setTagline(String tagline) {
+        this.tagline_ = tagline;
     }
 
     public String getTitle() {
@@ -171,4 +244,40 @@ public class MovieDetails extends CommonMovie {
     public void setTitle(String title) {
         this.title_ = title;
     }
+
+    public int getImageStatus(){
+        return States.COVER_DOWNLOADED;
+    }
+
+    public String getImagePath(){
+      return getBackdropPath();
+    }
+
+    public double getVoteAverage() {
+        return voteAverage_;
+    }
+
+    public void setVoteAverage(double voteAverage) {
+        this.voteAverage_ = voteAverage;
+    }
+
+    public long getVoteCount() {
+        return voteCount_;
+    }
+
+    public void setVoteCount(long voteCount) {
+        this.voteCount_ = voteCount;
+    }
+
+
+    public byte[] getCover() {
+        return cover_;
+    }
+
+    public void setCover(byte[] cover) {
+        this.cover_ = cover;
+    }
+
+
+
 }

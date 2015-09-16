@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.admin.moviesapp.database.Contract.MoviesEntry;
 import com.example.admin.moviesapp.helpers.Util;
+import com.example.admin.moviesapp.models.Genre;
 import com.example.admin.moviesapp.models.Movie;
 import com.example.admin.moviesapp.models.MovieDetails;
 
@@ -148,13 +149,14 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
     //region Movie operations
-    public List<Movie> getAllMovies(){
+    // TODO add limit for 20 results per one operation
+    public List<Movie> getAllMovies() {
         SQLiteDatabase database = this.getWritableDatabase();
-        List<Movie> movieList= new ArrayList<>();
+        List<Movie> movieList = new ArrayList<>();
         String selectQuery = " SELECT * FROM " + MoviesEntry.TABLE_NAME;
-        Cursor cursor = database.rawQuery(selectQuery,null);
+        Cursor cursor = database.rawQuery(selectQuery, null);
 
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             do {
                 Movie movie = getMovieFromCursor(cursor);
                 movieList.add(movie);
@@ -165,15 +167,15 @@ public class DbHelper extends SQLiteOpenHelper {
         return movieList;
     }
 
-    private Movie getMovieFromCursor(Cursor cursor){
+    private Movie getMovieFromCursor(Cursor cursor) {
         int id = cursor.getInt(cursor.getColumnIndex(MoviesEntry._ID));
-        boolean adult = (cursor.getInt(cursor.getColumnIndex(MoviesEntry.COLUMN__ADULT)) == 1) ? true :false;
+        boolean adult = (cursor.getInt(cursor.getColumnIndex(MoviesEntry.COLUMN__ADULT)) == 1) ? true : false;
         String originalTitle = cursor.getString(cursor.getColumnIndex(MoviesEntry.COLUMN_ORIGINAL_TITLE));
         String overview = cursor.getString(cursor.getColumnIndex(MoviesEntry.COLUMN_OVERVIEW));
         String releasedDate = Util.getDateFromUnix(cursor.getLong(cursor.getColumnIndex(MoviesEntry.COLUMN_RELEASE_DATE)));
         String posterPath = cursor.getString(cursor.getColumnIndex(MoviesEntry.COLUMN_POSTER_PATH));
         String title = cursor.getString(cursor.getColumnIndex(MoviesEntry.COLUMN_TITLE));
-        boolean video = (cursor.getInt(cursor.getColumnIndex(MoviesEntry.COLUMN_VIDEO)) == 1) ? true :false;
+        boolean video = (cursor.getInt(cursor.getColumnIndex(MoviesEntry.COLUMN_VIDEO)) == 1) ? true : false;
         double voteAverage = cursor.getDouble(cursor.getColumnIndex(MoviesEntry.COLUMN_VOTE_AVERAGE));
         int voteCount = cursor.getInt(cursor.getColumnIndex(MoviesEntry.COLUMN_VOTE_COUNT));
         byte[] cover = cursor.getBlob(cursor.getColumnIndex(MoviesEntry.COLUMN_COVER));
@@ -195,7 +197,7 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
     public void addMovie(Movie movie) {
-        if (movie != null)  {
+        if (movie != null) {
             if (!isMovieExists(movie.getId())) {
                 SQLiteDatabase database = this.getWritableDatabase();
                 ContentValues values = insertMovieInContentValues(movie);
@@ -217,18 +219,18 @@ public class DbHelper extends SQLiteOpenHelper {
         values.put(MoviesEntry.COLUMN_POSTER_PATH, movie.getPosterPath());
         values.put(MoviesEntry.COLUMN_TITLE, movie.getTitle());
         values.put(MoviesEntry.COLUMN_VIDEO, movie.isVideo() ? 1 : 0);
-        values.put(MoviesEntry.COLUMN_VOTE_AVERAGE,movie.getVoteAverage());
-        values.put(MoviesEntry.COLUMN_VOTE_COUNT,movie.getVoteCount());
-        values.put(MoviesEntry.COLUMN_COVER,movie.getCover());
+        values.put(MoviesEntry.COLUMN_VOTE_AVERAGE, movie.getVoteAverage());
+        values.put(MoviesEntry.COLUMN_VOTE_COUNT, movie.getVoteCount());
+        values.put(MoviesEntry.COLUMN_COVER, movie.getCover());
 
         return values;
     }
 
-    public boolean isMovieExists(long movieId){
+    public boolean isMovieExists(long movieId) {
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
         String query = "SELECT * FROM " + MoviesEntry.TABLE_NAME + " WHERE " + MoviesEntry._ID + " = " + movieId;
-        Cursor cursor = sqLiteDatabase.rawQuery(query,null);
-        if (cursor.getCount()<=0){
+        Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+        if (cursor.getCount() <= 0) {
             cursor.close();
             return false;
         }
@@ -241,19 +243,186 @@ public class DbHelper extends SQLiteOpenHelper {
 
     //region Movie Details operations
 
-    public void addMovieDetails(MovieDetails movieDetails){
-        if (movieDetails != null){
-            if (!isMovieDetailsExists) {
+    public void addMovieDetails(MovieDetails movieDetails) {
+        if (movieDetails != null) {
+            if (!isMovieDetailsExists(movieDetails.getId())) {
                 SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+                // Insert movie details data
                 ContentValues values = insertMovieDetailsInCntnValues(movieDetails);
                 sqLiteDatabase.insert(MoviesDetailsEntry.TABLE_NAME, null, values);
+                // Insert genres data into genres table
+                for (int i = 0; i < movieDetails.getGenres().size(); i++) {
+                    // If such genre doesn't exist, put into database
+                    if (!isGenreExist(movieDetails.getGenres().get(i).getGenreId())) {
+                        ContentValues genreValues = insertMovieGenresInCntnValues(movieDetails.getGenres().get(i));
+                        sqLiteDatabase.insert(GenreEntry.TABLE_NAME,null,genreValues);
+                    }
+                    // Insert genre_id and movie_id into movie_genre table
+                    ContentValues movieGenreValues = insertMovieGenreValues(movieDetails.getId(),movieDetails.getGenres().get(i).getGenreId());
+                    sqLiteDatabase.insert(MovieGenreEntry.TABLE_NAME,null,movieGenreValues);
+                }
                 sqLiteDatabase.close();
             }
-        }
-        else {
+        } else {
             throw new IllegalArgumentException("Passed movie object is null or already exist");
         }
     }
+
+    private ContentValues insertMovieDetailsInCntnValues(MovieDetails movieDetails) {
+        ContentValues values = new ContentValues();
+        values.put(MoviesDetailsEntry._ID, movieDetails.getId());
+        values.put(MoviesDetailsEntry.COLUMN_ADULT, movieDetails.isAdult() ? 1 : 0);
+        values.put(MoviesDetailsEntry.COLUMN_BACKDROP_PATH, movieDetails.getBackdropPath());
+        values.put(MoviesDetailsEntry.COLUMN_BUDGET, movieDetails.getBudget());
+        values.put(MoviesDetailsEntry.COLUMN_HOMEPAGE, movieDetails.getHomepage());
+        values.put(MoviesDetailsEntry.COLUMN_IMDB_ID, movieDetails.getImdbId());
+        values.put(MoviesDetailsEntry.COLUMN_ORIGINAL_LANGUAGE, movieDetails.getOriginalLanguage());
+        values.put(MoviesDetailsEntry.COLUMN_ORIGINAL_TITLE, movieDetails.getOriginalTitle());
+        values.put(MoviesDetailsEntry.COLUMN_OVERVIEW, movieDetails.getOverview());
+        values.put(MoviesDetailsEntry.COLUMN_POPULARITY, movieDetails.getPopularity());
+        values.put(MoviesDetailsEntry.COLUMN_POSTER_PATH, movieDetails.getPosterPath());
+        values.put(MoviesDetailsEntry.COLUMN_RELEASE_DATE, movieDetails.getReleaseDate());
+        values.put(MoviesDetailsEntry.COLUMN_REVENUE, movieDetails.getRevenue());
+        values.put(MoviesDetailsEntry.COLUMN_RUNTIME, movieDetails.getRuntime());
+        values.put(MoviesDetailsEntry.COLUMN_STATUS, movieDetails.getStatus());
+        values.put(MoviesDetailsEntry.COLUMN_TAGLINE, movieDetails.getTagline());
+        values.put(MoviesDetailsEntry.COLUMN_TITLE, movieDetails.getTitle());
+        values.put(MoviesDetailsEntry.COLUMN_VOTE_AVERAGE, movieDetails.getVoteAverage());
+        values.put(MoviesDetailsEntry.COLUMN_VOTE_COUNT, movieDetails.getVoteCount());
+        values.put(MoviesDetailsEntry.COLUMN_COVER, movieDetails.getCover());
+
+        return values;
+    }
+
+    private ContentValues insertMovieGenresInCntnValues(Genre genre) {
+        ContentValues values = new ContentValues();
+        values.put(GenreEntry._ID, genre.getGenreId());
+        values.put(GenreEntry.COLUMN_NAME, genre.getGenreName());
+
+        return values;
+    }
+
+    private ContentValues insertMovieGenreValues(long movieId, long genreId){
+        ContentValues values = new ContentValues();
+        values.put(MovieGenreEntry.COLUMN_GENRE_ID,genreId);
+        values.put(MovieGenreEntry.COLUMN_MOVIE_ID, movieId);
+
+        return values;
+    }
+
+    private boolean isGenreExist(long genreId) {
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        String query = "SELECT * FROM " + GenreEntry.TABLE_NAME + " WHERE " + GenreEntry._ID + " = " + genreId;
+        Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+        if (cursor.getCount() <= 0) {
+            cursor.close();
+            return false;
+        }
+        cursor.close();
+
+        return true;
+    }
+
+    public boolean isMovieDetailsExists(long movieDetailsId) {
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        String query = "SELECT * FROM " + MoviesDetailsEntry.TABLE_NAME + " WHERE " + MoviesDetailsEntry._ID + " = " + movieDetailsId;
+        Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+        if (cursor.getCount() <= 0) {
+            cursor.close();
+            return false;
+        }
+        cursor.close();
+
+        return true;
+    }
+
+    public MovieDetails getMovieDetails(long movieDetailsId){
+        if (isMovieDetailsExists(movieDetailsId)) {
+            SQLiteDatabase database = this.getWritableDatabase();
+            MovieDetails movieDetails = new MovieDetails();
+            String selectQuery = " SELECT * FROM " + MoviesDetailsEntry.TABLE_NAME + " WHERE " + MoviesDetailsEntry._ID + " = " + movieDetailsId;
+            Cursor cursor = database.rawQuery(selectQuery, null);
+            movieDetails = getMovieDetailsFromCursor(cursor);
+            // Get genres for this movie
+            List<Genre> genreList = new ArrayList<>();
+            String selectGenresQuery = " SELECT " + GenreEntry.TABLE_NAME + "." + GenreEntry.COLUMN_NAME + "," + GenreEntry.TABLE_NAME + "." + GenreEntry._ID + " FROM " + MoviesDetailsEntry.TABLE_NAME +
+                    " JOIN " + MovieGenreEntry.TABLE_NAME + " on " + " (" + MoviesDetailsEntry.TABLE_NAME + "." + MoviesDetailsEntry._ID + " = " + MovieGenreEntry.COLUMN_MOVIE_ID + " ) " +
+                    " JOIN " + GenreEntry.TABLE_NAME + " on " + " (" + MovieGenreEntry.COLUMN_GENRE_ID + " = " +GenreEntry.TABLE_NAME + "." + GenreEntry._ID + " ) " +
+                    " WHERE " + MoviesDetailsEntry.TABLE_NAME + "." + MoviesDetailsEntry._ID + " = " + movieDetailsId;
+            Cursor genresCursor = database.rawQuery(selectGenresQuery, null);
+            if (genresCursor.moveToFirst()) {
+                do {
+                    Genre genre = getGenreFromCursor(genresCursor);
+                    genreList.add(genre);
+                } while (genresCursor.moveToNext());
+            }
+            movieDetails.setGenres(genreList);
+
+            return movieDetails;
+        } else {
+            return null;
+        }
+    }
+
+    private Genre getGenreFromCursor(Cursor cursor){
+        int id = cursor.getInt(cursor.getColumnIndex(GenreEntry._ID));
+        String name = cursor.getString(cursor.getColumnIndex(GenreEntry.COLUMN_NAME));
+        Genre genre = new Genre();
+        genre.setGenreId(id);
+        genre.setGenreName(name);
+
+        return genre;
+    }
+
+    private MovieDetails getMovieDetailsFromCursor(Cursor cursor) {
+        cursor.moveToFirst();
+        int id = cursor.getInt(cursor.getColumnIndex(MoviesDetailsEntry._ID));
+        boolean adult = (cursor.getInt(cursor.getColumnIndex(MoviesDetailsEntry.COLUMN_ADULT)) == 1) ? true : false;
+        String backdropPath = cursor.getString(cursor.getColumnIndex(MoviesDetailsEntry.COLUMN_BACKDROP_PATH));
+        long budget = cursor.getLong(cursor.getColumnIndex(MoviesDetailsEntry.COLUMN_BUDGET));
+        String homepage = cursor.getString(cursor.getColumnIndex(MoviesDetailsEntry.COLUMN_HOMEPAGE));
+        String imdbId = cursor.getString(cursor.getColumnIndex(MoviesDetailsEntry.COLUMN_IMDB_ID));
+        String originalLanguage = cursor.getString(cursor.getColumnIndex(MoviesDetailsEntry.COLUMN_ORIGINAL_LANGUAGE));
+        String originalTitle = cursor.getString(cursor.getColumnIndex(MoviesDetailsEntry.COLUMN_ORIGINAL_TITLE));
+        String overview = cursor.getString(cursor.getColumnIndex(MoviesDetailsEntry.COLUMN_OVERVIEW));
+        double popularity = cursor.getDouble(cursor.getColumnIndex(MoviesDetailsEntry.COLUMN_POPULARITY));
+        String posterPath = cursor.getString(cursor.getColumnIndex(MoviesDetailsEntry.COLUMN_POSTER_PATH));
+        String releaseDate = cursor.getString(cursor.getColumnIndex(MoviesDetailsEntry.COLUMN_RELEASE_DATE));
+        long revenue = cursor.getLong(cursor.getColumnIndex(MoviesDetailsEntry.COLUMN_REVENUE));
+        int runtime = cursor.getInt(cursor.getColumnIndex(MoviesDetailsEntry.COLUMN_RUNTIME));
+        String status = cursor.getString(cursor.getColumnIndex(MoviesDetailsEntry.COLUMN_STATUS));
+        String tagline = cursor.getString(cursor.getColumnIndex(MoviesDetailsEntry.COLUMN_TAGLINE));
+        String title = cursor.getString(cursor.getColumnIndex(MoviesDetailsEntry.COLUMN_TAGLINE));
+        double voteAverage = cursor.getDouble(cursor.getColumnIndex(MoviesDetailsEntry.COLUMN_VOTE_AVERAGE));
+        long voteCount = cursor.getLong(cursor.getColumnIndex(MoviesDetailsEntry.COLUMN_VOTE_COUNT));
+        byte[] cover = cursor.getBlob(cursor.getColumnIndex(MoviesDetailsEntry.COLUMN_COVER));
+        // Set values into MovieDetails object
+        MovieDetails movieDetails = new MovieDetails();
+        movieDetails.setId(id);
+        movieDetails.setAdult(adult);
+        movieDetails.setBackdropPath(backdropPath);
+        movieDetails.setBudget(budget);
+        movieDetails.setHomepage(homepage);
+        movieDetails.setImdbId(imdbId);
+        movieDetails.setOriginalLanguage(originalLanguage);
+        movieDetails.setOriginalTitle(originalTitle);
+        movieDetails.setOverview(overview);
+        movieDetails.setPopularity(popularity);
+        movieDetails.setPosterPath(posterPath);
+        movieDetails.setReleaseDate(releaseDate);
+        movieDetails.setRevenue(revenue);
+        movieDetails.setRuntime(runtime);
+        movieDetails.setStatus(status);
+        movieDetails.setTagline(tagline);
+        movieDetails.setTitle(title);
+        movieDetails.setVoteAverage(voteAverage);
+        movieDetails.setVoteCount(voteCount);
+        movieDetails.setCover(cover);
+
+        return movieDetails;
+    }
+
+
     //endregion
 
 }

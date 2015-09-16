@@ -243,11 +243,11 @@ public class DbHelper extends SQLiteOpenHelper {
     //endregion
 
     //region Trailers operations
-    public void addTrailer(Trailer trailer) {
+    public void addTrailer(Trailer trailer,long movieId) {
         if (trailer != null) {
             if (!isTrailerExists(trailer.getId())) {
                 SQLiteDatabase database = this.getWritableDatabase();
-                ContentValues trailerValues = insertTrailerInContentValues(trailer);
+                ContentValues trailerValues = insertTrailerInContentValues(trailer,movieId);
                 database.insert(TrailersEntry.TABLE_NAME, null, trailerValues);
                 database.close();
             }
@@ -256,29 +256,25 @@ public class DbHelper extends SQLiteOpenHelper {
         }
     }
 
-    public List<Movie> getAllMovies() {
+    // TODO JOIN FOR SELECTING TRAILERS
+    public List<Trailer> getAllTrailers(long movieId){
         SQLiteDatabase database = this.getWritableDatabase();
-        List<Movie> movieList = new ArrayList<>();
-        String selectQuery = " SELECT * FROM " + MoviesEntry.TABLE_NAME;
-        Cursor cursor = database.rawQuery(selectQuery, null);
+        List<Trailer> trailerList = new ArrayList<>();
+        String query = "SELECT " + TrailersEntry.TABLE_NAME + "." + TrailersEntry.COLUMN_NAME +
+                " FROM " + MoviesDetailsEntry.TABLE_NAME + " JOIN " + TrailersEntry.TABLE_NAME +
+                " ON " + " ( " + MoviesDetailsEntry.TABLE_NAME  + "." + MoviesDetailsEntry._ID +
+                " = " + TrailersEntry.COLUMN_MOVIE_ID + " )" + " WHERE " + TrailersEntry._ID + " = " + movieId;
+        Cursor cursor = database.rawQuery(query,null);
 
-        if (cursor.moveToFirst()) {
+        if (cursor.moveToFirst()){
             do {
-                Movie movie = getMovieFromCursor(cursor);
-                movieList.add(movie);
+                Trailer trailer = getTrailerFromCursor(cursor);
+                trailerList.add(trailer);
             } while (cursor.moveToNext());
         }
         database.close();
 
-        return movieList;
-    }
-
-    // TODO JOIN FOR SELECTING TRAILERS
-    public List<Trailer> getAllTrailers(){
-        SQLiteDatabase database = this.getWritableDatabase();
-        List<Trailer> trailerList = new ArrayList<>();
-        String selectQuery = " SELECT * FROM " + TrailersEntry.TABLE_NAME;
-        // TODO Continue
+        return trailerList;
     }
 
     private Trailer getTrailerFromCursor(Cursor cursor){
@@ -302,7 +298,7 @@ public class DbHelper extends SQLiteOpenHelper {
         return trailer;
     }
 
-    private ContentValues insertTrailerInContentValues(Trailer trailer){
+    private ContentValues insertTrailerInContentValues(Trailer trailer,long movieId){
         ContentValues contentValues = new ContentValues();
         contentValues.put(TrailersEntry._ID,trailer.getId());
         contentValues.put(TrailersEntry.COLUMN_CODE,trailer.getIso_639_1());
@@ -311,6 +307,7 @@ public class DbHelper extends SQLiteOpenHelper {
         contentValues.put(TrailersEntry.COLUMN_SITE,trailer.getSite());
         contentValues.put(TrailersEntry.COLUMN_SIZE,trailer.getSize());
         contentValues.put(TrailersEntry.COLUMN_TYPE,trailer.getType());
+        contentValues.put(TrailersEntry.COLUMN_MOVIE_ID,movieId);
 
         return contentValues;
     }

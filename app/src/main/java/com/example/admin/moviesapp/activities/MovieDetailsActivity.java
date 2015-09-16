@@ -94,6 +94,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         // Initialize it by UpdateListener
         manager.init(this);
 
+        // Get Movie details Object
         List<MovieDetails> movieDetailsList = new ArrayList<>();
         MovieDetails movieDetails = new MovieDetails();
         movieDetails = helper_.getMovieDetails(selectedMovieId_);
@@ -105,10 +106,22 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
             manager.sendMessage(manager.obtainMessage(States.MOVIES_DETAILS_REQUEST, selectedMovieId_));
         }
 
+        // Get trailers
+        List<Trailer> trailerDetails = new ArrayList<>();
+        trailerDetails = helper_.getAllTrailers(selectedMovieId_);
+        if (trailerDetails.size() != 0) {
+            Timber.v("Trailers in database");
+            for (Trailer t:trailerDetails){
+                createTrailerItem(t);
+                helper_.addTrailer(t,selectedMovieId_);
+            }
+        } else {
+            manager.sendMessage(manager.obtainMessage(States.TRAILERS_REQUEST, selectedMovieId_));
+        }
         // Send MovieDetailsRequest
 
         //manager.sendMessage(manager.obtainMessage(States.MOVIES_DETAILS_REQUEST, selectedMovieId_));
-        manager.sendMessage(manager.obtainMessage(States.TRAILERS_REQUEST, selectedMovieId_));
+        //manager.sendMessage(manager.obtainMessage(States.TRAILERS_REQUEST, selectedMovieId_));
         manager.sendMessage(manager.obtainMessage(States.CASTS_REQUEST, selectedMovieId_));
     }
 

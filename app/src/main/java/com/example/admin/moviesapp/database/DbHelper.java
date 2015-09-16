@@ -11,6 +11,7 @@ import com.example.admin.moviesapp.helpers.Util;
 import com.example.admin.moviesapp.models.Genre;
 import com.example.admin.moviesapp.models.Movie;
 import com.example.admin.moviesapp.models.MovieDetails;
+import com.example.admin.moviesapp.models.Trailer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -241,6 +242,93 @@ public class DbHelper extends SQLiteOpenHelper {
 
     //endregion
 
+    //region Trailers operations
+    public void addTrailer(Trailer trailer) {
+        if (trailer != null) {
+            if (!isTrailerExists(trailer.getId())) {
+                SQLiteDatabase database = this.getWritableDatabase();
+                ContentValues trailerValues = insertTrailerInContentValues(trailer);
+                database.insert(TrailersEntry.TABLE_NAME, null, trailerValues);
+                database.close();
+            }
+        } else {
+            throw new IllegalArgumentException("Passed trailer object is null or already exist");
+        }
+    }
+
+    public List<Movie> getAllMovies() {
+        SQLiteDatabase database = this.getWritableDatabase();
+        List<Movie> movieList = new ArrayList<>();
+        String selectQuery = " SELECT * FROM " + MoviesEntry.TABLE_NAME;
+        Cursor cursor = database.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                Movie movie = getMovieFromCursor(cursor);
+                movieList.add(movie);
+            } while (cursor.moveToNext());
+        }
+        database.close();
+
+        return movieList;
+    }
+
+    // TODO JOIN FOR SELECTING TRAILERS
+    public List<Trailer> getAllTrailers(){
+        SQLiteDatabase database = this.getWritableDatabase();
+        List<Trailer> trailerList = new ArrayList<>();
+        String selectQuery = " SELECT * FROM " + TrailersEntry.TABLE_NAME;
+        // TODO Continue
+    }
+
+    private Trailer getTrailerFromCursor(Cursor cursor){
+        String trailerId = cursor.getString(cursor.getColumnIndex(TrailersEntry._ID));
+        String code = cursor.getString(cursor.getColumnIndex(TrailersEntry.COLUMN_CODE));
+        String key = cursor.getString(cursor.getColumnIndex(TrailersEntry.COLUMN_KEY));
+        String name = cursor.getString(cursor.getColumnIndex(TrailersEntry.COLUMN_NAME));
+        String site = cursor.getString(cursor.getColumnIndex(TrailersEntry.COLUMN_SITE));
+        int size = cursor.getInt(cursor.getColumnIndex(TrailersEntry.COLUMN_SIZE));
+        String type = cursor.getString(cursor.getColumnIndex(TrailersEntry.COLUMN_TYPE));
+        // Set values into Trailer Object
+        Trailer trailer = new Trailer();
+        trailer.setId(trailerId);
+        trailer.setIso_639_1(code);
+        trailer.setKey(key);
+        trailer.setName(name);
+        trailer.setSite(site);
+        trailer.setSize(size);
+        trailer.setType(type);
+
+        return trailer;
+    }
+
+    private ContentValues insertTrailerInContentValues(Trailer trailer){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(TrailersEntry._ID,trailer.getId());
+        contentValues.put(TrailersEntry.COLUMN_CODE,trailer.getIso_639_1());
+        contentValues.put(TrailersEntry.COLUMN_KEY,trailer.getKey());
+        contentValues.put(TrailersEntry.COLUMN_NAME,trailer.getName());
+        contentValues.put(TrailersEntry.COLUMN_SITE,trailer.getSite());
+        contentValues.put(TrailersEntry.COLUMN_SIZE,trailer.getSize());
+        contentValues.put(TrailersEntry.COLUMN_TYPE,trailer.getType());
+
+        return contentValues;
+    }
+
+    private boolean isTrailerExists(String trailerId){
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TrailersEntry.TABLE_NAME + " WHERE " + TrailersEntry._ID + " = " + trailerId;
+        Cursor trailerCursor = sqLiteDatabase.rawQuery(query,null);
+        if (trailerCursor.getCount() <= 0){
+            trailerCursor.close();
+            return false;
+        }
+        trailerCursor.close();
+        return true;
+    }
+
+    //endregion
+
     //region Movie Details operations
 
     public void addMovieDetails(MovieDetails movieDetails) {
@@ -255,11 +343,11 @@ public class DbHelper extends SQLiteOpenHelper {
                     // If such genre doesn't exist, put into database
                     if (!isGenreExist(movieDetails.getGenres().get(i).getGenreId())) {
                         ContentValues genreValues = insertMovieGenresInCntnValues(movieDetails.getGenres().get(i));
-                        sqLiteDatabase.insert(GenreEntry.TABLE_NAME,null,genreValues);
+                        sqLiteDatabase.insert(GenreEntry.TABLE_NAME, null, genreValues);
                     }
                     // Insert genre_id and movie_id into movie_genre table
-                    ContentValues movieGenreValues = insertMovieGenreValues(movieDetails.getId(),movieDetails.getGenres().get(i).getGenreId());
-                    sqLiteDatabase.insert(MovieGenreEntry.TABLE_NAME,null,movieGenreValues);
+                    ContentValues movieGenreValues = insertMovieGenreValues(movieDetails.getId(), movieDetails.getGenres().get(i).getGenreId());
+                    sqLiteDatabase.insert(MovieGenreEntry.TABLE_NAME, null, movieGenreValues);
                 }
                 sqLiteDatabase.close();
             }
@@ -302,9 +390,9 @@ public class DbHelper extends SQLiteOpenHelper {
         return values;
     }
 
-    private ContentValues insertMovieGenreValues(long movieId, long genreId){
+    private ContentValues insertMovieGenreValues(long movieId, long genreId) {
         ContentValues values = new ContentValues();
-        values.put(MovieGenreEntry.COLUMN_GENRE_ID,genreId);
+        values.put(MovieGenreEntry.COLUMN_GENRE_ID, genreId);
         values.put(MovieGenreEntry.COLUMN_MOVIE_ID, movieId);
 
         return values;
@@ -336,7 +424,7 @@ public class DbHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public MovieDetails getMovieDetails(long movieDetailsId){
+    public MovieDetails getMovieDetails(long movieDetailsId) {
         if (isMovieDetailsExists(movieDetailsId)) {
             SQLiteDatabase database = this.getWritableDatabase();
             MovieDetails movieDetails = new MovieDetails();
@@ -347,7 +435,7 @@ public class DbHelper extends SQLiteOpenHelper {
             List<Genre> genreList = new ArrayList<>();
             String selectGenresQuery = " SELECT " + GenreEntry.TABLE_NAME + "." + GenreEntry.COLUMN_NAME + "," + GenreEntry.TABLE_NAME + "." + GenreEntry._ID + " FROM " + MoviesDetailsEntry.TABLE_NAME +
                     " JOIN " + MovieGenreEntry.TABLE_NAME + " on " + " (" + MoviesDetailsEntry.TABLE_NAME + "." + MoviesDetailsEntry._ID + " = " + MovieGenreEntry.COLUMN_MOVIE_ID + " ) " +
-                    " JOIN " + GenreEntry.TABLE_NAME + " on " + " (" + MovieGenreEntry.COLUMN_GENRE_ID + " = " +GenreEntry.TABLE_NAME + "." + GenreEntry._ID + " ) " +
+                    " JOIN " + GenreEntry.TABLE_NAME + " on " + " (" + MovieGenreEntry.COLUMN_GENRE_ID + " = " + GenreEntry.TABLE_NAME + "." + GenreEntry._ID + " ) " +
                     " WHERE " + MoviesDetailsEntry.TABLE_NAME + "." + MoviesDetailsEntry._ID + " = " + movieDetailsId;
             Cursor genresCursor = database.rawQuery(selectGenresQuery, null);
             if (genresCursor.moveToFirst()) {
@@ -364,7 +452,7 @@ public class DbHelper extends SQLiteOpenHelper {
         }
     }
 
-    private Genre getGenreFromCursor(Cursor cursor){
+    private Genre getGenreFromCursor(Cursor cursor) {
         int id = cursor.getInt(cursor.getColumnIndex(GenreEntry._ID));
         String name = cursor.getString(cursor.getColumnIndex(GenreEntry.COLUMN_NAME));
         Genre genre = new Genre();

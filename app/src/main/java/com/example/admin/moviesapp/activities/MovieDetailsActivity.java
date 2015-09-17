@@ -111,22 +111,28 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         trailerDetails = helper_.getAllTrailers(selectedMovieId_);
         if (trailerDetails.size() != 0) {
             Timber.v("Trailers in database");
-            for (Trailer t:trailerDetails){
-                createTrailerItem(t);
-                }
+            UpdateTrailers(trailerDetails);
         } else {
             manager.sendMessage(manager.obtainMessage(States.TRAILERS_REQUEST, selectedMovieId_));
+        }
+
+        // Get cast
+        List<Cast> castList = new ArrayList<>();
+        castList = helper_.getAllCast(selectedMovieId_);
+        if (castList.size() != 0){
+            Timber.v("Casts in database");
+            UpdateCasts(castList);
+        } else {
+            manager.sendMessage(manager.obtainMessage(States.CASTS_REQUEST, selectedMovieId_));
         }
         // Send MovieDetailsRequest
 
         //manager.sendMessage(manager.obtainMessage(States.MOVIES_DETAILS_REQUEST, selectedMovieId_));
         //manager.sendMessage(manager.obtainMessage(States.TRAILERS_REQUEST, selectedMovieId_));
-        manager.sendMessage(manager.obtainMessage(States.CASTS_REQUEST, selectedMovieId_));
+        //manager.sendMessage(manager.obtainMessage(States.CASTS_REQUEST, selectedMovieId_));
     }
 
     private void createTrailerItem(Trailer trailer) {
-
-        helper_.addTrailer(trailer,selectedMovieId_);
 
         //region Create Trailer Layout
         // Find Trailer Layout
@@ -352,6 +358,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
     @Override
     public void UpdateTrailers(List<Trailer> trailers) {
         for (int i = 0; i < trailers.size(); i++) {
+            helper_.addTrailer(trailers.get(i),selectedMovieId_);
             createTrailerItem(trailers.get(i));
         }
     }
@@ -360,6 +367,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
     public void UpdateCasts(List<? extends CommonMovie> casts) {
         List<Cast> castList = (List<Cast>) casts;
         for (int i = 0; i < casts.size(); i++) {
+            helper_.addCast(castList.get(i),selectedMovieId_);
             createCastItem(castList.get(i));
         }
     }

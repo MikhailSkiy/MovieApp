@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.admin.moviesapp.database.Contract.MoviesEntry;
 import com.example.admin.moviesapp.helpers.Util;
+import com.example.admin.moviesapp.models.Cast;
+import com.example.admin.moviesapp.models.CastDetails;
 import com.example.admin.moviesapp.models.Genre;
 import com.example.admin.moviesapp.models.Movie;
 import com.example.admin.moviesapp.models.MovieDetails;
@@ -15,6 +17,7 @@ import com.example.admin.moviesapp.models.Trailer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.jar.Attributes;
 
 import static com.example.admin.moviesapp.database.Contract.*;
 import static com.example.admin.moviesapp.database.Contract.CastDetailsEntry;
@@ -27,7 +30,7 @@ import static com.example.admin.moviesapp.database.Contract.TrailersEntry;
 public class DbHelper extends SQLiteOpenHelper {
 
     // When the database schema was changed, you must increment the database version
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 6;
     public static final String DATABASE_NAME = "movies.db";
 
     public DbHelper(Context context) {
@@ -112,7 +115,10 @@ public class DbHelper extends SQLiteOpenHelper {
                 CastEntry.COLUMN_NAME + " TEXT, " +
                 CastEntry.COLUMN_ORDER + " INTEGER, " +
                 CastEntry.COLUMN_PROFILE_PATH + " PROFILE_PATH, " +
-                CastEntry.COLUMN_COVER + " BLOB);";
+                CastEntry.COLUMN_MOVIE_ID + " INTEGER, " +
+                CastEntry.COLUMN_COVER + " BLOB, " +
+                " FOREIGN KEY (" + CastEntry.COLUMN_MOVIE_ID + ") REFERENCES " +
+                MoviesDetailsEntry.TABLE_NAME + " (" + MoviesDetailsEntry._ID + ")" + " );";
 
         final String SQL_CREATE_TRAILER_TABLE = "CREATE TABLE " + TrailersEntry.TABLE_NAME + " (" +
                 TrailersEntry._ID + " TEXT PRIMARY KEY, " +
@@ -130,7 +136,9 @@ public class DbHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(SQL_CREATE_MOVIES_DETAILS_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_GENRES_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_GENRE_TABLE);
+        sqLiteDatabase.execSQL(SQL_CREATE_CAST_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_TRAILER_TABLE);
+
 
     }
 
@@ -243,6 +251,104 @@ public class DbHelper extends SQLiteOpenHelper {
 
     //endregion
 
+    //region Cast operations
+    public long addCast(Cast cast, long castId) {
+        long id = -1;
+        if (cast != null) {
+            if (!isCastExists(cast.getId())) {
+                SQLiteDatabase database = this.getWritableDatabase();
+                ContentValues castValues = insertCastInContentValues(cast, castId);
+                id = database.insert(CastEntry.TABLE_NAME, null, castValues);
+                database.close();
+                return id;
+            }
+        } else {
+            throw new IllegalArgumentException("Passed cast object is null or already exist");
+        }
+        return id;
+    }
+
+//
+//    String query = "SELECT " + TrailersEntry.TABLE_NAME + "." + TrailersEntry.COLUMN_NAME +
+//            " FROM " + MoviesDetailsEntry.TABLE_NAME + " JOIN " + TrailersEntry.TABLE_NAME +
+//            " ON " + " ( " + MoviesDetailsEntry.TABLE_NAME  + "." + MoviesDetailsEntry._ID +
+//            " = " + TrailersEntry.TABLE_NAME + "." + TrailersEntry.COLUMN_MOVIE_ID + " )" +
+//            " WHERE " + TrailersEntry.TABLE_NAME + "." + TrailersEntry._ID + " = " + movieId;
+
+
+//    SELECT cast.name from movies_details JOIN cast ON (movies_details._id = cast.movie_id) where cast.movie_id = 76341
+//
+//    SELECT * from cast where cast.movie_id = 76341
+
+    public List<Cast> getAllCast(long movieId) {
+        SQLiteDatabase database = this.getWritableDatabase();
+        List<Cast> castList = new ArrayList<>();
+        String query = "SELECT * FROM " +
+                CastEntry.TABLE_NAME + " WHERE "  + CastEntry.COLUMN_MOVIE_ID + " = " + movieId;
+        Cursor cursor = database.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                Cast cast = getCastFromCursor(cursor);
+                castList.add(cast);
+            } while (cursor.moveToNext());
+        }
+        database.close();
+
+        return castList;
+    }
+
+    private Cast getCastFromCursor(Cursor cursor){
+        long id = cursor.getLong(cursor.getColumnIndex(CastEntry._ID));
+        long castId = cursor.getLong(cursor.getColumnIndex(CastEntry.COLUMN_CAST_ID));
+        String character = cursor.getString(cursor.getColumnIndex(CastEntry.COLUMN_CHARACTER));
+        String creditId = cursor.getString(cursor.getColumnIndex(CastEntry.COLUMN_CREDIT_ID));
+        String name = cursor.getString(cursor.getColumnIndex(CastEntry.COLUMN_NAME));
+        int order = cursor.getInt(cursor.getColumnIndex(CastEntry.COLUMN_ORDER));
+        String profilePath = cursor.getString(cursor.getColumnIndex(CastEntry.COLUMN_PROFILE_PATH));
+        byte [] cover = cursor.getBlob(cursor.getColumnIndex(CastEntry.COLUMN_COVER));
+        // Set values to Casr object
+        Cast cast = new Cast();
+        cast.setId(id);
+        cast.setCastId(castId);
+        cast.setCharacter(character);
+        cast.setCreditId(creditId);
+        cast.setName(name);
+        cast.setOrder(order);
+        cast.setProfilePath(profilePath);
+
+        return cast;
+    }
+
+    private ContentValues insertCastInContentValues(Cast cast, long movieId){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(CastEntry._ID,cast.getId());
+        contentValues.put(CastEntry.COLUMN_CHARACTER,cast.getCharacter());
+        contentValues.put(CastEntry.COLUMN_CREDIT_ID,cast.getCreditId());
+        contentValues.put(CastEntry.COLUMN_CAST_ID,cast.getCastId());
+        contentValues.put(CastEntry.COLUMN_NAME,cast.getName());
+        contentValues.put(CastEntry.COLUMN_ORDER,cast.getOrder());
+        contentValues.put(CastEntry.COLUMN_PROFILE_PATH,cast.getProfilePath());
+        contentValues.put(CastEntry.COLUMN_COVER, cast.getCover());
+        contentValues.put(CastEntry.COLUMN_MOVIE_ID,movieId);
+
+        return contentValues;
+    }
+
+    private boolean isCastExists(long castId){
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        String query = "SELECT * FROM " + CastEntry.TABLE_NAME + " WHERE " + CastEntry._ID + " = " + castId;
+        Cursor castCursor = sqLiteDatabase.rawQuery(query,null);
+        if (castCursor.getCount() <= 0) {
+            castCursor.close();
+            return false;
+        }
+        castCursor.close();
+        return true;
+    }
+
+    //endregion
+
     //region Trailers operations
     public void addTrailer(Trailer trailer,long movieId) {
         if (trailer != null) {
@@ -257,14 +363,13 @@ public class DbHelper extends SQLiteOpenHelper {
         }
     }
 
-    // TODO JOIN FOR SELECTING TRAILERS
     public List<Trailer> getAllTrailers(long movieId){
         SQLiteDatabase database = this.getWritableDatabase();
         List<Trailer> trailerList = new ArrayList<>();
-        String query = "SELECT " + TrailersEntry.TABLE_NAME + "." + TrailersEntry.COLUMN_NAME +
-                " FROM " + MoviesDetailsEntry.TABLE_NAME + " JOIN " + TrailersEntry.TABLE_NAME +
+        String query = "SELECT * FROM " + MoviesDetailsEntry.TABLE_NAME + " JOIN " + TrailersEntry.TABLE_NAME +
                 " ON " + " ( " + MoviesDetailsEntry.TABLE_NAME  + "." + MoviesDetailsEntry._ID +
-                " = " + TrailersEntry.TABLE_NAME + "." + TrailersEntry.COLUMN_MOVIE_ID + " )" + " WHERE " + TrailersEntry.TABLE_NAME + "." + TrailersEntry._ID + " = " + movieId;
+                " = " + TrailersEntry.TABLE_NAME + "." + TrailersEntry.COLUMN_MOVIE_ID + " )" +
+                " WHERE " + TrailersEntry.TABLE_NAME + "." + TrailersEntry.COLUMN_MOVIE_ID + " = " + movieId;
         Cursor cursor = database.rawQuery(query,null);
 
         if (cursor.moveToFirst()){

@@ -72,8 +72,9 @@ public class Contract {
         public static final String COLUMN_CREDIT_ID = "credit_id";
         public static final String COLUMN_ID = "_id";
         public static final String COLUMN_NAME = "name";
-        public static final String COLUMN_ORDER = "order";
+        public static final String COLUMN_ORDER = "order_key";
         public static final String COLUMN_PROFILE_PATH = "profile_path";
+        public static final String COLUMN_MOVIE_ID = "movie_id";
         public static final String COLUMN_COVER = "cover";
     }
 

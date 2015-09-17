@@ -1,18 +1,22 @@
 package com.example.admin.moviesapp.activities;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,8 +26,10 @@ import android.widget.Toast;
 
 import com.example.admin.moviesapp.R;
 import com.example.admin.moviesapp.ViewServer;
+import com.example.admin.moviesapp.adapters.MovieDetailsViewPager;
 import com.example.admin.moviesapp.adapters.TrailersAdapter;
 import com.example.admin.moviesapp.database.DbHelper;
+import com.example.admin.moviesapp.events.UpdateMovieDetailsImageEvent;
 import com.example.admin.moviesapp.helpers.Constants;
 import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.helpers.Util;
@@ -37,6 +43,7 @@ import com.example.admin.moviesapp.models.Trailer;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
 import timber.log.Timber;
 
 public class MovieDetailsActivity extends AppCompatActivity implements UpdateListener {
@@ -46,13 +53,15 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
     private ImageView cover_;
     private DbHelper helper_ = new DbHelper(this);
 
+    private Toolbar mToolbar;
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private ViewPager mPager;
+    private MovieDetailsViewPager mAdapter;
+    private TabLayout mTabLayout;
+    private CoordinatorLayout mCoordinator;
+
     private CardView movieCard_;
-    private TextView title_;
-    private TextView description_;
-    private TextView released_;
-    private TextView runtime_;
-    private TextView genres_;
-    private TextView language_;
 
     private TrailersAdapter trailersAdapter_;
 
@@ -65,6 +74,9 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
 //        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        //Register EventBus
+        EventBus.getDefault().register(this);
+
         // Get selected movie Id
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
@@ -74,12 +86,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         cover_ = (ImageView) findViewById(R.id.coverImage);
 
         movieCard_ = (CardView) findViewById(R.id.movie_card);
-        title_ = (TextView) findViewById(R.id.title);
-        description_ = (TextView) findViewById(R.id.description);
-        runtime_ = (TextView) findViewById(R.id.runtime_value);
-        genres_ = (TextView) findViewById(R.id.genre_value);
-        language_ = (TextView) findViewById(R.id.language_value);
-        released_ = (TextView) findViewById(R.id.released_value);
+
 
         String itemTitle = "Item Name";
         collapsingToolbarLayout_ = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
@@ -87,35 +94,52 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         collapsingToolbarLayout_.setExpandedTitleColor(getResources().getColor(R.color.background_floating_material_dark));
         collapsingToolbarLayout_.setCollapsedTitleTextColor(getResources().getColor(R.color.accent_material_dark));
 
+        mCoordinator = (CoordinatorLayout) findViewById(R.id.root_coordinator);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        mAdapter = new MovieDetailsViewPager(getSupportFragmentManager(),this,  selectedMovieId_);
+        mPager = (ViewPager) findViewById(R.id.movie_details_view_pager);
+        mPager.setAdapter(mAdapter);
+
+        //Notice how the Tab Layout links with the Pager Adapter
+        mTabLayout.setTabsFromPagerAdapter(mAdapter);
+
+        //Notice how The Tab Layout adn View Pager object are linked
+        mTabLayout.setupWithViewPager(mPager);
+        mPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
+
+
+
         ViewServer.get(this).addWindow(this);
 
         // Get instance of RequestManger
         RequestManager manager = RequestManager.getInstance();
         // Initialize it by UpdateListener
         manager.init(this);
-
-        // Get Movie details Object
-        List<MovieDetails> movieDetailsList = new ArrayList<>();
-        MovieDetails movieDetails = new MovieDetails();
-        movieDetails = helper_.getMovieDetails(selectedMovieId_);
-        if (movieDetails != null){
-            movieDetailsList.add(movieDetails);
-            Timber.v(movieDetails.getOriginalTitle());
-            onUpdate(movieDetailsList);
-        } else {
-            manager.sendMessage(manager.obtainMessage(States.MOVIES_DETAILS_REQUEST, selectedMovieId_));
-        }
-
-        // Get trailers
-        List<Trailer> trailerDetails = new ArrayList<>();
-        trailerDetails = helper_.getAllTrailers(selectedMovieId_);
-        if (trailerDetails.size() != 0) {
-            Timber.v("Trailers in database");
-            UpdateTrailers(trailerDetails);
-        } else {
-            manager.sendMessage(manager.obtainMessage(States.TRAILERS_REQUEST, selectedMovieId_));
-        }
-
+//
+//        // Get Movie details Object
+//        List<MovieDetails> movieDetailsList = new ArrayList<>();
+//        MovieDetails movieDetails = new MovieDetails();
+//        movieDetails = helper_.getMovieDetails(selectedMovieId_);
+//        if (movieDetails != null){
+//            movieDetailsList.add(movieDetails);
+//            Timber.v(movieDetails.getOriginalTitle());
+//            onUpdate(movieDetailsList);
+//        } else {
+//            manager.sendMessage(manager.obtainMessage(States.MOVIES_DETAILS_REQUEST, selectedMovieId_));
+//        }
+//
+//        // Get trailers
+//        List<Trailer> trailerDetails = new ArrayList<>();
+//        trailerDetails = helper_.getAllTrailers(selectedMovieId_);
+//        if (trailerDetails.size() != 0) {
+//            Timber.v("Trailers in database");
+//            UpdateTrailers(trailerDetails);
+//        } else {
+//            manager.sendMessage(manager.obtainMessage(States.TRAILERS_REQUEST, selectedMovieId_));
+//        }
+//
         // Get cast
         List<Cast> castList = new ArrayList<>();
         castList = helper_.getAllCast(selectedMovieId_);
@@ -125,88 +149,18 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         } else {
             manager.sendMessage(manager.obtainMessage(States.CASTS_REQUEST, selectedMovieId_));
         }
-        // Send MovieDetailsRequest
 
-        //manager.sendMessage(manager.obtainMessage(States.MOVIES_DETAILS_REQUEST, selectedMovieId_));
-        //manager.sendMessage(manager.obtainMessage(States.TRAILERS_REQUEST, selectedMovieId_));
-        //manager.sendMessage(manager.obtainMessage(States.CASTS_REQUEST, selectedMovieId_));
     }
 
-    private void createTrailerItem(Trailer trailer) {
 
-        //region Create Trailer Layout
-        // Find Trailer Layout
-        LinearLayout trailerLayout = (LinearLayout) findViewById(R.id.trailers_layout);
-        //endregion
+    public void onEvent(UpdateMovieDetailsImageEvent e){
+        Timber.v("Event in activity");
+        updateImage(e.getImage());
+    }
 
-        //region Create trailer item (PlayBtn TrailerName)
-        // And set params
-        RelativeLayout trailerItem = new RelativeLayout(getApplicationContext());
-        RelativeLayout.LayoutParams trailerItemParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT);
-        trailerItemParams.setMargins(0, 0, 0, 16);
-        //endregion
-
-        //region Create FrameLayout and set params
-        // Set size for FrameLayout width and height
-        int frameLayoutSize = getResources().getDimensionPixelOffset(R.dimen.frame_layout_size);
-        // Create FrameLayout width size (width and height)
-        FrameLayout frameLayout = new FrameLayout(getApplicationContext());
-        frameLayout.setId(R.id.frameId);
-        FrameLayout.LayoutParams frameParams = new FrameLayout.LayoutParams(frameLayoutSize, frameLayoutSize);
-
-        // Set margins for FrameLayout
-        int marginLeft = getResources().getDimensionPixelSize(R.dimen.spacing_large);
-        int marginRight = getResources().getDimensionPixelOffset(R.dimen.spacing_large);
-        int marginTop = getResources().getDimensionPixelOffset(R.dimen.spacing_medium);
-        frameParams.setMargins(marginLeft, marginTop, marginRight, 0);
-        //endregion
-
-        //region Create PlayButton
-        final Button playButton = new Button(getApplicationContext());
-        playButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_play_big));
-        playButton.setTag(trailer.getKey());
-        // Set onClickListener
-        playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openBrowser((String) playButton.getTag());
-            }
-        });
-        //endregion
-
-        // Add PlayButton into FrameLayout with appropriate params (margins etc)
-        frameLayout.addView(playButton, frameParams);
-
-        //region Create TextView for Trailer name
-        TextView textView = new TextView(getApplicationContext());
-        textView.setText(trailer.getName());
-        textView.setTextAppearance(getApplicationContext(), android.R.style.TextAppearance_DeviceDefault_Medium);
-        textView.setTextColor(getResources().getColor(android.R.color.primary_text_light));
-        textView.setMaxLines(1);
-        textView.setEllipsize(TextUtils.TruncateAt.END);
-
-        // Set margins for textView
-        int textViewMarginLeft = getResources().getDimensionPixelSize(R.dimen.spacing_medium);
-        int textViewMarginRight = getResources().getDimensionPixelOffset(R.dimen.spacing_large);
-        int textViewMarginTop = getResources().getDimensionPixelOffset(R.dimen.spacing_medium);
-
-        // Create params for textView
-        RelativeLayout.LayoutParams textViewLayoutParams = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-        textViewLayoutParams.setMargins(textViewMarginLeft, textViewMarginRight, textViewMarginTop, 0);
-        textViewLayoutParams.addRule(RelativeLayout.RIGHT_OF, frameLayout.getId());
-        //endregion
-
-        // Add frameLayout with playButton into trailerItem
-        trailerItem.addView(frameLayout);
-        // Add trailer name into trailerItem
-        trailerItem.addView(textView, textViewLayoutParams);
-
-        // Add trailerItem into Layout
-        trailerLayout.addView(trailerItem);
+    private void updateImage(byte[] image){
+        cover_.setImageBitmap(Util.getBitmapFromBytes(image));
+        cover_.setVisibility(View.VISIBLE);
     }
 
     private void createCastItem(Cast cast) {
@@ -327,40 +281,12 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         helper_.addMovieDetails(movies.get(0));
 
         collapsingToolbarLayout_.setTitle(movies.get(0).getTitle());
-        title_.setText(movies.get(0).getTitle());
-        description_.setText(movies.get(0).getOverview());
-
-        released_.setText(Util.getUIFriendlyData(movies.get(0).getReleaseDate()));
-        runtime_.setText(Util.getUserFriendlyRuntime(Integer.toString(movies.get(0).getRuntime()), this));
-        genres_.setText(Util.getGenres(movies.get(0).getGenres()));
-        language_.setText(Util.getUserFriendlyOrLanguage(movies.get(0).getOriginalLanguage(), this));
     }
 
-    private void openBrowser(String key) {
-        Uri url = createYoutubeUrl(key);
-        Intent intent = new Intent(Intent.ACTION_VIEW, url);
 
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
-        } else {
-            Timber.v("Couldn't call because no receiving apps installed!");
-        }
-    }
-
-    private Uri createYoutubeUrl(String key) {
-        String BaseUrl = "http://www.youtube.com/watch";
-        Uri url = Uri.parse(BaseUrl).buildUpon()
-                .appendQueryParameter("v", key)
-                .build();
-        return url;
-    }
 
     @Override
     public void UpdateTrailers(List<Trailer> trailers) {
-        for (int i = 0; i < trailers.size(); i++) {
-            helper_.addTrailer(trailers.get(i),selectedMovieId_);
-            createTrailerItem(trailers.get(i));
-        }
     }
 
     @Override
@@ -381,6 +307,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
     @Override
     public void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
         ViewServer.get(this).removeWindow(this);
     }
 

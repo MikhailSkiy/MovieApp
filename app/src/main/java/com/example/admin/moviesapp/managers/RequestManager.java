@@ -6,6 +6,9 @@ import android.os.Message;
 import com.example.admin.moviesapp.events.UpdateCastDetailsImageEvent;
 import com.example.admin.moviesapp.events.UpdateCastDetailsUI;
 import com.example.admin.moviesapp.events.UpdateMovieCreditsListEvent;
+import com.example.admin.moviesapp.events.UpdateMovieDescriptionUI;
+import com.example.admin.moviesapp.events.UpdateMovieDetailsImageEvent;
+import com.example.admin.moviesapp.events.UpdateMovieTrailersUI;
 import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.interfaces.UpdateListener;
 import com.example.admin.moviesapp.models.Cast;
@@ -25,7 +28,6 @@ import com.example.admin.moviesapp.requests.TrailerRequest;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import de.greenrobot.event.EventBus;
 import timber.log.Timber;
@@ -112,6 +114,7 @@ public class RequestManager extends Handler {
             case States.MOVIE_DETAILS_REQUEST_WAS_PARSED:
                 Timber.v("MOVIE_DETAILS_REQUEST_WAS_PARSED");
                 MovieDetails movieDetails = (MovieDetails)message.obj;
+                EventBus.getDefault().post(new UpdateMovieDescriptionUI(movieDetails));
                 imageRequest.postImageRequest(movieDetails);
                 break;
 
@@ -120,7 +123,8 @@ public class RequestManager extends Handler {
                 List<CommonMovie> moviesWithCover = new ArrayList<>();
                 MovieDetails movieDetailsWithCover = (MovieDetails)message.obj;
                 moviesWithCover.add(movieDetailsWithCover);
-                updateListener_.onUpdate(moviesWithCover);
+                EventBus.getDefault().post(new UpdateMovieDetailsImageEvent(movieDetailsWithCover.getCover()));
+              //  updateListener_.onUpdate(moviesWithCover);
 
                 break;
 
@@ -141,9 +145,11 @@ public class RequestManager extends Handler {
 
             case States.TRAILERS_REQUEST_WAS_PARSED:
                 Timber.v("TRAILERS_REQUEST_WAS_PARSED");
-                List<Trailer> trailersList = (List<Trailer>)message.obj;
+                List<Trailer> trailersList = (List<Trailer>) message.obj;
                 // update fiil list of trailers with links and names
-                updateListener_.UpdateTrailers(trailersList);
+                for (Trailer t : trailersList) {
+                    EventBus.getDefault().post(new UpdateMovieTrailersUI(t));
+                }
                 break;
 
             //endregion

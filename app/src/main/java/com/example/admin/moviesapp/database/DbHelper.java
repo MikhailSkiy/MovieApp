@@ -9,7 +9,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.example.admin.moviesapp.database.Contract.MoviesEntry;
 import com.example.admin.moviesapp.helpers.Util;
 import com.example.admin.moviesapp.models.Cast;
-import com.example.admin.moviesapp.models.CastDetails;
 import com.example.admin.moviesapp.models.Genre;
 import com.example.admin.moviesapp.models.Movie;
 import com.example.admin.moviesapp.models.MovieDetails;
@@ -17,11 +16,12 @@ import com.example.admin.moviesapp.models.Trailer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.jar.Attributes;
 
-import static com.example.admin.moviesapp.database.Contract.*;
 import static com.example.admin.moviesapp.database.Contract.CastDetailsEntry;
 import static com.example.admin.moviesapp.database.Contract.CastEntry;
+import static com.example.admin.moviesapp.database.Contract.GenreEntry;
+import static com.example.admin.moviesapp.database.Contract.MovieGenreEntry;
+import static com.example.admin.moviesapp.database.Contract.MoviesDetailsEntry;
 import static com.example.admin.moviesapp.database.Contract.TrailersEntry;
 
 /**
@@ -316,6 +316,7 @@ public class DbHelper extends SQLiteOpenHelper {
         cast.setName(name);
         cast.setOrder(order);
         cast.setProfilePath(profilePath);
+        cast.setCover(cover);
 
         return cast;
     }

@@ -113,8 +113,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
             Timber.v("Trailers in database");
             for (Trailer t:trailerDetails){
                 createTrailerItem(t);
-                helper_.addTrailer(t,selectedMovieId_);
-            }
+                }
         } else {
             manager.sendMessage(manager.obtainMessage(States.TRAILERS_REQUEST, selectedMovieId_));
         }
@@ -126,6 +125,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
     }
 
     private void createTrailerItem(Trailer trailer) {
+
+        helper_.addTrailer(trailer,selectedMovieId_);
 
         //region Create Trailer Layout
         // Find Trailer Layout

@@ -27,7 +27,7 @@ import static com.example.admin.moviesapp.database.Contract.TrailersEntry;
 public class DbHelper extends SQLiteOpenHelper {
 
     // When the database schema was changed, you must increment the database version
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 4;
     public static final String DATABASE_NAME = "movies.db";
 
     public DbHelper(Context context) {
@@ -115,14 +115,14 @@ public class DbHelper extends SQLiteOpenHelper {
                 CastEntry.COLUMN_COVER + " BLOB);";
 
         final String SQL_CREATE_TRAILER_TABLE = "CREATE TABLE " + TrailersEntry.TABLE_NAME + " (" +
-                TrailersEntry._ID + " INTEGER PRIMARY KEY, " +
+                TrailersEntry._ID + " TEXT PRIMARY KEY, " +
                 TrailersEntry.COLUMN_CODE + " TEXT, " +
                 TrailersEntry.COLUMN_KEY + " TEXT, " +
                 TrailersEntry.COLUMN_NAME + " TEXT, " +
                 TrailersEntry.COLUMN_SITE + " SITE, " +
                 TrailersEntry.COLUMN_SIZE + " SIZE, " +
                 TrailersEntry.COLUMN_TYPE + " TYPE, " +
-                TrailersEntry.COLUMN_MOVIE_ID + " INTEGER " +
+                TrailersEntry.COLUMN_MOVIE_ID + " INTEGER, " +
                 " FOREIGN KEY (" + TrailersEntry.COLUMN_MOVIE_ID + ") REFERENCES " +
                 MoviesDetailsEntry.TABLE_NAME + " (" + MoviesDetailsEntry._ID + ")" + " );";
 
@@ -130,6 +130,7 @@ public class DbHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(SQL_CREATE_MOVIES_DETAILS_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_GENRES_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_GENRE_TABLE);
+        sqLiteDatabase.execSQL(SQL_CREATE_TRAILER_TABLE);
 
     }
 
@@ -263,7 +264,7 @@ public class DbHelper extends SQLiteOpenHelper {
         String query = "SELECT " + TrailersEntry.TABLE_NAME + "." + TrailersEntry.COLUMN_NAME +
                 " FROM " + MoviesDetailsEntry.TABLE_NAME + " JOIN " + TrailersEntry.TABLE_NAME +
                 " ON " + " ( " + MoviesDetailsEntry.TABLE_NAME  + "." + MoviesDetailsEntry._ID +
-                " = " + TrailersEntry.COLUMN_MOVIE_ID + " )" + " WHERE " + TrailersEntry._ID + " = " + movieId;
+                " = " + TrailersEntry.TABLE_NAME + "." + TrailersEntry.COLUMN_MOVIE_ID + " )" + " WHERE " + TrailersEntry.TABLE_NAME + "." + TrailersEntry._ID + " = " + movieId;
         Cursor cursor = database.rawQuery(query,null);
 
         if (cursor.moveToFirst()){
@@ -314,7 +315,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     private boolean isTrailerExists(String trailerId){
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-        String query = "SELECT * FROM " + TrailersEntry.TABLE_NAME + " WHERE " + TrailersEntry._ID + " = " + trailerId;
+        String query = "SELECT * FROM " + TrailersEntry.TABLE_NAME + " WHERE " + TrailersEntry._ID + " = " + "\"" + trailerId + "\"";
         Cursor trailerCursor = sqLiteDatabase.rawQuery(query,null);
         if (trailerCursor.getCount() <= 0){
             trailerCursor.close();

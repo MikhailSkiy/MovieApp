@@ -1,224 +1,238 @@
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    android:id="@+id/root_coordinator"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/scroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipToPadding="false"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.admin.moviesapp.activities.MovieDescriptionFragment">
+    android:fitsSystemWindows="true">
 
-    <FrameLayout
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scroll"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:context="com.example.admin.moviesapp.activities.MovieDescriptionFragment">
 
-        <LinearLayout
 
+        <FrameLayout
+            android:id="@+id/movie_description_frame_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
+            <LinearLayout
 
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="0dp"
-                app:cardElevation="8dp"
-                app:cardUseCompatPadding="true">
-
-                <LinearLayout
-                    android:id="@+id/movie_description_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/movie_label"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/spacing_large"
-                        android:layout_marginRight="@dimen/spacing_large"
-                        android:layout_marginTop="@dimen/spacing_large"
-                        android:text="CardViewTitle"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
-
-                    <TextView
-                        android:id="@+id/movie_description_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/spacing_large"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
-                app:cardElevation="8dp"
-                app:cardUseCompatPadding="true">
+                android:orientation="vertical">
 
-                <LinearLayout
+
+                <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_marginTop="0dp"
+                    app:cardElevation="8dp"
+                    app:cardUseCompatPadding="true">
 
-                    <TextView
-                        android:id="@+id/details_label"
+                    <LinearLayout
+                        android:id="@+id/movie_description_layout"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/spacing_large"
-                        android:layout_marginRight="@dimen/spacing_large"
-                        android:layout_marginTop="@dimen/spacing_large"
-                        android:text="@string/details_label"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
-
-                    <RelativeLayout
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent">
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/released_label"
-                            android:layout_width="wrap_content"
+                            android:id="@+id/movie_tagline"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/spacing_large"
                             android:layout_marginRight="@dimen/spacing_large"
-                            android:layout_marginTop="@dimen/spacing_medium"
-                            android:text="@string/released_label"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-
-                        <TextView
-                            android:id="@+id/released_value"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_marginRight="@dimen/spacing_large"
-                            android:layout_marginTop="@dimen/spacing_medium"
-                            android:text="12 Nov 2005"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent">
+                            android:layout_marginTop="@dimen/spacing_large"
+                            android:text="CardViewTitle"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
 
                         <TextView
-                            android:id="@+id/runtime_label"
-                            android:layout_width="wrap_content"
+                            android:id="@+id/movie_description_text"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/spacing_large"
+                            android:layout_margin="@dimen/spacing_large"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
-                            android:layout_marginRight="@dimen/spacing_large"
-                            android:layout_marginTop="@dimen/spacing_medium"
-                            android:text="@string/runtime_label"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
 
-                        <TextView
-                            android:id="@+id/runtime_value"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_marginLeft="@dimen/spacing_medium"
-                            android:layout_marginRight="@dimen/spacing_large"
-                            android:layout_marginTop="@dimen/spacing_medium"
-                            android:text="120 min"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent">
-
-                        <TextView
-                            android:id="@+id/genres_label"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/spacing_large"
-                            android:layout_marginRight="@dimen/spacing_large"
-                            android:layout_marginTop="@dimen/spacing_medium"
-                            android:text="@string/genres_label"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-                        <TextView
-                            android:id="@+id/genre_value"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_marginLeft="@dimen/spacing_medium"
-                            android:layout_marginRight="@dimen/spacing_large"
-                            android:layout_marginTop="@dimen/spacing_medium"
-                            android:text="Drama,Science Fiction"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:layout_marginBottom="@dimen/spacing_large">
-
-                        <TextView
-                            android:id="@+id/language_label"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/spacing_large"
-                            android:layout_marginRight="@dimen/spacing_large"
-                            android:layout_marginTop="@dimen/spacing_medium"
-                            android:text="Language"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-                        <TextView
-                            android:id="@+id/language_value"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_marginLeft="@dimen/spacing_medium"
-                            android:layout_marginRight="@dimen/spacing_large"
-                            android:layout_marginTop="@dimen/spacing_medium"
-                            android:text="English"
-
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-                    </RelativeLayout>
-
-
-                </LinearLayout>
-
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
-                app:cardElevation="8dp"
-                app:cardUseCompatPadding="true">
-
-                <LinearLayout
-                    android:id="@+id/trailers_layout"
+                <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    app:cardElevation="8dp"
+                    app:cardUseCompatPadding="true">
 
-                    <TextView
-                        android:id="@+id/trailers_label"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/spacing_large"
-                        android:layout_marginRight="@dimen/spacing_large"
-                        android:layout_marginTop="@dimen/spacing_large"
-                        android:text="@string/trailers_label"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
 
-                </LinearLayout>
+                        <TextView
+                            android:id="@+id/details_label"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/spacing_large"
+                            android:layout_marginRight="@dimen/spacing_large"
+                            android:layout_marginTop="@dimen/spacing_large"
+                            android:text="@string/details_label"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
+
+                        <RelativeLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent">
+
+                            <TextView
+                                android:id="@+id/released_label"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/spacing_large"
+                                android:layout_marginRight="@dimen/spacing_large"
+                                android:layout_marginTop="@dimen/spacing_medium"
+                                android:text="@string/released_label"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
 
-            </android.support.v7.widget.CardView>
+                            <TextView
+                                android:id="@+id/released_value"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_marginRight="@dimen/spacing_large"
+                                android:layout_marginTop="@dimen/spacing_medium"
+                                android:text="12 Nov 2005"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
-        </LinearLayout>
-    </FrameLayout>
+                        </RelativeLayout>
 
-</android.support.v4.widget.NestedScrollView>
+                        <RelativeLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent">
+
+                            <TextView
+                                android:id="@+id/runtime_label"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/spacing_large"
+
+                                android:layout_marginRight="@dimen/spacing_large"
+                                android:layout_marginTop="@dimen/spacing_medium"
+                                android:text="@string/runtime_label"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+                            <TextView
+                                android:id="@+id/runtime_value"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_marginLeft="@dimen/spacing_medium"
+                                android:layout_marginRight="@dimen/spacing_large"
+                                android:layout_marginTop="@dimen/spacing_medium"
+                                android:text="120 min"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent">
+
+                            <TextView
+                                android:id="@+id/genres_label"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/spacing_large"
+                                android:layout_marginRight="@dimen/spacing_large"
+                                android:layout_marginTop="@dimen/spacing_medium"
+                                android:text="@string/genres_label"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+                            <TextView
+                                android:id="@+id/genre_value"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_marginLeft="@dimen/spacing_medium"
+                                android:layout_marginRight="@dimen/spacing_large"
+                                android:layout_marginTop="@dimen/spacing_medium"
+                                android:text="Drama,Science Fiction"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_marginBottom="@dimen/spacing_large">
+
+                            <TextView
+                                android:id="@+id/language_label"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/spacing_large"
+                                android:layout_marginRight="@dimen/spacing_large"
+                                android:layout_marginTop="@dimen/spacing_medium"
+                                android:text="Language"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+                            <TextView
+                                android:id="@+id/language_value"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_marginLeft="@dimen/spacing_medium"
+                                android:layout_marginRight="@dimen/spacing_large"
+                                android:layout_marginTop="@dimen/spacing_medium"
+                                android:text="English"
+
+                                android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+                        </RelativeLayout>
+
+
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    app:cardElevation="8dp"
+                    app:cardUseCompatPadding="true">
+
+                    <LinearLayout
+                        android:id="@+id/trailers_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/trailers_label"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/spacing_large"
+                            android:layout_marginRight="@dimen/spacing_large"
+                            android:layout_marginTop="@dimen/spacing_large"
+                            android:text="@string/trailers_label"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
+
+                    </LinearLayout>
+
+
+                </android.support.v7.widget.CardView>
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+</android.support.design.widget.CoordinatorLayout>

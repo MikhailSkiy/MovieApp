@@ -13,8 +13,12 @@
     <dimen name="status_bar_height">25dp</dimen>
     <dimen name="fab_compat_margin">0dp</dimen>
 
+    <!-- Dimen for icon -->
+    <dimen name="icon_layout_size">70dp</dimen>
+
     <!-- Dimens for Frame Layout which contains Play button -->
     <dimen name="frame_layout_size">50dp</dimen>
     <dimen name="frame2_layout_size">70dp</dimen>
+
 
 </resources>

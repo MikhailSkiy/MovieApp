@@ -109,58 +109,18 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         mTabLayout.setupWithViewPager(mPager);
         mPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
 
-
-
         ViewServer.get(this).addWindow(this);
-
-        // Get instance of RequestManger
-        RequestManager manager = RequestManager.getInstance();
-        // Initialize it by UpdateListener
-        manager.init(this);
-//
-//        // Get Movie details Object
-//        List<MovieDetails> movieDetailsList = new ArrayList<>();
-//        MovieDetails movieDetails = new MovieDetails();
-//        movieDetails = helper_.getMovieDetails(selectedMovieId_);
-//        if (movieDetails != null){
-//            movieDetailsList.add(movieDetails);
-//            Timber.v(movieDetails.getOriginalTitle());
-//            onUpdate(movieDetailsList);
-//        } else {
-//            manager.sendMessage(manager.obtainMessage(States.MOVIES_DETAILS_REQUEST, selectedMovieId_));
-//        }
-//
-//        // Get trailers
-//        List<Trailer> trailerDetails = new ArrayList<>();
-//        trailerDetails = helper_.getAllTrailers(selectedMovieId_);
-//        if (trailerDetails.size() != 0) {
-//            Timber.v("Trailers in database");
-//            UpdateTrailers(trailerDetails);
-//        } else {
-//            manager.sendMessage(manager.obtainMessage(States.TRAILERS_REQUEST, selectedMovieId_));
-//        }
-//
-        // Get cast
-        List<Cast> castList = new ArrayList<>();
-        castList = helper_.getAllCast(selectedMovieId_);
-        if (castList.size() != 0){
-            Timber.v("Casts in database");
-            UpdateCasts(castList);
-        } else {
-            manager.sendMessage(manager.obtainMessage(States.CASTS_REQUEST, selectedMovieId_));
-        }
-
     }
-
 
     public void onEvent(UpdateMovieDetailsImageEvent e){
         Timber.v("Event in activity");
-        updateImage(e.getImage());
+        updateImage(e.getMovieDetails());
     }
 
-    private void updateImage(byte[] image){
-        cover_.setImageBitmap(Util.getBitmapFromBytes(image));
+    private void updateImage(MovieDetails movieDetails){
+        cover_.setImageBitmap(Util.getBitmapFromBytes(movieDetails.getCover()));
         cover_.setVisibility(View.VISIBLE);
+        collapsingToolbarLayout_.setTitle(movieDetails.getTitle());
     }
 
     private void createCastItem(Cast cast) {

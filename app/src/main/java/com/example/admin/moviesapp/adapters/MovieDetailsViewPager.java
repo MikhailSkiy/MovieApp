@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.example.admin.moviesapp.R;
+import com.example.admin.moviesapp.activities.CastListFragment;
 import com.example.admin.moviesapp.activities.MovieDescriptionFragment;
 
 /**
@@ -32,6 +33,12 @@ public class MovieDetailsViewPager extends FragmentPagerAdapter {
                 data.putLong("Id",movieId_);
                 movieDescriptionFragment.setArguments(data);
                 return movieDescriptionFragment;
+
+            case 1:
+                CastListFragment castListFragment = CastListFragment.newInstance(position);
+                data.putLong("Id",movieId_);
+                castListFragment.setArguments(data);
+                return castListFragment;
         }
 
         return null;
@@ -39,7 +46,7 @@ public class MovieDetailsViewPager extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 1;
+        return 2;
     }
 
     @Override
@@ -48,10 +55,10 @@ public class MovieDetailsViewPager extends FragmentPagerAdapter {
         switch (position) {
             /** Android tab is selected */
             case 0:
-                title =  context_.getResources().getString(R.string.view_pager_movie_description);
+                title =  context_.getResources().getString(R.string.view_pager_movie_description_title);
                 break;
             case 1:
-                title = context_.getResources().getString(R.string.view_pager_title_movies);
+                title = context_.getResources().getString(R.string.view_pager_cast_list_title);
                 break;
             default:
                 break;

@@ -584,7 +584,7 @@ public class DbHelper extends SQLiteOpenHelper {
         int runtime = cursor.getInt(cursor.getColumnIndex(MoviesDetailsEntry.COLUMN_RUNTIME));
         String status = cursor.getString(cursor.getColumnIndex(MoviesDetailsEntry.COLUMN_STATUS));
         String tagline = cursor.getString(cursor.getColumnIndex(MoviesDetailsEntry.COLUMN_TAGLINE));
-        String title = cursor.getString(cursor.getColumnIndex(MoviesDetailsEntry.COLUMN_TAGLINE));
+        String title = cursor.getString(cursor.getColumnIndex(MoviesDetailsEntry.COLUMN_TITLE));
         double voteAverage = cursor.getDouble(cursor.getColumnIndex(MoviesDetailsEntry.COLUMN_VOTE_AVERAGE));
         long voteCount = cursor.getLong(cursor.getColumnIndex(MoviesDetailsEntry.COLUMN_VOTE_COUNT));
         byte[] cover = cursor.getBlob(cursor.getColumnIndex(MoviesDetailsEntry.COLUMN_COVER));

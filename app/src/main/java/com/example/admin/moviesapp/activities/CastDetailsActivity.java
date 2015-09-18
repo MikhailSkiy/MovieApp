@@ -40,6 +40,7 @@ import com.example.admin.moviesapp.models.CommonMovie;
 import com.example.admin.moviesapp.models.MovieCredits;
 import com.example.admin.moviesapp.models.Trailer;
 import com.example.admin.moviesapp.requests.MovieCreditsRequest;
+import com.example.admin.moviesapp.ui.CustomDividerItemDecoration;
 
 import org.w3c.dom.Text;
 
@@ -64,9 +65,6 @@ public class CastDetailsActivity extends AppCompatActivity implements UpdateList
     private CastViewPagerAdapter mAdapter;
     private TabLayout mTabLayout;
     private ImageView profileImage_;
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -219,6 +217,7 @@ public class CastDetailsActivity extends AppCompatActivity implements UpdateList
 //            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             View view = inflater.inflate(R.layout.fragment_movies_credits,container,false);
             listView_ = (RecyclerView)view.findViewById(R.id.movies_credits_list);
+            listView_.addItemDecoration(new CustomDividerItemDecoration(getResources()));
             listView_.setAdapter(adapter_);
             listView_.setItemAnimator(new DefaultItemAnimator());
             listView_.setLayoutManager(new LinearLayoutManager(getActivity()));

@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     private MoviesAdapter moviesAdapter_;
     private DbHelper helper_ = new DbHelper(this);
     private List<Movie> moviesList_ = new ArrayList<>();
+    private Toolbar mToolbar;
 
 
     @Override
@@ -47,6 +49,11 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
                 startActivity(intent);
             }
         });
+
+
+        mToolbar = (Toolbar) findViewById(R.id.app_bar);
+        mToolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_filter));
+        setSupportActionBar(mToolbar);
 
         recyclerView.setAdapter(moviesAdapter_);
 

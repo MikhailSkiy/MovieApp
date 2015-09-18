@@ -25,13 +25,15 @@ public class CastRecyclerViewAdapter extends RecyclerView.Adapter<CastRecyclerVi
 
     public static class CastViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView textView;
-        public ImageView imageView;
+        public TextView movieName;
+        public TextView castCharacter;
+        public ImageView movieCover;
 
         public CastViewHolder(View itemView) {
             super(itemView);
-            textView = (TextView) itemView.findViewById(R.id.movie_title);
-            imageView = (ImageView) itemView.findViewById(R.id.coverImage);
+            movieName = (TextView) itemView.findViewById(R.id.movie_item_name);
+            castCharacter = (TextView) itemView.findViewById(R.id.movie_item_character);
+            movieCover = (ImageView) itemView.findViewById(R.id.movie_item_cover);
         }
     }
 
@@ -51,10 +53,13 @@ public class CastRecyclerViewAdapter extends RecyclerView.Adapter<CastRecyclerVi
     @Override
     public void onBindViewHolder(CastViewHolder yourRecyclerViewHolder, int i) {
         if (list.get(i).getCover() != null) {
-            yourRecyclerViewHolder.imageView.setImageBitmap(Util.getRoundedCroppedBitmap(Util.getBitmapFromBytes(list.get(i).getCover()), Constants.DEFAULT_CROPPING_RADIUS));
+            yourRecyclerViewHolder.movieCover.setImageBitmap(Util.getRoundedCroppedBitmap(Util.getBitmapFromBytes(list.get(i).getCover()), Constants.DEFAULT_CROPPING_RADIUS));
         }
         if (list.get(i).getTitle() != null) {
-            yourRecyclerViewHolder.textView.setText(list.get(i).getTitle());
+            yourRecyclerViewHolder.movieName.setText(list.get(i).getTitle());
+        }
+        if (list.get(i).getCharacter() != null) {
+            yourRecyclerViewHolder.castCharacter.setText(list.get(i).getCharacter());
         }
     }
 

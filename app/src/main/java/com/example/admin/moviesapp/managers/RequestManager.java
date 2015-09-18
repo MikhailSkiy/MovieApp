@@ -5,6 +5,7 @@ import android.os.Message;
 
 import com.example.admin.moviesapp.events.UpdateCastDetailsImageEvent;
 import com.example.admin.moviesapp.events.UpdateCastDetailsUI;
+import com.example.admin.moviesapp.events.UpdateCastListEvent;
 import com.example.admin.moviesapp.events.UpdateMovieCreditsListEvent;
 import com.example.admin.moviesapp.events.UpdateMovieDescriptionUI;
 import com.example.admin.moviesapp.events.UpdateMovieDetailsImageEvent;
@@ -114,7 +115,6 @@ public class RequestManager extends Handler {
             case States.MOVIE_DETAILS_REQUEST_WAS_PARSED:
                 Timber.v("MOVIE_DETAILS_REQUEST_WAS_PARSED");
                 MovieDetails movieDetails = (MovieDetails)message.obj;
-                EventBus.getDefault().post(new UpdateMovieDescriptionUI(movieDetails));
                 imageRequest.postImageRequest(movieDetails);
                 break;
 
@@ -123,7 +123,8 @@ public class RequestManager extends Handler {
                 List<CommonMovie> moviesWithCover = new ArrayList<>();
                 MovieDetails movieDetailsWithCover = (MovieDetails)message.obj;
                 moviesWithCover.add(movieDetailsWithCover);
-                EventBus.getDefault().post(new UpdateMovieDetailsImageEvent(movieDetailsWithCover.getCover()));
+                EventBus.getDefault().post(new UpdateMovieDescriptionUI(movieDetailsWithCover));
+                EventBus.getDefault().post(new UpdateMovieDetailsImageEvent(movieDetailsWithCover));
               //  updateListener_.onUpdate(moviesWithCover);
 
                 break;
@@ -186,7 +187,8 @@ public class RequestManager extends Handler {
                 castsWithImages.add(cast);
                 Timber.v(Integer.toString(castCounter));
                 Timber.v(Integer.toString(castSize));
-                updateListener_.UpdateCasts(castsWithImages);
+                EventBus.getDefault().post(new UpdateCastListEvent(cast));
+               // updateListener_.UpdateCasts(castsWithImages);
                 break;
             //endregion
 

@@ -44,7 +44,7 @@ public class MovieDescriptionFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     public static final java.lang.String ARG_PAGE = "arg_page";
 
-    private TextView title_;
+    private TextView tagline_;
     private TextView description_;
     private TextView released_;
     private TextView runtime_;
@@ -80,7 +80,7 @@ public class MovieDescriptionFragment extends Fragment {
                              Bundle savedInstanceState) {
         int pageNumber = getArguments().getInt(ARG_PAGE);
         View view = inflater.inflate(R.layout.fragment_movie_description,container,false);
-        title_ = (TextView) view.findViewById(R.id.movie_label);
+        tagline_ = (TextView) view.findViewById(R.id.movie_tagline);
         description_ = (TextView)view.findViewById(R.id.movie_description_text);
         runtime_ = (TextView)view.findViewById(R.id.runtime_value);
         genres_ = (TextView)view.findViewById(R.id.genre_value);
@@ -99,13 +99,11 @@ public class MovieDescriptionFragment extends Fragment {
 
         helper_ = new DbHelper(getActivity());
         // Get Movie details Object
-        List<MovieDetails> movieDetailsList = new ArrayList<>();
         MovieDetails movieDetails = new MovieDetails();
         movieDetails = helper_.getMovieDetails(movieId);
         if (movieDetails != null){
             Timber.v(movieDetails.getOriginalTitle());
             updateMovieDescription(movieDetails);
-            EventBus.getDefault().post(new UpdateMovieDetailsImageEvent(movieDetails.getCover()));
         } else {
             manager.sendMessage(manager.obtainMessage(States.MOVIES_DETAILS_REQUEST, movieId));
         }
@@ -141,16 +139,19 @@ public class MovieDescriptionFragment extends Fragment {
 
     private void updateMovieDescription(MovieDetails result){
         MovieDetails movie = (MovieDetails)result;
+        helper_.addMovieDetails(movie);
         movieId = movie.getId();
         helper_.addMovieDetails(movie);
-//        collapsingToolbarLayout_.setTitle(movie.getTitle());
-        title_.setText(movie.getTitle());
+        tagline_.setText(movie.getTagline());
         description_.setText(movie.getOverview());
 
         released_.setText(Util.getUIFriendlyData(movie.getReleaseDate()));
         runtime_.setText(Util.getUserFriendlyRuntime(Integer.toString(movie.getRuntime()), getActivity()));
         genres_.setText(Util.getGenres(movie.getGenres()));
         language_.setText(Util.getUserFriendlyOrLanguage(movie.getOriginalLanguage(), getActivity()));
+
+        // Sent to the activity event for updating cover ad title
+        EventBus.getDefault().post(new UpdateMovieDetailsImageEvent(movie));
     }
 
     public void onEvent(UpdateMovieTrailersUI e){

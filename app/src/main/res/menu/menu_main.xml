@@ -8,9 +8,9 @@
         android:title="@string/action_settings"
         app:showAsAction="never"/>
 
-    <item android:id="@+id/action_search"
+    <item android:id="@+id/action_filter"
           android:orderInCategory="200"
-          android:icon="@drawable/ic_filter_light"
+          android:icon="@drawable/ic_filter_outline_white"
           android:title="@string/action_filter"
           app:showAsAction="ifRoom" />
 </menu>

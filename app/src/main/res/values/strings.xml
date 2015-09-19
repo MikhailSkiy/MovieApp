@@ -3,8 +3,24 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="action_filter">Settings</string>
+    <string name="action_filter">Filter</string>
     <string name="title_activity_movie_details">MovieDetailsActivity</string>
+
+    <!--> Values for drawer menu in main activity <-->
+    <string name="movies_main_menu_item">Movies</string>
+    <string name="favorites_main_menu_item">Favorites</string>
+    <string name="profile_main_menu_item">My profile</string>
+
+    <string name="more_main_menu_item">More</string>
+    <string name="about_us_main_menu_item">About us</string>
+    <string name="settings_main_menu_item">Settings</string>
+
+    <!--> Values for filter navigation menu in main activity <-->
+    <string name="genres_filter_menu_item">Genres</string>
+    <string name="action_filter_menu_item">Action</string>
+    <string name="horror_filter_menu_item">Horror</string>
+
+
 
     <!--> Details card view <-->
     <string name="details_label">Details</string>

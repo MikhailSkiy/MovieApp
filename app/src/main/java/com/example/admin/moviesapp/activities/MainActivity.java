@@ -1,7 +1,14 @@
 package com.example.admin.moviesapp.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,10 +36,17 @@ import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements UpdateListener {
 
+    private static final String FIRST_TIME = "first_time";
     private MoviesAdapter moviesAdapter_;
     private DbHelper helper_ = new DbHelper(this);
     private List<Movie> moviesList_ = new ArrayList<>();
     private Toolbar mToolbar;
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private NavigationView filterNavigationMenu_;
+    private boolean mUserSawDrawer = false;
+    private int mSelectedId;
+    private boolean isActionSelected = false;
 
 
     @Override
@@ -51,8 +65,33 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         });
 
 
+        filterNavigationMenu_ = (NavigationView) findViewById(R.id.filter_navigation_menu);
+        filterNavigationMenu_.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+//                menuItem.setChecked(true);
+                mSelectedId = menuItem.getItemId();
+                updateUI(mSelectedId);
+                return true;
+            }
+        });
+
         mToolbar = (Toolbar) findViewById(R.id.app_bar);
-        mToolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_filter));
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.main_activity_drawer_layout);
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close);
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerToggle.syncState();
+
+
+        if (!didUserSeeDrawer()) {
+            showDrawer();
+            markDrawerSeen();
+        } else {
+            hideDrawer();
+        }
+        // navigate
+
+
         setSupportActionBar(mToolbar);
 
         recyclerView.setAdapter(moviesAdapter_);
@@ -76,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         }
     }
 
+
     @Override
     public void onUpdate(List<? extends CommonMovie> resultList) {
         List<Movie> movies = (List<Movie>) resultList;
@@ -85,6 +125,57 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
             helper_.addMovie(movies.get(i));
         }
 
+    }
+
+
+    private void updateUI(int mSelectedId) {
+        Intent intent = null;
+        if ((mSelectedId == R.id.action_btn_off)||(mSelectedId == R.id.action_btn_on)) {
+            if (filterNavigationMenu_.getMenu().findItem(R.id.action_btn_off).isChecked()) {
+                filterNavigationMenu_.getMenu().findItem(R.id.action_btn_off).setVisible(false);
+                filterNavigationMenu_.getMenu().findItem(R.id.action_btn_on).setVisible(true);
+                filterNavigationMenu_.getMenu().findItem(R.id.action_btn_off).setChecked(false);
+                filterNavigationMenu_.getMenu().findItem(R.id.action_btn_on).setChecked(true);
+            } else {
+                filterNavigationMenu_.getMenu().findItem(R.id.action_btn_off).setVisible(true);
+                filterNavigationMenu_.getMenu().findItem(R.id.action_btn_on).setVisible(false);
+                filterNavigationMenu_.getMenu().findItem(R.id.action_btn_off).setChecked(true);
+                filterNavigationMenu_.getMenu().findItem(R.id.action_btn_on).setChecked(false);
+
+            }
+
+            // Tricky solution http://stackoverflow.com/questions/31181024/cant-change-icons-for-subitems-in-navigationview
+            // So resetting the title of top level item will update UI
+            filterNavigationMenu_.getMenu().getItem(0).setTitle(filterNavigationMenu_.getMenu().getItem(0).getTitle());
+
+        }
+        if (mSelectedId == R.id.action_btn_on) {
+            filterNavigationMenu_.getMenu().findItem(R.id.action_btn_on).setVisible(true);
+        }
+
+    }
+
+    private void markAsSelected(){
+        isActionSelected = true;
+    }
+
+    private void markAsUnSelected(){
+        isActionSelected = false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -112,6 +203,11 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -121,4 +217,25 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
 
         return super.onOptionsItemSelected(item);
     }
+
+    private boolean didUserSeeDrawer() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mUserSawDrawer = sharedPreferences.getBoolean(FIRST_TIME, false);
+        return mUserSawDrawer;
+    }
+
+    private void markDrawerSeen() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mUserSawDrawer = true;
+        sharedPreferences.edit().putBoolean(FIRST_TIME, mUserSawDrawer).apply();
+    }
+
+    private void showDrawer() {
+        mDrawerLayout.openDrawer(GravityCompat.START);
+    }
+
+    private void hideDrawer() {
+        mDrawerLayout.closeDrawer(GravityCompat.START);
+    }
+
 }

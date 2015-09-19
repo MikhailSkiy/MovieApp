@@ -1,0 +1,33 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="HTTP://SCHEMAS.ANDROID.COM/TOOLS"
+      tools:context="com.example.admin.moviesapp.activities.MainActivity">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/movies_menu_btn"
+            android:icon="@drawable/ic_movie_grey"
+            android:title="@string/movies_main_menu_item"/>
+        <item
+            android:id="@+id/favorites_menu_btn"
+            android:icon="@drawable/ic_heart_outline_grey"
+            android:title="@string/favorites_main_menu_item"/>
+        <item
+            android:id="@+id/profile_menu_btn"
+            android:icon="@drawable/ic_account_circle_grey"
+            android:title="@string/profile_main_menu_item"/>
+        <item
+            android:id="@+id/navigation_subheader"
+            android:title="@string/more_main_menu_item">
+            <menu>
+                <item
+                    android:id="@+id/about_us_menu_btn"
+                    android:icon="@drawable/ic_information_outline_grey"
+                    android:title="@string/about_us_main_menu_item"/>
+                <item
+                    android:id="@+id/settings_menu_btn"
+                    android:icon="@drawable/ic_settings_grey"
+                    android:title="@string/settings_main_menu_item"/>
+            </menu>
+        </item>
+    </group>
+</menu>
+

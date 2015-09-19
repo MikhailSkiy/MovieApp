@@ -1,0 +1,50 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="HTTP://SCHEMAS.ANDROID.COM/TOOLS">
+    <group android:checkableBehavior="all">
+        <item
+            android:id="@+id/navigation_genres"
+            android:title="@string/genres_filter_menu_item">
+            <menu>
+                <item
+                    android:id="@+id/action_btn_off"
+                    android:checked="true"
+                    android:icon="@drawable/ic_checkbox_blank_circle_outline_grey"
+                    android:title="@string/action_filter_menu_item"
+                    android:visible="true"/>
+
+                <item
+                    android:id="@+id/action_btn_on"
+                    android:checked="false"
+                    android:icon="@drawable/ic_checkbox_marked_circle_outline_grey"
+                    android:title="@string/action_filter_menu_item"
+                    android:visible="false"/>
+
+                <item
+                    android:id="@+id/horror_btn"
+                    android:icon="@drawable/ic_heart_outline_grey"
+                    android:title="@string/horror_filter_menu_item"
+                    android:visible="false"/>
+                <item
+                    android:id="@+id/profile_menu_btn"
+                    android:icon="@drawable/ic_account_circle_grey"
+                    android:title="@string/horror_filter_menu_item"/>
+            </menu>
+        </item>
+
+        <item
+            android:id="@+id/navigation_subheader"
+            android:title="@string/more_main_menu_item">
+            <menu>
+                <item
+                    android:id="@+id/about_us_menu_btn"
+                    android:icon="@drawable/ic_information_outline_grey"
+                    android:title="@string/about_us_main_menu_item"/>
+                <item
+                    android:id="@+id/settings_menu_btn"
+                    android:icon="@drawable/ic_settings_grey"
+                    android:title="@string/settings_main_menu_item"/>
+            </menu>
+        </item>
+    </group>
+</menu>
+

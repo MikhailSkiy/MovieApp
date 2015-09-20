@@ -1,48 +1,177 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:tools="HTTP://SCHEMAS.ANDROID.COM/TOOLS">
+    xmlns:tools="HTTP://SCHEMAS.ANDROID.COM/TOOLS">
     <group android:checkableBehavior="all">
         <item
             android:id="@+id/navigation_genres"
             android:title="@string/genres_filter_menu_item">
             <menu>
                 <item
-                    android:id="@+id/action_btn_off"
-                    android:checked="true"
+                    android:id="@+id/action_btn"
+                    android:checked="false"
                     android:icon="@drawable/ic_checkbox_blank_circle_outline_grey"
                     android:title="@string/action_filter_menu_item"
+                    android:visible="true" />
+
+                <item
+                    android:id="@+id/adventure_btn"
+                    android:checked="false"
+                    android:icon="@drawable/ic_checkbox_blank_circle_outline_grey"
+                    android:title="@string/adventure_filter_menu_item"
+                    android:visible="true" />
+
+                <item
+                    android:id="@+id/animation_btn"
+                    android:checked="false"
+                    android:icon="@drawable/ic_checkbox_blank_circle_outline_grey"
+                    android:title="@string/animation_filter_menu_item"
                     android:visible="true"/>
 
                 <item
-                    android:id="@+id/action_btn_on"
+                    android:id="@+id/comedy_btn"
                     android:checked="false"
-                    android:icon="@drawable/ic_checkbox_marked_circle_outline_grey"
-                    android:title="@string/action_filter_menu_item"
-                    android:visible="false"/>
+                    android:icon="@drawable/ic_checkbox_blank_circle_outline_grey"
+                    android:title="@string/comedy_filter_menu_item"
+                    android:visible="true"/>
 
                 <item
-                    android:id="@+id/horror_btn"
-                    android:icon="@drawable/ic_heart_outline_grey"
-                    android:title="@string/horror_filter_menu_item"
-                    android:visible="false"/>
+                    android:id="@+id/crime_btn"
+                    android:checked="false"
+                    android:icon="@drawable/ic_checkbox_blank_circle_outline_grey"
+                    android:title="@string/crime_filter_menu_item"
+                    android:visible="true"/>
+
                 <item
-                    android:id="@+id/profile_menu_btn"
-                    android:icon="@drawable/ic_account_circle_grey"
-                    android:title="@string/horror_filter_menu_item"/>
+                    android:id="@+id/documentary_btn"
+                    android:checked="false"
+                    android:icon="@drawable/ic_checkbox_blank_circle_outline_grey"
+                    android:title="@string/documentary_filter_menu_item"
+                    android:visible="true"/>
+
+                <item
+                    android:id="@+id/drama_btn"
+                    android:checked="false"
+                    android:icon="@drawable/ic_checkbox_blank_circle_outline_grey"
+                    android:title="@string/drama_filter_menu_item"
+                    android:visible="true"/>
+
+                <item
+                    android:id="@+id/family_btn"
+                    android:checked="false"
+                    android:icon="@drawable/ic_checkbox_blank_circle_outline_grey"
+                    android:title="@string/family_filter_menu_item"
+                    android:visible="true"/>
+
+                <item
+                    android:id="@+id/fantasy_btn"
+                    android:checked="false"
+                    android:icon="@drawable/ic_checkbox_blank_circle_outline_grey"
+                    android:title="@string/fantasy_filter_menu_item"
+                    android:visible="true"/>
+
+                <item
+                    android:id="@+id/foreign_btn"
+                    android:checked="false"
+                    android:icon="@drawable/ic_checkbox_blank_circle_outline_grey"
+                    android:title="@string/foreign_filter_menu_item"
+                    android:visible="true"/>
+                <item
+                    android:id="@+id/history_btn"
+                    android:checked="false"
+                    android:icon="@drawable/ic_checkbox_blank_circle_outline_grey"
+                    android:title="@string/history_filter_menu_item"
+                    android:visible="true"/>
+                <item
+                    android:id="@+id/horror_btn"
+                    android:checked="false"
+                    android:icon="@drawable/ic_checkbox_blank_circle_outline_grey"
+                    android:title="@string/horror_filter_menu_item"
+                    android:visible="true"/>
+                <item
+                    android:id="@+id/music_btn"
+                    android:checked="false"
+                    android:icon="@drawable/ic_checkbox_blank_circle_outline_grey"
+                    android:title="@string/music_filter_menu_item"
+                    android:visible="true"/>
+
+                <item
+                    android:id="@+id/mystery_btn"
+                    android:checked="false"
+                    android:icon="@drawable/ic_checkbox_blank_circle_outline_grey"
+                    android:title="@string/mystery_filter_menu_item"
+                    android:visible="true"/>
+
+                <item
+                    android:id="@+id/romance_btn"
+                    android:checked="false"
+                    android:icon="@drawable/ic_checkbox_blank_circle_outline_grey"
+                    android:title="@string/romance_filter_menu_item"
+                    android:visible="true"/>
+
+                <item
+                    android:id="@+id/science_fiction_btn"
+                    android:checked="false"
+                    android:icon="@drawable/ic_checkbox_blank_circle_outline_grey"
+                    android:title="@string/science_fiction_filter_menu_item"
+                    android:visible="true"/>
+
+                <item
+                    android:id="@+id/tv_movie_btn"
+                    android:checked="false"
+                    android:icon="@drawable/ic_checkbox_blank_circle_outline_grey"
+                    android:title="@string/tv_movie_filter_menu_item"
+                    android:visible="true"/>
+
+                <item
+                    android:id="@+id/thriller_btn"
+                    android:checked="false"
+                    android:icon="@drawable/ic_checkbox_blank_circle_outline_grey"
+                    android:title="@string/thriller_filter_menu_item"
+                    android:visible="true"/>
+
+                <item
+                    android:id="@+id/war_btn"
+                    android:checked="false"
+                    android:icon="@drawable/ic_checkbox_blank_circle_outline_grey"
+                    android:title="@string/war_filter_menu_item"
+                    android:visible="true"/>
+
+                <item
+                    android:id="@+id/western_btn"
+                    android:checked="false"
+                    android:icon="@drawable/ic_checkbox_blank_circle_outline_grey"
+                    android:title="@string/western_filter_menu_item"
+                    android:visible="true"/>
+
             </menu>
         </item>
 
         <item
             android:id="@+id/navigation_subheader"
-            android:title="@string/more_main_menu_item">
+            android:title="@string/sort_by_filter_menu_item">
             <menu>
                 <item
-                    android:id="@+id/about_us_menu_btn"
-                    android:icon="@drawable/ic_information_outline_grey"
-                    android:title="@string/about_us_main_menu_item"/>
+                    android:id="@+id/popularity_filter_menu_btn"
+                    android:checked="true"
+                    android:icon="@drawable/ic_sort_descending_grey600_24dp"
+                    android:title="@string/popularity_filter_menu_item" />
+
+                <item
+                    android:id="@+id/rating_filter_menu_btn"
+                    android:checked="true"
+                    android:icon="@drawable/ic_sort_descending_grey600_24dp"
+                    android:title="@string/rating_filter_menu_item" />
+
+                <item
+                    android:id="@+id/revenue_filter_menu_btn"
+                    android:checked="true"
+                    android:icon="@drawable/ic_sort_descending_grey600_24dp"
+                    android:title="@string/revenue_filter_menu_item" />
+
+
                 <item
                     android:id="@+id/settings_menu_btn"
                     android:icon="@drawable/ic_settings_grey"
-                    android:title="@string/settings_main_menu_item"/>
+                    android:title="@string/settings_main_menu_item" />
             </menu>
         </item>
     </group>

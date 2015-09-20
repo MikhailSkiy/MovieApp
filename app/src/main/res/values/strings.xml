@@ -18,7 +18,36 @@
     <!--> Values for filter navigation menu in main activity <-->
     <string name="genres_filter_menu_item">Genres</string>
     <string name="action_filter_menu_item">Action</string>
+    <string name="adventure_filter_menu_item">Adventure</string>
+    <string name="animation_filter_menu_item">Animation</string>
+    <string name="comedy_filter_menu_item">Comedy</string>
+    <string name="crime_filter_menu_item">Crime</string>
+    <string name="documentary_filter_menu_item">Documentary</string>
+    <string name="drama_filter_menu_item">Drama</string>
+    <string name="family_filter_menu_item">Family</string>
+    <string name="fantasy_filter_menu_item">Fantasy</string>
+    <string name="foreign_filter_menu_item">Foreign</string>
+    <string name="history_filter_menu_item">History</string>
     <string name="horror_filter_menu_item">Horror</string>
+    <string name="music_filter_menu_item">Music</string>
+    <string name="mystery_filter_menu_item">Mystery</string>
+    <string name="romance_filter_menu_item">Romance</string>
+    <string name="science_fiction_filter_menu_item">Science Fiction</string>
+    <string name="tv_movie_filter_menu_item">TV Movie</string>
+    <string name="thriller_filter_menu_item">Thriller</string>
+    <string name="war_filter_menu_item">War</string>
+    <string name="western_filter_menu_item">Western</string>
+
+    <string name="sort_by_filter_menu_item">Sort by</string>
+
+    <string name="popularity_filter_menu_item">Popularity</string>
+    <string name="rating_filter_menu_item">Rating</string>
+    <string name="revenue_filter_menu_item">Revenue</string>
+
+
+
+
+
 
 
 

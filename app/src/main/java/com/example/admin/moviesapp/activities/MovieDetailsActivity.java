@@ -31,16 +31,13 @@ import com.example.admin.moviesapp.adapters.TrailersAdapter;
 import com.example.admin.moviesapp.database.DbHelper;
 import com.example.admin.moviesapp.events.UpdateMovieDetailsImageEvent;
 import com.example.admin.moviesapp.helpers.Constants;
-import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.helpers.Util;
 import com.example.admin.moviesapp.interfaces.UpdateListener;
-import com.example.admin.moviesapp.managers.RequestManager;
 import com.example.admin.moviesapp.models.Cast;
 import com.example.admin.moviesapp.models.CommonMovie;
 import com.example.admin.moviesapp.models.MovieDetails;
 import com.example.admin.moviesapp.models.Trailer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;

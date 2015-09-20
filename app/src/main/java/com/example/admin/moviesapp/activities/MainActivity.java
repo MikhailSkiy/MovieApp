@@ -130,36 +130,135 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
 
     private void updateUI(int mSelectedId) {
         Intent intent = null;
-        if ((mSelectedId == R.id.action_btn_off)||(mSelectedId == R.id.action_btn_on)) {
-            if (filterNavigationMenu_.getMenu().findItem(R.id.action_btn_off).isChecked()) {
-                filterNavigationMenu_.getMenu().findItem(R.id.action_btn_off).setVisible(false);
-                filterNavigationMenu_.getMenu().findItem(R.id.action_btn_on).setVisible(true);
-                filterNavigationMenu_.getMenu().findItem(R.id.action_btn_off).setChecked(false);
-                filterNavigationMenu_.getMenu().findItem(R.id.action_btn_on).setChecked(true);
-            } else {
-                filterNavigationMenu_.getMenu().findItem(R.id.action_btn_off).setVisible(true);
-                filterNavigationMenu_.getMenu().findItem(R.id.action_btn_on).setVisible(false);
-                filterNavigationMenu_.getMenu().findItem(R.id.action_btn_off).setChecked(true);
-                filterNavigationMenu_.getMenu().findItem(R.id.action_btn_on).setChecked(false);
+        switch (mSelectedId) {
+            // Genres submenu
+            case R.id.action_btn:
+                changeGenreBtnState(R.id.action_btn);
+                break;
+            case R.id.adventure_btn:
+                changeGenreBtnState(R.id.adventure_btn);
+                break;
+            case R.id.animation_btn:
+                changeGenreBtnState(R.id.animation_btn);
+                break;
+            case R.id.comedy_btn:
+                changeGenreBtnState(R.id.comedy_btn);
+                break;
+            case R.id.crime_btn:
+                changeGenreBtnState(R.id.crime_btn);
+                break;
+            case R.id.documentary_btn:
+                changeGenreBtnState(R.id.documentary_btn);
+                break;
+            case R.id.drama_btn:
+                changeGenreBtnState(R.id.drama_btn);
+                break;
+            case R.id.family_btn:
+                changeGenreBtnState(R.id.family_btn);
+                break;
+            case R.id.fantasy_btn:
+                changeGenreBtnState(R.id.fantasy_btn);
+                break;
+            case R.id.foreign_btn:
+                changeGenreBtnState(R.id.foreign_btn);
+                break;
+            case R.id.history_btn:
+                changeGenreBtnState(R.id.history_btn);
+                break;
+            case R.id.horror_btn:
+                changeGenreBtnState(R.id.horror_btn);
+                break;
+            case R.id.music_btn:
+                changeGenreBtnState(R.id.music_btn);
+                break;
+            case R.id.mystery_btn:
+                changeGenreBtnState(R.id.mystery_btn);
+                break;
+            case R.id.romance_btn:
+                changeGenreBtnState(R.id.romance_btn);
+                break;
+            case R.id.science_fiction_btn:
+                changeGenreBtnState(R.id.science_fiction_btn);
+                break;
+            case R.id.tv_movie_btn:
+                changeGenreBtnState(R.id.tv_movie_btn);
+                break;
+            case R.id.thriller_btn:
+                changeGenreBtnState(R.id.thriller_btn);
+                break;
+            case R.id.war_btn:
+                changeGenreBtnState(R.id.war_btn);
+                break;
+            case R.id.western_btn:
+                changeGenreBtnState(R.id.western_btn);
+                break;
 
-            }
+            // Sort by... submenu
+            case R.id.popularity_filter_menu_btn:
+                changeSortBtnState(R.id.popularity_filter_menu_btn);
+                break;
+            case R.id.rating_filter_menu_btn:
+                changeSortBtnState(R.id.rating_filter_menu_btn);
+                break;
+            case R.id.revenue_filter_menu_btn:
+                changeSortBtnState(R.id.revenue_filter_menu_btn);
+                break;
 
-            // Tricky solution http://stackoverflow.com/questions/31181024/cant-change-icons-for-subitems-in-navigationview
-            // So resetting the title of top level item will update UI
-            filterNavigationMenu_.getMenu().getItem(0).setTitle(filterNavigationMenu_.getMenu().getItem(0).getTitle());
-
+            default:
+                break;
         }
-        if (mSelectedId == R.id.action_btn_on) {
-            filterNavigationMenu_.getMenu().findItem(R.id.action_btn_on).setVisible(true);
-        }
+        // Tricky solution http://stackoverflow.com/questions/31181024/cant-change-icons-for-subitems-in-navigationview
+        // So resetting the title of top level item will update UI
+        filterNavigationMenu_.getMenu().getItem(0).setTitle(filterNavigationMenu_.getMenu().getItem(0).getTitle());
 
     }
 
-    private void markAsSelected(){
+    private void changeGenreBtnState(int btnId) {
+        boolean isBtnChecked = filterNavigationMenu_.getMenu().findItem(btnId).isChecked();
+        MenuItem selectedMenuItem = filterNavigationMenu_.getMenu().findItem(btnId);
+        if (!isBtnChecked) {
+            turnOnBtn(selectedMenuItem);
+        } else {
+            turnOffBtn(selectedMenuItem);
+        }
+    }
+
+    private void turnOffBtn(MenuItem menuItem) {
+        menuItem.setIcon(getResources().getDrawable(R.drawable.ic_checkbox_blank_circle_outline_grey));
+        menuItem.setChecked(false);
+    }
+
+    private void turnOnBtn(MenuItem menuItem) {
+        menuItem.setIcon(getResources().getDrawable(R.drawable.ic_checkbox_marked_circle_outline_grey));
+        menuItem.setChecked(true);
+    }
+
+    private void changeSortBtnState(int btnId){
+        boolean isBtnChecked = filterNavigationMenu_.getMenu().findItem(btnId).isChecked();
+        MenuItem selectedMenuItem = filterNavigationMenu_.getMenu().findItem(btnId);
+        if (!isBtnChecked) {
+            turnOnDescSortBtn(selectedMenuItem);
+        } else {
+            turnOnAscSortBtn(selectedMenuItem);
+        }
+    }
+
+    private void turnOnDescSortBtn(MenuItem menuItem) {
+        menuItem.setIcon(getResources().getDrawable(R.drawable.ic_sort_descending_grey600_24dp));
+        menuItem.setChecked(true);
+    }
+
+    private void turnOnAscSortBtn(MenuItem menuItem) {
+        menuItem.setIcon(getResources().getDrawable(R.drawable.ic_sort_ascending_grey600_24dp));
+        menuItem.setChecked(false);
+    }
+
+
+    private void markAsSelected() {
         isActionSelected = true;
     }
 
-    private void markAsUnSelected(){
+    private void markAsUnSelected() {
         isActionSelected = false;
     }
 
@@ -209,6 +308,10 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         }
 
         int id = item.getItemId();
+
+        if (id == R.id.action_filter) {
+            mDrawerLayout.openDrawer(GravityCompat.END);
+        }
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {

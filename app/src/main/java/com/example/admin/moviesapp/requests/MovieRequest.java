@@ -1,5 +1,7 @@
 package com.example.admin.moviesapp.requests;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 
 import com.android.volley.Cache;
@@ -7,7 +9,10 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.admin.moviesapp.R;
+import com.example.admin.moviesapp.activities.MainActivity;
 import com.example.admin.moviesapp.helpers.Constants;
+import com.example.admin.moviesapp.helpers.GenresMap;
 import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.managers.AppController;
 import com.example.admin.moviesapp.managers.RequestManager;
@@ -37,6 +42,7 @@ public class MovieRequest implements RequestFactory {
     private final String BASE_URL = "http://api.themoviedb.org/3/discover/movie?";
     private final String SORT_BY = "sort_by";
     private final String WITH_GENRES = "with_genres";
+    private final String PAGE = "page";
     private final String LANGUAGE = "language";
     private final String API_KEY = "api_key";
     //endregion
@@ -64,17 +70,64 @@ public class MovieRequest implements RequestFactory {
         manager_.sendMessage(manager_.obtainMessage(States.MOVIES_REQUEST_WAS_PARSED, moviesList));
     }
 
+    private List<Integer> getGenres() {
+        List<Integer> genres = new ArrayList();
+        Context applicationContext = MainActivity.getContextOfApplication();
+        SharedPreferences sharedPreferences = applicationContext.getSharedPreferences(applicationContext.getString(R.string.filter_preferences), Context.MODE_PRIVATE);
+        GenresMap map = new GenresMap();
+        for (String s : map.genresMap.keySet()) {
+            int genreId = sharedPreferences.getInt(s,0);
+            if (genreId != 0) {
+                genres.add(genreId);
+            }
+        }
+        return genres;
+    }
+
+    private String createGenresString(List<Integer> genres){
+        String builtList = "";
+        for (int i=0;i<genres.size();i++){
+            builtList += Integer.toString(genres.get(i));
+            if (i != genres.size() - 1) {
+                builtList = builtList + ",";
+            }
+        }
+        return builtList;
+    }
+
     // Creates url for movies request
     private String createMoviesUrl() {
         String url = null;
+        Uri builtUri = null;
+        List<Integer> genres = getGenres();
+        if (genres.size()>0) {
+            builtUri = builtUriWithGenres(createGenresString(genres));
+        } else {
+            builtUri = builtUri();
+        }
+
+        url = builtUri.toString();
+        Timber.v(url);
+        return url;
+    }
+
+    private Uri builtUriWithGenres(String genres){
+        Uri builtUri = Uri.parse(BASE_URL).buildUpon()
+                .appendQueryParameter(LANGUAGE,LANGUAGE_VALUE)
+                .appendQueryParameter(WITH_GENRES,genres)
+                .appendQueryParameter(SORT_BY, POPULARITY_DESC)
+                .appendQueryParameter(API_KEY, getApiKey())
+                .build();
+        return builtUri;
+    }
+
+    private Uri builtUri(){
         Uri builtUri = Uri.parse(BASE_URL).buildUpon()
                 .appendQueryParameter(LANGUAGE,LANGUAGE_VALUE)
                 .appendQueryParameter(SORT_BY, POPULARITY_DESC)
                 .appendQueryParameter(API_KEY, getApiKey())
                 .build();
-        url = builtUri.toString();
-        Timber.v(url);
-        return url;
+        return builtUri;
     }
 
     // use Volley for sending request

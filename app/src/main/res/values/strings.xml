@@ -92,4 +92,8 @@
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <!--> Preference key <-->
+    <string name="filter_preferences">Filter_preferences</string>
+
+
 </resources>

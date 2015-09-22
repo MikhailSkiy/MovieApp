@@ -1,5 +1,6 @@
 package com.example.admin.moviesapp.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import com.example.admin.moviesapp.R;
 import com.example.admin.moviesapp.adapters.MoviesAdapter;
 import com.example.admin.moviesapp.database.DbHelper;
+import com.example.admin.moviesapp.helpers.GenresMap;
 import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.interfaces.MovieItemClickListener;
 import com.example.admin.moviesapp.interfaces.UpdateListener;
@@ -44,15 +46,22 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private NavigationView filterNavigationMenu_;
+    private LinearLayoutManager layoutManager_;
+    private static Context contextOfApplication_;
     private boolean mUserSawDrawer = false;
     private int mSelectedId;
     private boolean isActionSelected = false;
+    int pastVisiblesItems, visibleItemCount, totalItemCount;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // Initialize the context
+        contextOfApplication_ = getApplicationContext();
+
+        layoutManager_ = new LinearLayoutManager(this);
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         moviesAdapter_ = new MoviesAdapter(moviesList_, R.layout.item_movie_card, this, new MovieItemClickListener() {
@@ -64,6 +73,18 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
             }
         });
 
+        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener(){
+            @Override
+        public void onScrolled(RecyclerView recyclerView1,int dx,int dy){
+                visibleItemCount = layoutManager_.getChildCount();
+                totalItemCount = layoutManager_.getItemCount();
+                pastVisiblesItems = layoutManager_.findFirstVisibleItemPosition();
+                if ((visibleItemCount +pastVisiblesItems)>=totalItemCount){
+                    sendMovieRequest();
+                }
+            }
+        });
+
 
         filterNavigationMenu_ = (NavigationView) findViewById(R.id.filter_navigation_menu);
         filterNavigationMenu_.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -72,6 +93,10 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
 //                menuItem.setChecked(true);
                 mSelectedId = menuItem.getItemId();
                 updateUI(mSelectedId);
+                moviesList_.clear();
+                moviesAdapter_.notifyDataSetChanged();
+
+                sendMovieRequest();
                 return true;
             }
         });
@@ -98,21 +123,30 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
 
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         // recyclerView.setLayoutManager(new GridLayoutManager(this,2));
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(layoutManager_);
 
         // Check if there are any movies in database
         // If so get list of movies and update recyclerView
-        moviesList_ = helper_.getAllMovies();
-        if (moviesList_.size() != 0) {
-            Timber.v(Integer.toString(moviesList_.size()));
-            onUpdate(moviesList_);
-        } else {
-            // Get instance of RequestManger
-            RequestManager manager = RequestManager.getInstance();
-            // Initialize it by UpdateListener
-            manager.init(this);
-            manager.sendMessage(manager.obtainMessage(States.MOVIES_REQUEST));
-        }
+//        moviesList_ = helper_.getAllMovies();
+//        if (moviesList_.size() != 0) {
+//            Timber.v(Integer.toString(moviesList_.size()));
+//            onUpdate(moviesList_);
+//        } else {
+//            sendMovieRequest();
+//        }
+        sendMovieRequest();
+    }
+
+    public static Context getContextOfApplication() {
+        return contextOfApplication_;
+    }
+
+    public void sendMovieRequest(){
+        // Get instance of RequestManger
+        RequestManager manager = RequestManager.getInstance();
+        // Initialize it by UpdateListener
+        manager.init(this);
+        manager.sendMessage(manager.obtainMessage(States.MOVIES_REQUEST));
     }
 
 
@@ -122,91 +156,110 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         for (int i = 0; i < movies.size(); i++) {
             moviesAdapter_.addMovie(movies.get(i));
             // Add items into database
-            helper_.addMovie(movies.get(i));
+            //helper_.addMovie(movies.get(i));
         }
 
     }
 
+    private int getGenreValue(String genreName, boolean mode) {
+        GenresMap map = new GenresMap();
+        int id = (mode == true) ? map.genresMap.get(genreName) : 0;
+        return id;
+    }
 
-    private void updateUI(int mSelectedId) {
-        Intent intent = null;
-        switch (mSelectedId) {
-            // Genres submenu
+    private void setFilterPreferences(int selectedBtnId, boolean mode) {
+        switch (selectedBtnId) {
             case R.id.action_btn:
-                changeGenreBtnState(R.id.action_btn);
+                setSelectedGenreId("Action", getGenreValue("Action", mode));
                 break;
             case R.id.adventure_btn:
-                changeGenreBtnState(R.id.adventure_btn);
+                setSelectedGenreId("Adventure", getGenreValue("Adventure", mode));
                 break;
             case R.id.animation_btn:
-                changeGenreBtnState(R.id.animation_btn);
+                setSelectedGenreId("Animation", getGenreValue("Animation", mode));
                 break;
             case R.id.comedy_btn:
-                changeGenreBtnState(R.id.comedy_btn);
+                setSelectedGenreId("Comedy", getGenreValue("Comedy", mode));
                 break;
             case R.id.crime_btn:
-                changeGenreBtnState(R.id.crime_btn);
+                setSelectedGenreId("Crime", getGenreValue("Crime", mode));
                 break;
             case R.id.documentary_btn:
-                changeGenreBtnState(R.id.documentary_btn);
+                setSelectedGenreId("Documentary", getGenreValue("Documentary", mode));
                 break;
             case R.id.drama_btn:
-                changeGenreBtnState(R.id.drama_btn);
+                setSelectedGenreId("Drama", getGenreValue("Drama", mode));
                 break;
             case R.id.family_btn:
-                changeGenreBtnState(R.id.family_btn);
+                setSelectedGenreId("Family", getGenreValue("Family", mode));
                 break;
             case R.id.fantasy_btn:
-                changeGenreBtnState(R.id.fantasy_btn);
+                setSelectedGenreId("Fantasy", getGenreValue("Fantasy", mode));
                 break;
             case R.id.foreign_btn:
-                changeGenreBtnState(R.id.foreign_btn);
+                setSelectedGenreId("Foreign", getGenreValue("Foreign", mode));
                 break;
             case R.id.history_btn:
-                changeGenreBtnState(R.id.history_btn);
+                setSelectedGenreId("History", getGenreValue("History", mode));
                 break;
             case R.id.horror_btn:
-                changeGenreBtnState(R.id.horror_btn);
+                setSelectedGenreId("Horror", getGenreValue("Horror", mode));
                 break;
             case R.id.music_btn:
-                changeGenreBtnState(R.id.music_btn);
+                setSelectedGenreId("Music", getGenreValue("Music", mode));
                 break;
             case R.id.mystery_btn:
-                changeGenreBtnState(R.id.mystery_btn);
+                setSelectedGenreId("Mystery", getGenreValue("Mystery", mode));
                 break;
             case R.id.romance_btn:
-                changeGenreBtnState(R.id.romance_btn);
+                setSelectedGenreId("Romance", getGenreValue("Romance", mode));
                 break;
             case R.id.science_fiction_btn:
-                changeGenreBtnState(R.id.science_fiction_btn);
+                setSelectedGenreId("Science Fiction", getGenreValue("Science Fiction", mode));
                 break;
             case R.id.tv_movie_btn:
-                changeGenreBtnState(R.id.tv_movie_btn);
+                setSelectedGenreId("TV Movie", getGenreValue("TV Movie", mode));
                 break;
             case R.id.thriller_btn:
-                changeGenreBtnState(R.id.thriller_btn);
+                setSelectedGenreId("Thriller", getGenreValue("Thriller", mode));
                 break;
             case R.id.war_btn:
-                changeGenreBtnState(R.id.war_btn);
+                setSelectedGenreId("War", getGenreValue("War", mode));
                 break;
             case R.id.western_btn:
-                changeGenreBtnState(R.id.western_btn);
+                setSelectedGenreId("Western", getGenreValue("Western", mode));
                 break;
-
-            // Sort by... submenu
-            case R.id.popularity_filter_menu_btn:
-                changeSortBtnState(R.id.popularity_filter_menu_btn);
-                break;
-            case R.id.rating_filter_menu_btn:
-                changeSortBtnState(R.id.rating_filter_menu_btn);
-                break;
-            case R.id.revenue_filter_menu_btn:
-                changeSortBtnState(R.id.revenue_filter_menu_btn);
-                break;
-
             default:
                 break;
         }
+
+    }
+
+    /**
+     * Puts selected genreId and appropriate key into Shared Preferences
+     *
+     * @param key             The name of selected genre
+     * @param selectedGenreId The id of selected genre
+     */
+    private void setSelectedGenreId(String key, int selectedGenreId) {
+        SharedPreferences preferences = this.getSharedPreferences(getString(R.string.filter_preferences), this.MODE_PRIVATE);
+        SharedPreferences.Editor preferenceEditor = preferences.edit();
+        preferenceEditor.putInt(key, selectedGenreId);
+        preferenceEditor.commit();
+    }
+
+    private void updateUI(int mSelectedId) {
+        // If it is not such items, change genre items
+        if ((mSelectedId != R.id.popularity_filter_menu_btn) &&
+                (mSelectedId != R.id.rating_filter_menu_btn) &&
+                (mSelectedId != R.id.revenue_filter_menu_btn)) {
+            changeGenreBtnState(mSelectedId);
+            // Otherwise change sort_by items
+        } else {
+            changeSortBtnState(mSelectedId);
+        }
+
+
         // Tricky solution http://stackoverflow.com/questions/31181024/cant-change-icons-for-subitems-in-navigationview
         // So resetting the title of top level item will update UI
         filterNavigationMenu_.getMenu().getItem(0).setTitle(filterNavigationMenu_.getMenu().getItem(0).getTitle());
@@ -218,8 +271,10 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         MenuItem selectedMenuItem = filterNavigationMenu_.getMenu().findItem(btnId);
         if (!isBtnChecked) {
             turnOnBtn(selectedMenuItem);
+            setFilterPreferences(btnId, true);
         } else {
             turnOffBtn(selectedMenuItem);
+            setFilterPreferences(btnId, false);
         }
     }
 
@@ -233,7 +288,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         menuItem.setChecked(true);
     }
 
-    private void changeSortBtnState(int btnId){
+    private void changeSortBtnState(int btnId) {
         boolean isBtnChecked = filterNavigationMenu_.getMenu().findItem(btnId).isChecked();
         MenuItem selectedMenuItem = filterNavigationMenu_.getMenu().findItem(btnId);
         if (!isBtnChecked) {

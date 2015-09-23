@@ -148,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         RequestManager manager = RequestManager.getInstance();
         // Initialize it by UpdateListener
         manager.init(this);
+        // TODO make reset page when genre is changed!
         manager.sendMessage(manager.obtainMessage(States.MOVIES_REQUEST,page_));
     }
 

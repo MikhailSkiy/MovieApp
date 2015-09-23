@@ -55,6 +55,19 @@ public class MovieRequest implements RequestFactory {
 
     private static RequestManager manager_;
 
+    private int page_;
+    private int id_;
+
+    public void setPage(int page) {
+        this.page_ = page;
+    }
+
+    public void setId(int id) {
+        this.id_ = id;
+    }
+
+
+
     public MovieRequest(RequestManager manager){
         this.manager_ = manager;
     }
@@ -64,6 +77,8 @@ public class MovieRequest implements RequestFactory {
         Timber.v("Created URL", url);
         postGetRequest(url);
     }
+
+
 
     public static void getMovieObjects(String response) {
         List<Movie> moviesList = getMoviesFromJson(response);
@@ -116,6 +131,7 @@ public class MovieRequest implements RequestFactory {
                 .appendQueryParameter(LANGUAGE,LANGUAGE_VALUE)
                 .appendQueryParameter(WITH_GENRES,genres)
                 .appendQueryParameter(SORT_BY, POPULARITY_DESC)
+                .appendQueryParameter(PAGE,Integer.toString(page_))
                 .appendQueryParameter(API_KEY, getApiKey())
                 .build();
         return builtUri;
@@ -123,8 +139,9 @@ public class MovieRequest implements RequestFactory {
 
     private Uri builtUri(){
         Uri builtUri = Uri.parse(BASE_URL).buildUpon()
-                .appendQueryParameter(LANGUAGE,LANGUAGE_VALUE)
+                .appendQueryParameter(LANGUAGE, LANGUAGE_VALUE)
                 .appendQueryParameter(SORT_BY, POPULARITY_DESC)
+                .appendQueryParameter(PAGE, Integer.toString(page_))
                 .appendQueryParameter(API_KEY, getApiKey())
                 .build();
         return builtUri;

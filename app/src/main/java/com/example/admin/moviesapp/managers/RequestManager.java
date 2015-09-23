@@ -67,7 +67,9 @@ public class RequestManager extends Handler {
             case States.MOVIES_REQUEST:
                 Timber.v("MOVIES_REQUEST");
                 // create appropriate request
+                int page = (int)message.obj;
                 MovieRequest movieRequest = new MovieRequest(getInstance());
+                movieRequest.setPage(page);
                 movieRequest.postRequest(0);
                 break;
 

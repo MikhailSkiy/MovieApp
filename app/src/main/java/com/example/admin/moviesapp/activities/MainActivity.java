@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     private int mSelectedId;
     private boolean isActionSelected = false;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
+    int page_= 1;
 
 
     @Override
@@ -80,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
                 totalItemCount = layoutManager_.getItemCount();
                 pastVisiblesItems = layoutManager_.findFirstVisibleItemPosition();
                 if ((visibleItemCount +pastVisiblesItems)>=totalItemCount){
+                    page_++;
                     sendMovieRequest();
                 }
             }
@@ -146,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         RequestManager manager = RequestManager.getInstance();
         // Initialize it by UpdateListener
         manager.init(this);
-        manager.sendMessage(manager.obtainMessage(States.MOVIES_REQUEST));
+        manager.sendMessage(manager.obtainMessage(States.MOVIES_REQUEST,page_));
     }
 
 

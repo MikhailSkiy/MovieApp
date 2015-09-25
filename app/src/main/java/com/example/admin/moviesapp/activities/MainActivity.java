@@ -22,19 +22,21 @@ import android.widget.Toast;
 import com.example.admin.moviesapp.R;
 import com.example.admin.moviesapp.adapters.MoviesAdapter;
 import com.example.admin.moviesapp.database.DbHelper;
+import com.example.admin.moviesapp.helpers.Constants;
 import com.example.admin.moviesapp.helpers.GenresMap;
+import com.example.admin.moviesapp.helpers.SortTypeMap;
 import com.example.admin.moviesapp.helpers.States;
+import com.example.admin.moviesapp.helpers.Util;
 import com.example.admin.moviesapp.interfaces.MovieItemClickListener;
 import com.example.admin.moviesapp.interfaces.UpdateListener;
 import com.example.admin.moviesapp.managers.RequestManager;
 import com.example.admin.moviesapp.models.CommonMovie;
 import com.example.admin.moviesapp.models.Movie;
 import com.example.admin.moviesapp.models.Trailer;
+import com.example.admin.moviesapp.ui.RecyclerViewEmptySupport;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements UpdateListener {
 
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     private ActionBarDrawerToggle mDrawerToggle;
     private NavigationView filterNavigationMenu_;
     private LinearLayoutManager layoutManager_;
+    private RecyclerViewEmptySupport recyclerView_;
     private static Context contextOfApplication_;
     private boolean mUserSawDrawer = false;
     private int mSelectedId;
@@ -64,7 +67,13 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
 
         layoutManager_ = new LinearLayoutManager(this);
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView_ = (RecyclerViewEmptySupport) findViewById(R.id.recycler_view);
+        recyclerView_.setEmptyView(this.findViewById(R.id.listview_empty));
+
+        // Update UI in case of bad connection
+        // updateEmptyView();
+
+
         moviesAdapter_ = new MoviesAdapter(moviesList_, R.layout.item_movie_card, this, new MovieItemClickListener() {
             @Override
             public void onMovieItemClick(final long movieId) {
@@ -74,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
             }
         });
 
-        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener(){
+        recyclerView_.setOnScrollListener(new RecyclerView.OnScrollListener(){
             @Override
         public void onScrolled(RecyclerView recyclerView1,int dx,int dy){
                 visibleItemCount = layoutManager_.getChildCount();
@@ -121,11 +130,15 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
 
         setSupportActionBar(mToolbar);
 
-        recyclerView.setAdapter(moviesAdapter_);
+        recyclerView_.setAdapter(moviesAdapter_);
 
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView_.setItemAnimator(new DefaultItemAnimator());
         // recyclerView.setLayoutManager(new GridLayoutManager(this,2));
-        recyclerView.setLayoutManager(layoutManager_);
+        recyclerView_.setLayoutManager(layoutManager_);
+
+
+        restoreFilterMenu();
+
 
         // Check if there are any movies in database
         // If so get list of movies and update recyclerView
@@ -137,6 +150,22 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
 //            sendMovieRequest();
 //        }
         sendMovieRequest();
+    }
+
+    private void updateEmptyView() {
+        if (moviesList_.size() == 0) {
+            int status = Util.getConnectionStatus(this);
+            switch (status) {
+                case Constants.CONNECTION_STATUS_OK:
+                    break;
+                case Constants.NO_CONNECTION:
+                    recyclerView_.setEmptyView(this.findViewById(R.id.listview_empty));
+                    break;
+                default:
+                    break;
+            }
+
+        }
     }
 
     public static Context getContextOfApplication() {
@@ -156,6 +185,9 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     @Override
     public void onUpdate(List<? extends CommonMovie> resultList) {
         List<Movie> movies = (List<Movie>) resultList;
+//        if (movies.size() == 0){
+//            recyclerView_.setEmptyView(this.findViewById(R.id.listview_empty));
+//        }
         for (int i = 0; i < movies.size(); i++) {
             moviesAdapter_.addMovie(movies.get(i));
             // Add items into database
@@ -166,59 +198,81 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
 
     private int getGenreValue(String genreName, boolean mode) {
         GenresMap map = new GenresMap();
-        int id = (mode == true) ? map.genresMap.get(genreName) : 0;
+        int id = (mode == true) ? map.genresMap.get(genreName).genreId : 0;
         return id;
     }
 
+    private String getSortType(String sortName, boolean mode){
+        String type = (mode == true) ? "desc" : "asc";
+        return type;
+    }
+
     private void setFilterPreferences(int selectedBtnId, boolean mode) {
+        String genreName="";
         switch (selectedBtnId) {
             case R.id.action_btn:
-                setSelectedGenreId("Action", getGenreValue("Action", mode));
+                genreName = Util.getStringResource(R.string.action_key);
+                setSelectedGenreId(genreName, getGenreValue(genreName, mode));
                 break;
             case R.id.adventure_btn:
-                setSelectedGenreId("Adventure", getGenreValue("Adventure", mode));
+                genreName = Util.getStringResource(R.string.adventure_key);
+                setSelectedGenreId(genreName, getGenreValue(genreName, mode));
                 break;
             case R.id.animation_btn:
-                setSelectedGenreId("Animation", getGenreValue("Animation", mode));
+                genreName = Util.getStringResource(R.string.animation_key);
+                setSelectedGenreId(genreName, getGenreValue(genreName, mode));
                 break;
             case R.id.comedy_btn:
-                setSelectedGenreId("Comedy", getGenreValue("Comedy", mode));
+                genreName = Util.getStringResource(R.string.comedy_key);
+                setSelectedGenreId(genreName, getGenreValue(genreName, mode));
                 break;
             case R.id.crime_btn:
-                setSelectedGenreId("Crime", getGenreValue("Crime", mode));
+                genreName = Util.getStringResource(R.string.crime_key);
+                setSelectedGenreId(genreName, getGenreValue(genreName, mode));
                 break;
             case R.id.documentary_btn:
-                setSelectedGenreId("Documentary", getGenreValue("Documentary", mode));
+                genreName = Util.getStringResource(R.string.documentary_key);
+                setSelectedGenreId(genreName, getGenreValue(genreName, mode));
                 break;
             case R.id.drama_btn:
-                setSelectedGenreId("Drama", getGenreValue("Drama", mode));
+                genreName = Util.getStringResource(R.string.drama_key);
+                setSelectedGenreId(genreName, getGenreValue(genreName, mode));
                 break;
             case R.id.family_btn:
-                setSelectedGenreId("Family", getGenreValue("Family", mode));
+                genreName = Util.getStringResource(R.string.family_key);
+                setSelectedGenreId(genreName, getGenreValue(genreName, mode));
                 break;
             case R.id.fantasy_btn:
-                setSelectedGenreId("Fantasy", getGenreValue("Fantasy", mode));
+                genreName = Util.getStringResource(R.string.fantasy_key);
+                setSelectedGenreId(genreName, getGenreValue(genreName, mode));
                 break;
             case R.id.foreign_btn:
-                setSelectedGenreId("Foreign", getGenreValue("Foreign", mode));
+                genreName = Util.getStringResource(R.string.foreign_key);
+                setSelectedGenreId(genreName, getGenreValue(genreName, mode));
                 break;
             case R.id.history_btn:
-                setSelectedGenreId("History", getGenreValue("History", mode));
+                genreName = Util.getStringResource(R.string.history_key);
+                setSelectedGenreId(genreName, getGenreValue(genreName, mode));
                 break;
             case R.id.horror_btn:
-                setSelectedGenreId("Horror", getGenreValue("Horror", mode));
+                genreName = Util.getStringResource(R.string.horror_key);
+                setSelectedGenreId(genreName, getGenreValue(genreName, mode));
                 break;
             case R.id.music_btn:
-                setSelectedGenreId("Music", getGenreValue("Music", mode));
+                genreName = Util.getStringResource(R.string.music_key);
+                setSelectedGenreId(genreName, getGenreValue(genreName, mode));
                 break;
             case R.id.mystery_btn:
-                setSelectedGenreId("Mystery", getGenreValue("Mystery", mode));
+                genreName = Util.getStringResource(R.string.mystery_key);
+                setSelectedGenreId(genreName, getGenreValue(genreName, mode));
                 break;
             case R.id.romance_btn:
-                setSelectedGenreId("Romance", getGenreValue("Romance", mode));
+                genreName = Util.getStringResource(R.string.romance_key);
+                setSelectedGenreId(genreName, getGenreValue(genreName, mode));
                 break;
             case R.id.science_fiction_btn:
-                setSelectedGenreId("Science Fiction", getGenreValue("Science Fiction", mode));
+                genreName = Util.getStringResource(R.string.romance_key);
+                setSelectedGenreId(genreName, getGenreValue(genreName, mode));
                 break;
             case R.id.tv_movie_btn:
                 setSelectedGenreId("TV Movie", getGenreValue("TV Movie", mode));
@@ -238,6 +292,22 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
 
     }
 
+    private void setSortPreferences(int selectedBtnId, boolean mode) {
+        switch (selectedBtnId) {
+            case R.id.popularity_filter_menu_btn:
+                setSelectedSortingType("popularity", getSortType("popularity", mode));
+                break;
+            case R.id.rating_filter_menu_btn:
+                setSelectedSortingType("vote_average", getSortType("vote_average", mode));
+                break;
+            case R.id.revenue_filter_menu_btn:
+                setSelectedSortingType("revenue",getSortType("revenue",mode));
+                break;
+            default:
+                break;
+        }
+    }
+
     /**
      * Puts selected genreId and appropriate key into Shared Preferences
      *
@@ -251,7 +321,73 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         preferenceEditor.commit();
     }
 
+    private void setSelectedSortingType(String key, String sortType) {
+        SharedPreferences preferences = this.getSharedPreferences(getString(R.string.filter_preferences), this.MODE_PRIVATE);
+        SharedPreferences.Editor preferenceEditor = preferences.edit();
+        preferenceEditor.putString("Sort_type",key);
+        preferenceEditor.putString(key, sortType);
+        preferenceEditor.commit();
+    }
+
+    private void restoreFilterMenu(){
+        restoreGenresSubMenu();
+        restoreSortingSubMenu();
+    }
+
+    private void restoreGenresSubMenu() {
+        Menu menu = filterNavigationMenu_.getMenu();
+
+        Context applicationContext = MainActivity.getContextOfApplication();
+        SharedPreferences sharedPreferences = applicationContext.getSharedPreferences(applicationContext.getString(R.string.filter_preferences), Context.MODE_PRIVATE);
+
+        GenresMap map = new GenresMap();
+        for (String s : map.genresMap.keySet()) {
+            int genreId = sharedPreferences.getInt(s, 0);
+            GenresMap.GenreContainer itemCntr = map.genresMap.get(s);
+            if (genreId != 0) {
+                MenuItem menuItem = menu.findItem(itemCntr.itemId);
+                turnOnBtn(menuItem);
+            }
+        }
+    }
+
+    private void restoreSortingSubMenu(){
+        Menu menu = filterNavigationMenu_.getMenu();
+
+        Context applicationContext = MainActivity.getContextOfApplication();
+        SharedPreferences sharedPreferences = applicationContext.getSharedPreferences(applicationContext.getString(R.string.filter_preferences), Context.MODE_PRIVATE);
+
+        String sortType = sharedPreferences.getString("Sort_type","popularity");
+        String sortValue = sharedPreferences.getString(sortType,"desc");
+
+        if (sortType.equals("popularity")) {
+            MenuItem item = menu.findItem(R.id.popularity_filter_menu_btn);
+            if (sortValue == "desc") {
+                turnOnDescSortBtn(item);
+            } else {
+                turnOnAscSortBtn(item);
+            }
+        } else if (sortType.equals("vote_average")) {
+            MenuItem item = menu.findItem(R.id.rating_filter_menu_btn);
+            if (sortValue == "desc") {
+                turnOnDescSortBtn(item);
+            } else {
+                turnOnAscSortBtn(item);
+            }
+        } else if (sortType.equals("revenue")) {
+            MenuItem item = menu.findItem(R.id.revenue_filter_menu_btn);
+            if (sortValue == "desc"){
+                turnOnDescSortBtn(item);
+            } else {
+                turnOnAscSortBtn(item);
+            }
+        }
+
+    }
+
     private void updateUI(int mSelectedId) {
+        // reset number page if filter settings were changed
+        page_ = 1;
         // If it is not such items, change genre items
         if ((mSelectedId != R.id.popularity_filter_menu_btn) &&
                 (mSelectedId != R.id.rating_filter_menu_btn) &&
@@ -262,10 +398,6 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
             changeSortBtnState(mSelectedId);
         }
 
-
-        // Tricky solution http://stackoverflow.com/questions/31181024/cant-change-icons-for-subitems-in-navigationview
-        // So resetting the title of top level item will update UI
-        filterNavigationMenu_.getMenu().getItem(0).setTitle(filterNavigationMenu_.getMenu().getItem(0).getTitle());
 
     }
 
@@ -279,6 +411,10 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
             turnOffBtn(selectedMenuItem);
             setFilterPreferences(btnId, false);
         }
+
+        // Tricky solution http://stackoverflow.com/questions/31181024/cant-change-icons-for-subitems-in-navigationview
+        // So resetting the title of top level item will update UI
+        filterNavigationMenu_.getMenu().getItem(0).setTitle(filterNavigationMenu_.getMenu().getItem(0).getTitle());
     }
 
     private void turnOffBtn(MenuItem menuItem) {
@@ -296,9 +432,15 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         MenuItem selectedMenuItem = filterNavigationMenu_.getMenu().findItem(btnId);
         if (!isBtnChecked) {
             turnOnDescSortBtn(selectedMenuItem);
+            setSortPreferences(btnId,true);
         } else {
             turnOnAscSortBtn(selectedMenuItem);
+            setSortPreferences(btnId,false);
         }
+
+        // Tricky solution http://stackoverflow.com/questions/31181024/cant-change-icons-for-subitems-in-navigationview
+        // So resetting the title of top level item will update UI
+        filterNavigationMenu_.getMenu().findItem(R.id.navigation_subheader).setTitle(filterNavigationMenu_.getMenu().findItem(R.id.navigation_subheader).getTitle());
     }
 
     private void turnOnDescSortBtn(MenuItem menuItem) {

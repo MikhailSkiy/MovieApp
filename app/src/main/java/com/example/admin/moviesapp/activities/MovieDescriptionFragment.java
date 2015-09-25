@@ -148,7 +148,7 @@ public class MovieDescriptionFragment extends Fragment {
         released_.setText(Util.getUIFriendlyData(movie.getReleaseDate()));
         runtime_.setText(Util.getUserFriendlyRuntime(Integer.toString(movie.getRuntime()), getActivity()));
         genres_.setText(Util.getGenres(movie.getGenres()));
-        language_.setText(Util.getUserFriendlyOrLanguage(movie.getOriginalLanguage(), getActivity()));
+        language_.setText(Util.getUserFriendlyOrigLanguage(movie.getOriginalLanguage(), getActivity()));
 
         // Sent to the activity event for updating cover ad title
         EventBus.getDefault().post(new UpdateMovieDetailsImageEvent(movie));

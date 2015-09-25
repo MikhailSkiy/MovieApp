@@ -48,7 +48,9 @@ public class MovieRequest implements RequestFactory {
     //endregion
 
     //region Values for building query
-    private final String POPULARITY_DESC = "popularity.desc";
+    private final String POPULARITY = "popularity.";
+    private final String RATING = "rating.";
+    private final String Revenue = "revenue.";
     private final String LANGUAGE_VALUE = "ru";
     private final String API_KEY_VALUE = "0bd95c30f721d1e94381142dc1ce3d50";
     //endregion
@@ -99,6 +101,15 @@ public class MovieRequest implements RequestFactory {
         return genres;
     }
 
+    private String getSortTypeFromPreferences(){
+        Context applicationContext = MainActivity.getContextOfApplication();
+        SharedPreferences sharedPreferences = applicationContext.getSharedPreferences(applicationContext.getString(R.string.filter_preferences), Context.MODE_PRIVATE);
+        String sortType = sharedPreferences.getString("Sort_type", "popularity");
+        String sortValue = sharedPreferences.getString(sortType, "desc");
+        String resultValue = sortType + "." + sortValue;
+        return resultValue;
+    }
+
     private String createGenresString(List<Integer> genres){
         String builtList = "";
         for (int i=0;i<genres.size();i++){
@@ -109,6 +120,9 @@ public class MovieRequest implements RequestFactory {
         }
         return builtList;
     }
+
+
+
 
     // Creates url for movies request
     private String createMoviesUrl() {
@@ -130,7 +144,7 @@ public class MovieRequest implements RequestFactory {
         Uri builtUri = Uri.parse(BASE_URL).buildUpon()
                 .appendQueryParameter(LANGUAGE,LANGUAGE_VALUE)
                 .appendQueryParameter(WITH_GENRES,genres)
-                .appendQueryParameter(SORT_BY, POPULARITY_DESC)
+                .appendQueryParameter(SORT_BY, getSortTypeFromPreferences())
                 .appendQueryParameter(PAGE,Integer.toString(page_))
                 .appendQueryParameter(API_KEY, getApiKey())
                 .build();
@@ -140,7 +154,7 @@ public class MovieRequest implements RequestFactory {
     private Uri builtUri(){
         Uri builtUri = Uri.parse(BASE_URL).buildUpon()
                 .appendQueryParameter(LANGUAGE, LANGUAGE_VALUE)
-                .appendQueryParameter(SORT_BY, POPULARITY_DESC)
+                .appendQueryParameter(SORT_BY, getSortTypeFromPreferences())
                 .appendQueryParameter(PAGE, Integer.toString(page_))
                 .appendQueryParameter(API_KEY, getApiKey())
                 .build();

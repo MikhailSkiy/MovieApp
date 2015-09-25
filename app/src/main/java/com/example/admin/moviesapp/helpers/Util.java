@@ -13,11 +13,14 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.example.admin.moviesapp.R;
+import com.example.admin.moviesapp.activities.MainActivity;
 import com.example.admin.moviesapp.models.Genre;
 
 import java.io.ByteArrayInputStream;
@@ -33,25 +36,25 @@ import java.util.List;
  */
 public class Util {
 
-    public static String getUserFriendlyRuntime(String runtime,Context context){
+    public static String getUserFriendlyRuntime(String runtime, Context context) {
         String userFriendlyRuntime = runtime + " " + context.getResources().getString(R.string.runtime_tag);
         return userFriendlyRuntime;
     }
 
-    public static String getUserFriendlyOrLanguage(String original,Context context){
+    public static String getUserFriendlyOrigLanguage(String original, Context context) {
         String originalLanguage = "English";
-        if (original == "en"){
-           originalLanguage = context.getResources().getString(R.string.original_en_language);
+        if (original == "en") {
+            originalLanguage = context.getResources().getString(R.string.original_en_language);
         }
         return originalLanguage;
     }
 
-    public static String getUIFriendlyData(String data){
+    public static String getUIFriendlyData(String data) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = null;
         try {
             date = dateFormat.parse(data);
-        } catch (ParseException e){
+        } catch (ParseException e) {
 
         }
         dateFormat.applyPattern("dd MMM yyyy");
@@ -59,37 +62,37 @@ public class Util {
         return result;
     }
 
-    public static long getUnixDate(String data){
+    public static long getUnixDate(String data) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = null;
         try {
             date = dateFormat.parse(data);
-        } catch (ParseException e){
+        } catch (ParseException e) {
 
         }
         return date.getTime();
     }
 
-    public static String getDateFromUnix(long date){
+    public static String getDateFromUnix(long date) {
         Calendar myDate = Calendar.getInstance();
-        myDate.setTimeInMillis(date*1000);
+        myDate.setTimeInMillis(date * 1000);
         String convertedDate = myDate.get(Calendar.DAY_OF_MONTH) + "." + myDate.get(Calendar.MONTH) + "." + myDate.get(Calendar.YEAR);
         return convertedDate;
     }
 
-    public static String getGenres(List<Genre> genres){
+    public static String getGenres(List<Genre> genres) {
         String allGenres = "";
-        int genresCount =0;
-        if (genres.size() >2){
+        int genresCount = 0;
+        if (genres.size() > 2) {
             genresCount = 2;
         } else {
             genresCount = genres.size();
         }
 
-        for (int i=0;i<genresCount;i++){
-           String genre =  genres.get(i).getGenreName();
+        for (int i = 0; i < genresCount; i++) {
+            String genre = genres.get(i).getGenreName();
             String separator = "";
-            if (genresCount-1 == i) {
+            if (genresCount - 1 == i) {
                 allGenres += genre + separator;
             } else {
                 separator = ",";
@@ -99,21 +102,21 @@ public class Util {
         return allGenres;
     }
 
-    public static Bitmap getRoundedCroppedBitmap(Bitmap bitmap,int radius){
+    public static Bitmap getRoundedCroppedBitmap(Bitmap bitmap, int radius) {
         Bitmap finalBitmap;
-        if (bitmap.getWidth()!=radius || bitmap.getHeight() != radius)
-            finalBitmap = Bitmap.createScaledBitmap(bitmap,radius,radius,false);
+        if (bitmap.getWidth() != radius || bitmap.getHeight() != radius)
+            finalBitmap = Bitmap.createScaledBitmap(bitmap, radius, radius, false);
         else
             finalBitmap = bitmap;
-        Bitmap output = Bitmap.createBitmap(finalBitmap.getWidth(),finalBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Bitmap output = Bitmap.createBitmap(finalBitmap.getWidth(), finalBitmap.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
 
         final Paint paint = new Paint();
-        final Rect rect = new Rect(0,0,finalBitmap.getWidth(),finalBitmap.getHeight());
+        final Rect rect = new Rect(0, 0, finalBitmap.getWidth(), finalBitmap.getHeight());
         paint.setAntiAlias(true);
         paint.setFilterBitmap(true);
         paint.setDither(true);
-        canvas.drawARGB(0,0,0,0);
+        canvas.drawARGB(0, 0, 0, 0);
         paint.setColor(Color.parseColor("#BAB399"));
         canvas.drawCircle(finalBitmap.getWidth() / 2 + 0.7f,
                 finalBitmap.getHeight() / 2 + 0.7f,
@@ -136,7 +139,7 @@ public class Util {
         return decodedImage;
     }
 
-    public static Drawable getDrawable(byte [] image){
+    public static Drawable getDrawable(byte[] image) {
         Drawable drawable = new BitmapDrawable(BitmapFactory.decodeByteArray(image, 0, image.length));
         return drawable;
     }
@@ -166,5 +169,27 @@ public class Util {
             Log.e(context.getApplicationInfo().className, "Failed to load meta-data, NullPointer: " + e.getMessage());
         }
         return placesApiKey;
+    }
+
+    public static String getStringResource(int stringId) {
+        Context context = MainActivity.getContextOfApplication();
+        return context.getResources().getString(stringId);
+    }
+
+    public static int getConnectionStatus(Context context) {
+        if (isNetworkAvailable(context)) {
+            return Constants.CONNECTION_STATUS_OK;
+        } else {
+            return Constants.NO_CONNECTION;
+        }
+    }
+
+    /**
+     * Returns true if the network is available or about to become available
+     */
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 }

@@ -44,6 +44,28 @@
     <string name="rating_filter_menu_item">Rating</string>
     <string name="revenue_filter_menu_item">Revenue</string>
 
+    <!--> Values for keys in GenreMap <-->
+    <string name="action_key" translatable="false">Action</string>
+    <string name="adventure_key" translatable="false">Adventure</string>
+    <string name="animation_key" translatable="false">Animation</string>
+    <string name="comedy_key" translatable="false">Comedy</string>
+    <string name="crime_key" translatable="false">Crime</string>
+    <string name="documentary_key" translatable="false">Documentary</string>
+    <string name="drama_key" translatable="false">Drama</string>
+    <string name="family_key" translatable="false">Family</string>
+    <string name="fantasy_key" translatable="false">Fantasy</string>
+    <string name="foreign_key" translatable="false">Foreign</string>
+    <string name="history_key" translatable="false">History</string>
+    <string name="horror_key" translatable="false">Horror</string>
+    <string name="music_key" translatable="false">Music</string>
+    <string name="mystery_key" translatable="false">Mystery</string>
+    <string name="romance_key" translatable="false">Romance</string>
+    <string name="science_fiction_key" translatable="false">Science Fiction</string>
+    <string name="tv_movie_key" translatable="false">TV Movie</string>
+    <string name="thriller_key" translatable="false">Thriller</string>
+    <string name="war" translatable="false">War</string>
+    <string name="western" translatable="false">Western</string>
+
 
 
 
@@ -94,6 +116,9 @@
 
     <!--> Preference key <-->
     <string name="filter_preferences">Filter_preferences</string>
+
+    <!-- Empty Movies -->
+    <string name="empty_movie_list_and_no_connection">No Movie Information Available. Check your internet connection.</string>">
 
 
 </resources>

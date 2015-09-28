@@ -30,7 +30,7 @@ import static com.example.admin.moviesapp.database.Contract.TrailersEntry;
 public class DbHelper extends SQLiteOpenHelper {
 
     // When the database schema was changed, you must increment the database version
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 7;
     public static final String DATABASE_NAME = "movies.db";
 
     public DbHelper(Context context) {
@@ -47,6 +47,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 MoviesEntry.COLUMN_OVERVIEW + " TEXT, " +
                 MoviesEntry.COLUMN_RELEASE_DATE + " INTEGER, " +
                 MoviesEntry.COLUMN_POSTER_PATH + " TEXT, " +
+                MoviesEntry.COLUMN_POPULARITY + " REAL, " +
                 MoviesEntry.COLUMN_TITLE + " TEXT, " +
                 MoviesEntry.COLUMN_VIDEO + " INTEGER, " +
                 MoviesEntry.COLUMN_VOTE_AVERAGE + " REAL, " +
@@ -184,6 +185,7 @@ public class DbHelper extends SQLiteOpenHelper {
         String overview = cursor.getString(cursor.getColumnIndex(MoviesEntry.COLUMN_OVERVIEW));
         String releasedDate = Util.getDateFromUnix(cursor.getLong(cursor.getColumnIndex(MoviesEntry.COLUMN_RELEASE_DATE)));
         String posterPath = cursor.getString(cursor.getColumnIndex(MoviesEntry.COLUMN_POSTER_PATH));
+        double popularity = cursor.getDouble(cursor.getColumnIndex(MoviesEntry.COLUMN_POPULARITY));
         String title = cursor.getString(cursor.getColumnIndex(MoviesEntry.COLUMN_TITLE));
         boolean video = (cursor.getInt(cursor.getColumnIndex(MoviesEntry.COLUMN_VIDEO)) == 1) ? true : false;
         double voteAverage = cursor.getDouble(cursor.getColumnIndex(MoviesEntry.COLUMN_VOTE_AVERAGE));
@@ -197,6 +199,7 @@ public class DbHelper extends SQLiteOpenHelper {
         movie.setOverview(overview);
         movie.setReleaseDate(releasedDate);
         movie.setPosterPath(posterPath);
+        movie.setPopularity(popularity);
         movie.setTitle(title);
         movie.setVideo(video);
         movie.setVoteAverage(voteAverage);
@@ -212,6 +215,20 @@ public class DbHelper extends SQLiteOpenHelper {
                 SQLiteDatabase database = this.getWritableDatabase();
                 ContentValues values = insertMovieInContentValues(movie);
                 database.insert(MoviesEntry.TABLE_NAME, null, values);
+                // Insert genres data into genres table
+                for (int i = 0; i < movie.getGenres().size(); i++) {
+                    // If such genre doesn't exist, put into database
+                    if (!isGenreExist(movie.getGenres().get(i))) {
+                        Genre genre = new Genre();
+                        genre.setGenreId(movie.getGenres().get(i));
+
+                        ContentValues genreValues = insertMovieGenresInCntnValues(genre);
+                       database.insert(GenreEntry.TABLE_NAME, null, genreValues);
+                    }
+                    // Insert genre_id and movie_id into movie_genre table
+                    ContentValues movieGenreValues = insertMovieGenreValues(movie.getId(), movie.getGenres().get(i));
+                    database.insert(MovieGenreEntry.TABLE_NAME, null, movieGenreValues);
+                }
                 database.close();
             }
         } else {
@@ -227,6 +244,7 @@ public class DbHelper extends SQLiteOpenHelper {
         values.put(MoviesEntry.COLUMN_OVERVIEW, movie.getOverview());
         values.put(MoviesEntry.COLUMN_RELEASE_DATE, Util.getUnixDate(movie.getReleaseDate()));
         values.put(MoviesEntry.COLUMN_POSTER_PATH, movie.getPosterPath());
+        values.put(MoviesEntry.COLUMN_POPULARITY,movie.getPopularity());
         values.put(MoviesEntry.COLUMN_TITLE, movie.getTitle());
         values.put(MoviesEntry.COLUMN_VIDEO, movie.isVideo() ? 1 : 0);
         values.put(MoviesEntry.COLUMN_VOTE_AVERAGE, movie.getVoteAverage());

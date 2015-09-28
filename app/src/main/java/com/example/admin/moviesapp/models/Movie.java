@@ -1,7 +1,15 @@
 package com.example.admin.moviesapp.models;
 
+import android.content.Context;
+import android.database.Cursor;
+
+import com.example.admin.moviesapp.database.Contract;
 import com.example.admin.moviesapp.helpers.States;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
+
+import static com.example.admin.moviesapp.database.Contract.*;
 
 /**
  * Created by Mikhail Valuyskiy on 01.09.2015.
@@ -12,6 +20,8 @@ public class Movie extends CommonMovie {
     private boolean adult_;
     @SerializedName("id")
     private long id_;
+    @SerializedName("genre_ids")
+    private List<Integer> genres_;
     @SerializedName("original_title")
     private String originalTitle_;
     @SerializedName("overview")
@@ -20,6 +30,8 @@ public class Movie extends CommonMovie {
     private String releaseDate_;
     @SerializedName("poster_path")
     private String posterPath_;
+    @SerializedName("popularity")
+    private double popularity_;
     @SerializedName("title")
     private String title_;
     @SerializedName("video")
@@ -30,6 +42,33 @@ public class Movie extends CommonMovie {
     private int voteCount_;
 
     private byte[] cover_;
+
+    public static Movie getMovieFromCursor(Cursor cursor) {
+        Movie movie = new Movie();
+        long id = cursor.getLong(cursor.getColumnIndex(MoviesEntry._ID));
+        boolean isAdult = cursor.getInt(cursor.getColumnIndex(MoviesEntry.COLUMN__ADULT)) == 1 ? true : false;
+        String originalTitle = cursor.getString(cursor.getColumnIndex(MoviesEntry.COLUMN_ORIGINAL_TITLE));
+        String overview = cursor.getString(cursor.getColumnIndex(MoviesEntry.COLUMN_OVERVIEW));
+        String releaseDate = cursor.getString(cursor.getColumnIndex(MoviesEntry.COLUMN_RELEASE_DATE));
+        String posterPath = cursor.getString(cursor.getColumnIndex(MoviesEntry.COLUMN_POSTER_PATH));
+        String title = cursor.getString(cursor.getColumnIndex(MoviesEntry.COLUMN_TITLE));
+        boolean video = cursor.getInt(cursor.getColumnIndex(MoviesEntry.COLUMN_VIDEO))==1 ? true : false;
+        double voteAverage = cursor.getDouble(cursor.getColumnIndex(MoviesEntry.COLUMN_VOTE_AVERAGE));
+        int voteCount = cursor.getInt(cursor.getColumnIndex(MoviesEntry.COLUMN_VOTE_COUNT));
+        // Set values into movie object
+        movie.setId(id);
+        movie.setAdult(isAdult);
+        movie.setOriginalTitle(originalTitle);
+        movie.setOverview(overview);
+        movie.setReleaseDate(releaseDate);
+        movie.setPosterPath(posterPath);
+        movie.setTitle(title);
+        movie.setVideo(video);
+        movie.setVoteAverage(voteAverage);
+        movie.setVoteCount(voteCount);
+
+        return movie;
+    }
 
     public boolean isAdult() {
         return adult_;
@@ -111,6 +150,14 @@ public class Movie extends CommonMovie {
         this.posterPath_ = posterPath;
     }
 
+    public double getPopularity() {
+        return popularity_;
+    }
+
+    public void setPopularity(double popularity) {
+        this.popularity_ = popularity;
+    }
+
     public byte[] getCover() {
         return cover_;
     }
@@ -127,4 +174,12 @@ public class Movie extends CommonMovie {
         return getPosterPath();
     }
 
+
+    public List<Integer> getGenres() {
+        return genres_;
+    }
+
+    public void setGenres(List<Integer> genres) {
+        this.genres_ = genres;
+    }
 }

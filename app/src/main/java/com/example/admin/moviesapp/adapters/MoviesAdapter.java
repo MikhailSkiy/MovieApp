@@ -1,6 +1,7 @@
 package com.example.admin.moviesapp.adapters;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,7 +21,7 @@ import java.util.List;
 /**
  * Created by Mikhail Valuyskiy on 01.09.2015.
  */
-public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesViewHolder> {
+public class MoviesAdapter extends CursorRecyclerViewAdapter<MoviesAdapter.MoviesViewHolder> {
 
     private static List<Movie> movies_;
     private int rowLayout_;
@@ -54,8 +55,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
         }
     }
 
-    public MoviesAdapter(List<Movie> movies, int rowLayout, Context context, MovieItemClickListener listener) {
-        this.movies_ = movies;
+    public MoviesAdapter(Cursor cursor, int rowLayout, Context context, MovieItemClickListener listener) {
+        super(context,cursor);
         this.rowLayout_ = rowLayout;
         this.context_ = context;
         this.listener_ = listener;
@@ -68,19 +69,20 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
     }
 
     @Override
-    public void onBindViewHolder(MoviesViewHolder viewHolder, int i) {
-        Movie movie = movies_.get(i);
+    public void onBindViewHolder(MoviesViewHolder viewHolder, Cursor cursor) {
+
+        Movie movie = Movie.getMovieFromCursor(cursor);
         viewHolder.movieName.setText(movie.getTitle());
         viewHolder.movieCover.setImageBitmap(Util.getBitmapFromBytes(movie.getCover()));
     }
 
-    public void addMovie(Movie movie) {
-        movies_.add(movie);
-        notifyDataSetChanged();
-    }
+//    public void addMovie(Movie movie) {
+//        movies_.add(movie);
+//        notifyDataSetChanged();
+//    }
 
     @Override
     public int getItemCount() {
-        return movies_.size();
+        return getCursor().getCount();
     }
 }

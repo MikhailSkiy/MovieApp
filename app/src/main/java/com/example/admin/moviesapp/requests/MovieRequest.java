@@ -13,6 +13,7 @@ import com.example.admin.moviesapp.R;
 import com.example.admin.moviesapp.activities.MainActivity;
 import com.example.admin.moviesapp.helpers.Constants;
 import com.example.admin.moviesapp.helpers.GenresMap;
+import com.example.admin.moviesapp.helpers.MovieRequestHelper;
 import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.managers.AppController;
 import com.example.admin.moviesapp.managers.RequestManager;
@@ -80,34 +81,9 @@ public class MovieRequest implements RequestFactory {
         postGetRequest(url);
     }
 
-
-
     public static void getMovieObjects(String response) {
         List<Movie> moviesList = getMoviesFromJson(response);
         manager_.sendMessage(manager_.obtainMessage(States.MOVIES_REQUEST_WAS_PARSED, moviesList));
-    }
-
-    private List<Integer> getGenres() {
-        List<Integer> genres = new ArrayList();
-        Context applicationContext = MainActivity.getContextOfApplication();
-        SharedPreferences sharedPreferences = applicationContext.getSharedPreferences(applicationContext.getString(R.string.filter_preferences), Context.MODE_PRIVATE);
-        GenresMap map = new GenresMap();
-        for (String s : map.genresMap.keySet()) {
-            int genreId = sharedPreferences.getInt(s,0);
-            if (genreId != 0) {
-                genres.add(genreId);
-            }
-        }
-        return genres;
-    }
-
-    private String getSortTypeFromPreferences(){
-        Context applicationContext = MainActivity.getContextOfApplication();
-        SharedPreferences sharedPreferences = applicationContext.getSharedPreferences(applicationContext.getString(R.string.filter_preferences), Context.MODE_PRIVATE);
-        String sortType = sharedPreferences.getString("Sort_type", "popularity");
-        String sortValue = sharedPreferences.getString(sortType, "desc");
-        String resultValue = sortType + "." + sortValue;
-        return resultValue;
     }
 
     private String createGenresString(List<Integer> genres){
@@ -128,7 +104,7 @@ public class MovieRequest implements RequestFactory {
     private String createMoviesUrl() {
         String url = null;
         Uri builtUri = null;
-        List<Integer> genres = getGenres();
+        List<Integer> genres = MovieRequestHelper.getGenres();
         if (genres.size()>0) {
             builtUri = builtUriWithGenres(createGenresString(genres));
         } else {
@@ -144,7 +120,7 @@ public class MovieRequest implements RequestFactory {
         Uri builtUri = Uri.parse(BASE_URL).buildUpon()
                 .appendQueryParameter(LANGUAGE,LANGUAGE_VALUE)
                 .appendQueryParameter(WITH_GENRES,genres)
-                .appendQueryParameter(SORT_BY, getSortTypeFromPreferences())
+                .appendQueryParameter(SORT_BY, MovieRequestHelper.getSortTypeFromPreferences())
                 .appendQueryParameter(PAGE,Integer.toString(page_))
                 .appendQueryParameter(API_KEY, getApiKey())
                 .build();
@@ -154,7 +130,7 @@ public class MovieRequest implements RequestFactory {
     private Uri builtUri(){
         Uri builtUri = Uri.parse(BASE_URL).buildUpon()
                 .appendQueryParameter(LANGUAGE, LANGUAGE_VALUE)
-                .appendQueryParameter(SORT_BY, getSortTypeFromPreferences())
+                .appendQueryParameter(SORT_BY, MovieRequestHelper.getSortTypeFromPreferences())
                 .appendQueryParameter(PAGE, Integer.toString(page_))
                 .appendQueryParameter(API_KEY, getApiKey())
                 .build();

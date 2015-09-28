@@ -1,9 +1,13 @@
 package com.example.admin.moviesapp.activities;
 
+import android.app.LoaderManager;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
@@ -21,9 +25,11 @@ import android.widget.Toast;
 
 import com.example.admin.moviesapp.R;
 import com.example.admin.moviesapp.adapters.MoviesAdapter;
+import com.example.admin.moviesapp.database.Contract;
 import com.example.admin.moviesapp.database.DbHelper;
 import com.example.admin.moviesapp.helpers.Constants;
 import com.example.admin.moviesapp.helpers.GenresMap;
+import com.example.admin.moviesapp.helpers.MovieRequestHelper;
 import com.example.admin.moviesapp.helpers.SortTypeMap;
 import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.helpers.Util;
@@ -38,9 +44,10 @@ import com.example.admin.moviesapp.ui.RecyclerViewEmptySupport;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements UpdateListener {
+public class MainActivity extends AppCompatActivity implements UpdateListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String FIRST_TIME = "first_time";
+    private static final int MOVIES_LOADER = 0;
     private MoviesAdapter moviesAdapter_;
     private DbHelper helper_ = new DbHelper(this);
     private List<Movie> moviesList_ = new ArrayList<>();
@@ -50,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     private NavigationView filterNavigationMenu_;
     private LinearLayoutManager layoutManager_;
     private RecyclerViewEmptySupport recyclerView_;
+    private Cursor cursor_ = null;
     private static Context contextOfApplication_;
     private boolean mUserSawDrawer = false;
     private int mSelectedId;
@@ -73,15 +81,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         // Update UI in case of bad connection
         // updateEmptyView();
 
-
-        moviesAdapter_ = new MoviesAdapter(moviesList_, R.layout.item_movie_card, this, new MovieItemClickListener() {
-            @Override
-            public void onMovieItemClick(final long movieId) {
-                Intent intent = new Intent(MainActivity.this, MovieDetailsActivity.class);
-                intent.putExtra("movieId", movieId);
-                startActivity(intent);
-            }
-        });
+        getLoaderManager().initLoader(MOVIES_LOADER,null,this);
 
         recyclerView_.setOnScrollListener(new RecyclerView.OnScrollListener(){
             @Override
@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
                 mSelectedId = menuItem.getItemId();
                 updateUI(mSelectedId);
                 moviesList_.clear();
-                moviesAdapter_.notifyDataSetChanged();
+
 
                 sendMovieRequest();
                 return true;
@@ -152,6 +152,42 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         sendMovieRequest();
     }
 
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        List<Integer> genres = MovieRequestHelper.getGenres();
+        String sortBy = MovieRequestHelper.getSortTypeFromPreferences();
+        sortBy = sortBy.replace(".", " ");
+        final String selectQuery2 = " SELECT * FROM " + Contract.MoviesEntry.TABLE_NAME;
+//        for (Integer genreId : genres) {
+//            String selectQuery = " SELECT * FROM " + Contract.MovieGenreEntry.TABLE_NAME + " WHERE " + Contract.MovieGenreEntry.COLUMN_GENRE_ID + " = " + genreId;
+//            Cursor cursor = helper_.getReadableDatabase().rawQuery(selectQuery,null);
+//        }
+
+        return new CursorLoader(MainActivity.this){
+            public Cursor loadInBackground(){
+                return helper_.getReadableDatabase().rawQuery(selectQuery2,null);
+            }
+        };
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor){
+        cursor_ = cursor;
+        moviesAdapter_ = new MoviesAdapter(cursor_, R.layout.item_movie_card, this, new MovieItemClickListener() {
+            @Override
+            public void onMovieItemClick(final long movieId) {
+                Intent intent = new Intent(MainActivity.this, MovieDetailsActivity.class);
+                intent.putExtra("movieId", movieId);
+                startActivity(intent);
+            }
+        });
+
+        moviesAdapter_.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader){}
+
     private void updateEmptyView() {
         if (moviesList_.size() == 0) {
             int status = Util.getConnectionStatus(this);
@@ -189,10 +225,12 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
 //            recyclerView_.setEmptyView(this.findViewById(R.id.listview_empty));
 //        }
         for (int i = 0; i < movies.size(); i++) {
-            moviesAdapter_.addMovie(movies.get(i));
-            // Add items into database
-            //helper_.addMovie(movies.get(i));
+            helper_.addMovie(movies.get(i));
         }
+
+        final String selectQuery2 = " SELECT * FROM " + Contract.MoviesEntry.TABLE_NAME;
+        moviesAdapter_.swapCursor(helper_.getReadableDatabase().rawQuery(selectQuery2,null));
+        moviesAdapter_.notifyDataSetChanged();
 
     }
 

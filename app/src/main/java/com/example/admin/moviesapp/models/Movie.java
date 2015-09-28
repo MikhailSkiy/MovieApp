@@ -1,15 +1,13 @@
 package com.example.admin.moviesapp.models;
 
-import android.content.Context;
 import android.database.Cursor;
 
-import com.example.admin.moviesapp.database.Contract;
 import com.example.admin.moviesapp.helpers.States;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-import static com.example.admin.moviesapp.database.Contract.*;
+import static com.example.admin.moviesapp.database.Contract.MoviesEntry;
 
 /**
  * Created by Mikhail Valuyskiy on 01.09.2015.
@@ -55,6 +53,7 @@ public class Movie extends CommonMovie {
         boolean video = cursor.getInt(cursor.getColumnIndex(MoviesEntry.COLUMN_VIDEO))==1 ? true : false;
         double voteAverage = cursor.getDouble(cursor.getColumnIndex(MoviesEntry.COLUMN_VOTE_AVERAGE));
         int voteCount = cursor.getInt(cursor.getColumnIndex(MoviesEntry.COLUMN_VOTE_COUNT));
+        byte [] cover = cursor.getBlob(cursor.getColumnIndex(MoviesEntry.COLUMN_COVER));
         // Set values into movie object
         movie.setId(id);
         movie.setAdult(isAdult);
@@ -66,6 +65,7 @@ public class Movie extends CommonMovie {
         movie.setVideo(video);
         movie.setVoteAverage(voteAverage);
         movie.setVoteCount(voteCount);
+        movie.setCover(cover);
 
         return movie;
     }

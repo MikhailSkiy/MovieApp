@@ -27,10 +27,10 @@ import com.example.admin.moviesapp.R;
 import com.example.admin.moviesapp.adapters.MoviesAdapter;
 import com.example.admin.moviesapp.database.Contract;
 import com.example.admin.moviesapp.database.DbHelper;
+import com.example.admin.moviesapp.events.UpdateCursorEvent;
 import com.example.admin.moviesapp.helpers.Constants;
 import com.example.admin.moviesapp.helpers.GenresMap;
 import com.example.admin.moviesapp.helpers.MovieRequestHelper;
-import com.example.admin.moviesapp.helpers.SortTypeMap;
 import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.helpers.Util;
 import com.example.admin.moviesapp.interfaces.MovieItemClickListener;
@@ -43,6 +43,9 @@ import com.example.admin.moviesapp.ui.RecyclerViewEmptySupport;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.greenrobot.event.EventBus;
+import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements UpdateListener, LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -72,6 +75,8 @@ public class MainActivity extends AppCompatActivity implements UpdateListener, L
         setContentView(R.layout.activity_main);
         // Initialize the context
         contextOfApplication_ = getApplicationContext();
+        // Register EventBus
+        EventBus.getDefault().register(this);
 
         layoutManager_ = new LinearLayoutManager(this);
 
@@ -80,6 +85,19 @@ public class MainActivity extends AppCompatActivity implements UpdateListener, L
 
         // Update UI in case of bad connection
         // updateEmptyView();
+
+        final String selectQuery2 = " SELECT * FROM " + Contract.MoviesEntry.TABLE_NAME;
+        cursor_ = helper_.getReadableDatabase().rawQuery(selectQuery2,null);
+
+
+        moviesAdapter_ = new MoviesAdapter(cursor_, R.layout.item_movie_card, this, new MovieItemClickListener() {
+            @Override
+            public void onMovieItemClick(final long movieId) {
+                Intent intent = new Intent(MainActivity.this, MovieDetailsActivity.class);
+                intent.putExtra("movieId", movieId);
+                startActivity(intent);
+            }
+        });
 
         getLoaderManager().initLoader(MOVIES_LOADER,null,this);
 
@@ -104,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener, L
 //                menuItem.setChecked(true);
                 mSelectedId = menuItem.getItemId();
                 updateUI(mSelectedId);
-                moviesList_.clear();
+
 
 
                 sendMovieRequest();
@@ -152,6 +170,16 @@ public class MainActivity extends AppCompatActivity implements UpdateListener, L
         sendMovieRequest();
     }
 
+    public void onEvent(UpdateCursorEvent e){
+        Timber.v("Event in activity");
+        for (int i=0;i<moviesList_.size();i++){
+            helper_.addMovie(moviesList_.get(i));
+        }
+        final String selectQuery2 = " SELECT * FROM " + Contract.MoviesEntry.TABLE_NAME;
+        cursor_ = helper_.getReadableDatabase().rawQuery(selectQuery2,null);
+        moviesAdapter_.swapCursor(cursor_);
+    }
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         List<Integer> genres = MovieRequestHelper.getGenres();
@@ -173,16 +201,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener, L
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor){
         cursor_ = cursor;
-        moviesAdapter_ = new MoviesAdapter(cursor_, R.layout.item_movie_card, this, new MovieItemClickListener() {
-            @Override
-            public void onMovieItemClick(final long movieId) {
-                Intent intent = new Intent(MainActivity.this, MovieDetailsActivity.class);
-                intent.putExtra("movieId", movieId);
-                startActivity(intent);
-            }
-        });
-
-        moviesAdapter_.notifyDataSetChanged();
+        moviesAdapter_.swapCursor(cursor_);
     }
 
     @Override
@@ -217,21 +236,25 @@ public class MainActivity extends AppCompatActivity implements UpdateListener, L
         manager.sendMessage(manager.obtainMessage(States.MOVIES_REQUEST,page_));
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        // Register EventBus
+        EventBus.getDefault().unregister(this);
+    }
+
 
     @Override
     public void onUpdate(List<? extends CommonMovie> resultList) {
         List<Movie> movies = (List<Movie>) resultList;
+
 //        if (movies.size() == 0){
 //            recyclerView_.setEmptyView(this.findViewById(R.id.listview_empty));
 //        }
         for (int i = 0; i < movies.size(); i++) {
-            helper_.addMovie(movies.get(i));
+            moviesList_.add(movies.get(i));
+            //helper_.addMovie(movies.get(i));
         }
-
-        final String selectQuery2 = " SELECT * FROM " + Contract.MoviesEntry.TABLE_NAME;
-        moviesAdapter_.swapCursor(helper_.getReadableDatabase().rawQuery(selectQuery2,null));
-        moviesAdapter_.notifyDataSetChanged();
-
     }
 
     private int getGenreValue(String genreName, boolean mode) {

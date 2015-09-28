@@ -11,11 +11,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.admin.moviesapp.R;
+import com.example.admin.moviesapp.database.Contract;
 import com.example.admin.moviesapp.helpers.Util;
 import com.example.admin.moviesapp.interfaces.MovieItemClickListener;
 import com.example.admin.moviesapp.models.Movie;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,7 +28,7 @@ public class MoviesAdapter extends CursorRecyclerViewAdapter<MoviesAdapter.Movie
     private Context context_;
     private static MovieItemClickListener listener_;
 
-    public static class MoviesViewHolder extends RecyclerView.ViewHolder {
+    public class MoviesViewHolder extends RecyclerView.ViewHolder {
         public TextView movieName;
         public ImageView movieCover;
         public CardView cardView_;
@@ -44,7 +44,9 @@ public class MoviesAdapter extends CursorRecyclerViewAdapter<MoviesAdapter.Movie
                 public void onClick(View v) {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
-                        long movieId = movies_.get(position).getId();
+                        Cursor cursor = getCursor();
+                        cursor.moveToPosition(position);
+                        int movieId = cursor.getInt(cursor.getColumnIndex(Contract.MoviesEntry._ID));
                         if (listener_ != null) {
                             listener_.onMovieItemClick(movieId);
                         }
@@ -83,6 +85,7 @@ public class MoviesAdapter extends CursorRecyclerViewAdapter<MoviesAdapter.Movie
 
     @Override
     public int getItemCount() {
+        int a = getCursor().getCount();
         return getCursor().getCount();
     }
 }

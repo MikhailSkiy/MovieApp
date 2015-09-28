@@ -6,6 +6,7 @@ import android.os.Message;
 import com.example.admin.moviesapp.events.UpdateCastDetailsImageEvent;
 import com.example.admin.moviesapp.events.UpdateCastDetailsUI;
 import com.example.admin.moviesapp.events.UpdateCastListEvent;
+import com.example.admin.moviesapp.events.UpdateCursorEvent;
 import com.example.admin.moviesapp.events.UpdateMovieCreditsListEvent;
 import com.example.admin.moviesapp.events.UpdateMovieDescriptionUI;
 import com.example.admin.moviesapp.events.UpdateMovieDetailsImageEvent;
@@ -88,6 +89,7 @@ public class RequestManager extends Handler {
                     String path = movieList.get(counter).getPosterPath();
                     Timber.v(path);
                 }
+                EventBus.getDefault().post(new UpdateCursorEvent());
                 break;
 
             case States.IMAGE_DOWNLOADED:

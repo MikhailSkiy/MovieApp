@@ -7,6 +7,19 @@ import android.provider.BaseColumns;
  */
 public class Contract {
 
+    public static final class MoviesToWatch implements BaseColumns {
+        // Table name
+        public static final String TABLE_NAME = "watchlist";
+    }
+
+    public static final class FavoriteMoviesEntry implements BaseColumns {
+        // Table name
+        public static final String TABLE_NAME = "favorite_movies";
+        public static final String COLUMN_ORIGINAL_TITLE = "original_title";
+        public static final String COLUMN_OVERVIEW = "overview";
+        public static final String COLUMN_TITLE = "title";
+    }
+
     public static final class MoviesEntry implements BaseColumns {
         // Table name
         public static final String TABLE_NAME = "movies";

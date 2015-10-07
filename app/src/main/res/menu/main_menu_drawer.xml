@@ -7,6 +7,10 @@
             android:icon="@drawable/ic_movie_grey"
             android:title="@string/movies_main_menu_item"/>
         <item
+            android:id="@+id/watchlist_menu_btn"
+            android:icon="@drawable/ic_wunderlist_grey"
+            android:title="@string/watchlist_menu_item"/>
+        <item
             android:id="@+id/favorites_menu_btn"
             android:icon="@drawable/ic_heart_outline_grey"
             android:title="@string/favorites_main_menu_item"/>

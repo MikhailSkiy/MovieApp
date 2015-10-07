@@ -8,6 +8,7 @@
 
     <!--> Values for drawer menu in main activity <-->
     <string name="movies_main_menu_item">Movies</string>
+    <string name="watchlist_menu_item">Watchlist</string>
     <string name="favorites_main_menu_item">Favorites</string>
     <string name="profile_main_menu_item">My profile</string>
 
@@ -118,7 +119,9 @@
     <string name="filter_preferences">Filter_preferences</string>
 
     <!-- Empty Movies -->
-    <string name="empty_movie_list_and_no_connection">No Movie Information Available. Check your internet connection.</string>">
+    <string name="empty_movie_list_and_no_connection">No Movie Information Available. Check your internet connection.</string>
+    <string name="title_activity_favorite_movies">FavoriteMoviesActivity</string>
+    <string name="title_activity_watchlist">WatchlistActivity</string>">
 
 
 </resources>

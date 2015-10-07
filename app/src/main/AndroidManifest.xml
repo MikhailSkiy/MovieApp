@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.admin.moviesapp" >
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -27,6 +27,14 @@
         <activity
             android:name=".activities.CastDetailsActivity"
             android:label="@string/title_activity_cast_details" >
+        </activity>
+        <activity
+            android:name=".activities.FavoriteMoviesActivity"
+            android:label="@string/title_activity_favorite_movies" >
+        </activity>
+        <activity
+            android:name=".activities.WatchlistActivity"
+            android:label="@string/title_activity_watchlist" >
         </activity>
     </application>
 

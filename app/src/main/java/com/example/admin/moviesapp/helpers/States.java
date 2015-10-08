@@ -39,6 +39,9 @@ public class States {
     public static final int MOVIE_CREDITS_REQUEST_COMPLETED = 61;
     public static final int MOVIE_CREDITS_IMAGE_DOWNLOADED = 62;
 
+    // Auth requests
+    public static final int TOKEN_REQUEST_RECEIVED = 70;
+
     // Error msgs starts from 90-99
     public static final int VOLLEY_REQUEST_FAILED = 90;
 }

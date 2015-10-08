@@ -52,7 +52,6 @@ public class MovieRequest implements RequestFactory {
     private final String RATING = "rating.";
     private final String Revenue = "revenue.";
     private final String LANGUAGE_VALUE = "ru";
-    private final String API_KEY_VALUE = "0bd95c30f721d1e94381142dc1ce3d50";
     //endregion
 
     private static RequestManager manager_;

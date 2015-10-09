@@ -20,8 +20,9 @@ import timber.log.Timber;
  */
 public class AuthRequest {
 
-    private final String BASE_URL = "http://api.themoviedb.org/3/authentication/token/new";
-    private final String API_KEY = "api_key";
+    private static final String BASE_URL = "http://api.themoviedb.org/3/authentication/token/new";
+    private static final String REDIRECTION_URL = "https://www.themoviedb.org/authenticate/";
+    private static final String API_KEY = "api_key";
 
     private static RequestManager manager_;
 
@@ -35,8 +36,15 @@ public class AuthRequest {
      */
     public void getRequestToken(){
         String url = createTokenUrl();
-        Timber.v("Created token URL: ", url);
         requestToken(url);
+    }
+
+    /**
+     * Creates url for redirection user to the authentification page
+     */
+    public static String getRedirectionUrl(String token) {
+        String redirectionUrl = createRedirectionUrl(token);
+        return redirectionUrl;
     }
 
     /**
@@ -48,6 +56,17 @@ public class AuthRequest {
                 .appendQueryParameter(API_KEY,getApiKey())
                 .build();
         String url = uri.toString();
+        Timber.v("Created token URL: ", url);
+        return url;
+    }
+
+    private static String createRedirectionUrl(String token){
+        Uri uri = Uri.parse(BASE_URL).buildUpon()
+                .appendEncodedPath(token)
+                .appendQueryParameter(API_KEY,getApiKey())
+                .build();
+        String url = uri.toString();
+        Timber.v("Created redirect URL: ",url);
         return url;
     }
 
@@ -77,7 +96,7 @@ public class AuthRequest {
     }
 
     // Temporary method for getting api_key_value
-    private String getApiKey() {
+    private static String getApiKey() {
         return Constants.API_KEY_VALUE;
     }
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
@@ -20,8 +21,10 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.admin.moviesapp.R;
+import com.example.admin.moviesapp.ViewServer;
 import com.example.admin.moviesapp.adapters.MoviesAdapter;
 import com.example.admin.moviesapp.database.DbHelper;
+import com.example.admin.moviesapp.events.RedirectionEvent;
 import com.example.admin.moviesapp.helpers.Constants;
 import com.example.admin.moviesapp.helpers.GenresMap;
 import com.example.admin.moviesapp.helpers.SortTypeMap;
@@ -38,6 +41,9 @@ import com.example.admin.moviesapp.ui.RecyclerViewEmptySupport;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
+import timber.log.Timber;
+
 public class MainActivity extends AppCompatActivity implements UpdateListener {
 
     private static final String FIRST_TIME = "first_time";
@@ -51,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     private LinearLayoutManager layoutManager_;
     private RecyclerViewEmptySupport recyclerView_;
     private static Context contextOfApplication_;
+    private RequestManager manager_;
     private boolean mUserSawDrawer = false;
     private int mSelectedId;
     private boolean isActionSelected = false;
@@ -62,11 +69,18 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Register EventBus
+        EventBus.getDefault().register(this);
+
+        // Get instance of RequestManger
+        manager_ = RequestManager.getInstance();
+        // Initialize it by UpdateListener
+        manager_.init(this);
+
         // Initialize the context
         contextOfApplication_ = getApplicationContext();
-
         layoutManager_ = new LinearLayoutManager(this);
-
         recyclerView_ = (RecyclerViewEmptySupport) findViewById(R.id.recycler_view);
         recyclerView_.setEmptyView(this.findViewById(R.id.listview_empty));
 
@@ -152,6 +166,22 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         sendMovieRequest();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
+    private void getSessionId(){
+        manager_.sendMessage(manager_.obtainMessage(States.SESSION_ID_REQUEST));
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
     private void updateEmptyView() {
         if (moviesList_.size() == 0) {
             int status = Util.getConnectionStatus(this);
@@ -172,13 +202,18 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         return contextOfApplication_;
     }
 
-    public void sendMovieRequest(){
-        // Get instance of RequestManger
-        RequestManager manager = RequestManager.getInstance();
-        // Initialize it by UpdateListener
-        manager.init(this);
+    public void onEvent(RedirectionEvent e){
+        Timber.v("Redirection Event");
+        openBrowser(e.getUrl());
+    }
+
+    private void sendMovieRequest(){
         // TODO make reset page when genre is changed!
-        manager.sendMessage(manager.obtainMessage(States.MOVIES_REQUEST,page_));
+        manager_.sendMessage(manager_.obtainMessage(States.MOVIES_REQUEST,page_));
+    }
+
+    private void sendLoginRequest(){
+        manager_.sendMessage(manager_.obtainMessage(States.LOGIN_REQUEST));
     }
 
 
@@ -509,6 +544,10 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
 
         int id = item.getItemId();
 
+        if (id == R.id.action_login){
+            sendLoginRequest();
+        }
+
         if (id == R.id.action_filter) {
             mDrawerLayout.openDrawer(GravityCompat.END);
         }
@@ -539,6 +578,17 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
 
     private void hideDrawer() {
         mDrawerLayout.closeDrawer(GravityCompat.START);
+    }
+
+    private void openBrowser(String link) {
+        Uri url = Uri.parse(link);
+        Intent intent = new Intent(Intent.ACTION_VIEW, url);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        } else {
+            Timber.d("Couldn't call because no receiving apps installed!");
+            Toast.makeText(this, "Couldn't call because no receiving apps installed!", Toast.LENGTH_SHORT);
+        }
     }
 
 }

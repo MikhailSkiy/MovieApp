@@ -40,7 +40,10 @@ public class States {
     public static final int MOVIE_CREDITS_IMAGE_DOWNLOADED = 62;
 
     // Auth requests
-    public static final int TOKEN_REQUEST_RECEIVED = 70;
+    public static final int LOGIN_REQUEST = 70;
+    public static final int TOKEN_REQUEST_RECEIVED = 71;
+    public static final int SESSION_ID_REQUEST = 72;
+    public static final int SESSION_ID_RECEIVED = 73;
 
     // Error msgs starts from 90-99
     public static final int VOLLEY_REQUEST_FAILED = 90;

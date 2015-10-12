@@ -3,6 +3,7 @@ package com.example.admin.moviesapp.managers;
 import android.os.Handler;
 import android.os.Message;
 
+import com.example.admin.moviesapp.events.RedirectionEvent;
 import com.example.admin.moviesapp.events.UpdateCastDetailsImageEvent;
 import com.example.admin.moviesapp.events.UpdateCastDetailsUI;
 import com.example.admin.moviesapp.events.UpdateCastListEvent;
@@ -245,15 +246,37 @@ public class RequestManager extends Handler {
             //endregion
 
             //region Authentication requests
+            case States.LOGIN_REQUEST:
+                Timber.v("LOGIN_REQUEST");
+                AuthRequest authRequest = new AuthRequest(getInstance());
+                authRequest.getRequestToken();
+                break;
+
             case States.TOKEN_REQUEST_RECEIVED:
+                Timber.v("TOKEN_REQUEST_RECEIVED");
                 String requestToken = (String)message.obj;
                 String redirectionUrl = AuthRequest.getRedirectionUrl(requestToken);
                 EventBus.getDefault().post(new RedirectionEvent(redirectionUrl));
+                break;
+
+            case States.SESSION_ID_REQUEST:
+                Timber.v("SESSION_ID_REQUEST");
+                AuthRequest.sendSessionIdRequest();
+                break;
+
+            case States.SESSION_ID_RECEIVED:
+                Timber.v("SESSION_ID_RECEIVED");
+                // Now user can send request for watchlist
+                // And for list of favorites movies
+
+                break;
                 //endregion
+
 
             case States.VOLLEY_REQUEST_FAILED:
                 String errorMsg = (String) message.obj;
                 updateListener_.onErrorRaised(errorMsg);
+                break;
 
             default:
                 break;

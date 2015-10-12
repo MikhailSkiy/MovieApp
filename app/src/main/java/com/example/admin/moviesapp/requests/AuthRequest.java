@@ -1,11 +1,15 @@
 package com.example.admin.moviesapp.requests;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.admin.moviesapp.R;
+import com.example.admin.moviesapp.activities.MainActivity;
 import com.example.admin.moviesapp.helpers.Constants;
 import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.managers.AppController;
@@ -22,6 +26,8 @@ public class AuthRequest {
 
     private static final String BASE_URL = "http://api.themoviedb.org/3/authentication/token/new";
     private static final String REDIRECTION_URL = "https://www.themoviedb.org/authenticate/";
+    private static final String SESSION_ID_BASE_URL = "http://api.themoviedb.org/3/authentication/session/new";
+    private static final String REQUEST_TOKEN_KEY = "request_token";
     private static final String API_KEY = "api_key";
 
     private static RequestManager manager_;
@@ -45,6 +51,37 @@ public class AuthRequest {
     public static String getRedirectionUrl(String token) {
         String redirectionUrl = createRedirectionUrl(token);
         return redirectionUrl;
+    }
+
+    public static void sendSessionIdRequest(){
+        // get token from shared preferences
+        String requestToken = getRequestTokenFromSharedPrefs();
+        // create Url
+        String url = createSessionRequestUrl(requestToken);
+        // send request
+
+    }
+
+    private static void saveRequestTokenInSharedPrefs(String requestToken){
+        SharedPreferences.Editor preferences = MainActivity.getContextOfApplication().getSharedPreferences(MainActivity.getContextOfApplication().getString(R.string.auth), Context.MODE_PRIVATE).edit();
+        preferences.putString(MainActivity.getContextOfApplication().getString(R.string.request_token),requestToken);
+        preferences.commit();
+    }
+
+    private static String getRequestTokenFromSharedPrefs(){
+        SharedPreferences preferences = MainActivity.getContextOfApplication().getSharedPreferences(MainActivity.getContextOfApplication().getString(R.string.auth), Context.MODE_PRIVATE);
+        String requestToken = preferences.getString(MainActivity.getContextOfApplication().getString(R.string.request_token),null);
+        return requestToken;
+    }
+
+    private static String createSessionRequestUrl(String token){
+        Uri uri = Uri.parse(SESSION_ID_BASE_URL).buildUpon()
+                .appendQueryParameter(API_KEY,getApiKey())
+                .appendQueryParameter(REQUEST_TOKEN_KEY, token)
+                .build();
+        String sessionRequestUrl = uri.toString();
+        Timber.v("Created session_id URL",sessionRequestUrl);
+        return sessionRequestUrl;
     }
 
     /**
@@ -81,7 +118,8 @@ public class AuthRequest {
                     @Override
                 public void onResponse(JSONObject response){
                         String responseString = response.toString();
-                        manager_.sendMessage(manager_.obtainMessage(States.TOKEN_REQUEST_RECEIVED,responseString));
+                        String token = getTokenFromJson(responseString);
+                        manager_.sendMessage(manager_.obtainMessage(States.TOKEN_REQUEST_RECEIVED,token));
                     }
                 },
                 new Response.ErrorListener() {
@@ -94,6 +132,34 @@ public class AuthRequest {
                 });
         AppController.getInstance().addToRequestQueue(jsonObjectRequest, tag);
     }
+
+    /**
+     * Sends request to get session_id
+     * @return String session_id
+     */
+    private void getSessionId(final String url){
+        String tag = "session_id_request";
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(JsonObjectRequest.Method.GET,url,
+                new Response.Listener<JSONObject>(){
+                    @Override
+                    public void onResponse(JSONObject response){
+                        String responseString = response.toString();
+                        String session_id = getSessionIdFromJson();
+                        manager_.sendMessage(manager_.obtainMessage(States.SESSION_ID_RECEIVED,session_id));
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        String errorMsg = error.getMessage();
+                        Timber.e(error.getMessage());
+                        manager_.sendMessage(manager_.obtainMessage(States.VOLLEY_REQUEST_FAILED, errorMsg));
+                    }
+                });
+        AppController.getInstance().addToRequestQueue(jsonObjectRequest, tag);
+    }
+
+
 
     // Temporary method for getting api_key_value
     private static String getApiKey() {

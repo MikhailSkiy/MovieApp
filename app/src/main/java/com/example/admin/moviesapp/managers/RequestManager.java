@@ -3,6 +3,7 @@ package com.example.admin.moviesapp.managers;
 import android.os.Handler;
 import android.os.Message;
 
+import com.example.admin.moviesapp.events.AuthCompletedEvent;
 import com.example.admin.moviesapp.events.RedirectionEvent;
 import com.example.admin.moviesapp.events.UpdateCastDetailsImageEvent;
 import com.example.admin.moviesapp.events.UpdateCastDetailsUI;
@@ -254,7 +255,8 @@ public class RequestManager extends Handler {
 
             case States.TOKEN_REQUEST_RECEIVED:
                 Timber.v("TOKEN_REQUEST_RECEIVED");
-                String requestToken = (String)message.obj;
+                String requestToken = (String) message.obj;
+                AuthRequest.saveRequestTokenInSharedPrefs(requestToken);
                 String redirectionUrl = AuthRequest.getRedirectionUrl(requestToken);
                 EventBus.getDefault().post(new RedirectionEvent(redirectionUrl));
                 break;
@@ -268,9 +270,22 @@ public class RequestManager extends Handler {
                 Timber.v("SESSION_ID_RECEIVED");
                 // Now user can send request for watchlist
                 // And for list of favorites movies
-
+                String sessionId = (String)message.obj;
+                AuthRequest.saveSessionIdInSharedPrefs(sessionId);
+                EventBus.getDefault().post(new AuthCompletedEvent());
                 break;
-                //endregion
+
+            case States.ACCOUNT_INFO_REQUEST:
+                Timber.v("ACCOUNT_INFO_REQUEST");
+                // TODO Sent account request to get info about current account
+                break;
+
+            case States.ACCOUNT_REQUEST_COMPLETED:
+                Timber.v("ACCOUNT_REQUEST_COMPLETED");
+                // TODO Send Event with account info to MainActivity to update account info
+                break;
+
+            //endregion
 
 
             case States.VOLLEY_REQUEST_FAILED:

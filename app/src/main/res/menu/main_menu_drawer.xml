@@ -11,6 +11,10 @@
             android:icon="@drawable/ic_heart_outline_grey"
             android:title="@string/favorites_main_menu_item"/>
         <item
+            android:id="@+id/watchlist_menu_btn"
+            android:icon="@drawable/ic_wunderlist_grey"
+            android:title="@string/watchlist_main_menu_item"/>
+        <item
             android:id="@+id/profile_menu_btn"
             android:icon="@drawable/ic_account_circle_grey"
             android:title="@string/profile_main_menu_item"/>

@@ -45,6 +45,10 @@ public class States {
     public static final int SESSION_ID_REQUEST = 72;
     public static final int SESSION_ID_RECEIVED = 73;
 
+    // Account requests
+    public static final int ACCOUNT_INFO_REQUEST = 80;
+    public static final int ACCOUNT_REQUEST_COMPLETED = 81;
+
     // Error msgs starts from 90-99
     public static final int VOLLEY_REQUEST_FAILED = 90;
 }

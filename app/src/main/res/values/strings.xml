@@ -9,6 +9,7 @@
 
     <!--> Values for drawer menu in main activity <-->
     <string name="movies_main_menu_item">Movies</string>
+    <string name="watchlist_main_menu_item">Watchlist</string>
     <string name="favorites_main_menu_item">Favorites</string>
     <string name="profile_main_menu_item">My profile</string>
 

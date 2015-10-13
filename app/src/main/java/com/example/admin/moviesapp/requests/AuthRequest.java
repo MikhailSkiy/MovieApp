@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 
-import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -14,6 +13,9 @@ import com.example.admin.moviesapp.helpers.Constants;
 import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.managers.AppController;
 import com.example.admin.moviesapp.managers.RequestManager;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import org.json.JSONObject;
 
@@ -53,25 +55,55 @@ public class AuthRequest {
         return redirectionUrl;
     }
 
-    public static void sendSessionIdRequest(){
-        // get token from shared preferences
+    public static void sendSessionIdRequest() {
+        // Get token from shared preferences
         String requestToken = getRequestTokenFromSharedPrefs();
-        // create Url
+        // Create Url
         String url = createSessionRequestUrl(requestToken);
-        // send request
-
+        // Send request
+        getSessionId(url);
     }
 
-    private static void saveRequestTokenInSharedPrefs(String requestToken){
-        SharedPreferences.Editor preferences = MainActivity.getContextOfApplication().getSharedPreferences(MainActivity.getContextOfApplication().getString(R.string.auth), Context.MODE_PRIVATE).edit();
+    // Saves request_token in shared preferences
+    public static void saveRequestTokenInSharedPrefs(String requestToken){
+        SharedPreferences.Editor preferences = getAuthSharedPrefsEditor();
         preferences.putString(MainActivity.getContextOfApplication().getString(R.string.request_token),requestToken);
         preferences.commit();
     }
 
+    // Returns request_token from shared preferences
     private static String getRequestTokenFromSharedPrefs(){
-        SharedPreferences preferences = MainActivity.getContextOfApplication().getSharedPreferences(MainActivity.getContextOfApplication().getString(R.string.auth), Context.MODE_PRIVATE);
+        SharedPreferences preferences = getAuthSharedPrefs();
         String requestToken = preferences.getString(MainActivity.getContextOfApplication().getString(R.string.request_token),null);
         return requestToken;
+    }
+
+    // Saves session_id in shared preferences
+    public static void saveSessionIdInSharedPrefs(String sessionId){
+        SharedPreferences.Editor preferences = getAuthSharedPrefsEditor();
+        preferences.putString(MainActivity.getContextOfApplication().getString(R.string.session_id),sessionId);
+        preferences.commit();
+    }
+
+    // Returns session_id from shared preferences
+    private static String getSessionIdFromSharedPrefs(){
+        SharedPreferences preferences = getAuthSharedPrefs();
+        String sessionId = preferences.getString(MainActivity.getContextOfApplication().getString(R.string.session_id), null);
+        return sessionId;
+    }
+
+    // Returns authentification sharedpreferences.editor
+    // for writing data in shared preferences
+    private static SharedPreferences.Editor getAuthSharedPrefsEditor(){
+        SharedPreferences.Editor preferences = MainActivity.getContextOfApplication().getSharedPreferences(MainActivity.getContextOfApplication().getString(R.string.auth), Context.MODE_PRIVATE).edit();
+        return preferences;
+    }
+
+    // Returns authentification sharedpreferences to
+    // get authentification data like request_toke or session_id
+    private static SharedPreferences getAuthSharedPrefs(){
+        SharedPreferences preferences = MainActivity.getContextOfApplication().getSharedPreferences(MainActivity.getContextOfApplication().getString(R.string.auth), Context.MODE_PRIVATE);
+        return preferences;
     }
 
     private static String createSessionRequestUrl(String token){
@@ -98,7 +130,7 @@ public class AuthRequest {
     }
 
     private static String createRedirectionUrl(String token){
-        Uri uri = Uri.parse(BASE_URL).buildUpon()
+        Uri uri = Uri.parse(REDIRECTION_URL).buildUpon()
                 .appendEncodedPath(token)
                 .appendQueryParameter(API_KEY,getApiKey())
                 .build();
@@ -134,17 +166,29 @@ public class AuthRequest {
     }
 
     /**
+     * Parse json result and get request_token from it
+     * @param json
+     * @return request_token
+     */
+    private String getTokenFromJson(String json){
+        JsonElement jsonElement = new JsonParser().parse(json);
+        JsonObject jsonObject = jsonElement.getAsJsonObject();
+        String token = jsonObject.get("request_token").toString().replace("\"","");
+        return token;
+    }
+
+    /**
      * Sends request to get session_id
      * @return String session_id
      */
-    private void getSessionId(final String url){
+    private static void getSessionId(final String url){
         String tag = "session_id_request";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(JsonObjectRequest.Method.GET,url,
                 new Response.Listener<JSONObject>(){
                     @Override
                     public void onResponse(JSONObject response){
                         String responseString = response.toString();
-                        String session_id = getSessionIdFromJson();
+                        String session_id = getSessionIdFromJson(responseString);
                         manager_.sendMessage(manager_.obtainMessage(States.SESSION_ID_RECEIVED,session_id));
                     }
                 },
@@ -159,7 +203,17 @@ public class AuthRequest {
         AppController.getInstance().addToRequestQueue(jsonObjectRequest, tag);
     }
 
-
+    /**
+     * Parse json result and get session_id from it
+     * @param json
+     * @return session_id
+     */
+    private static String getSessionIdFromJson(String json){
+        JsonElement jsonElement = new JsonParser().parse(json);
+        JsonObject jsonObject = jsonElement.getAsJsonObject();
+        String sessionId = jsonObject.get("session_id").toString().replace("\"","");
+        return sessionId;
+    }
 
     // Temporary method for getting api_key_value
     private static String getApiKey() {

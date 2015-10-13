@@ -18,12 +18,16 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import com.example.admin.moviesapp.R;
 import com.example.admin.moviesapp.ViewServer;
 import com.example.admin.moviesapp.adapters.MoviesAdapter;
 import com.example.admin.moviesapp.database.DbHelper;
+import com.example.admin.moviesapp.events.AuthCompletedEvent;
 import com.example.admin.moviesapp.events.RedirectionEvent;
 import com.example.admin.moviesapp.helpers.Constants;
 import com.example.admin.moviesapp.helpers.GenresMap;
@@ -54,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private NavigationView filterNavigationMenu_;
+    private NavigationView mainNavigationMenu_;
     private LinearLayoutManager layoutManager_;
     private RecyclerViewEmptySupport recyclerView_;
     private static Context contextOfApplication_;
@@ -61,14 +66,18 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     private boolean mUserSawDrawer = false;
     private int mSelectedId;
     private boolean isActionSelected = false;
+    private WebView myWebView_;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
     int page_= 1;
+    boolean login = false;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        myWebView_ = (WebView)findViewById(R.id.webview);
 
         //Register EventBus
         EventBus.getDefault().register(this);
@@ -112,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
 
 
         filterNavigationMenu_ = (NavigationView) findViewById(R.id.filter_navigation_menu);
+
         filterNavigationMenu_.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -122,6 +132,16 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
                 moviesAdapter_.notifyDataSetChanged();
 
                 sendMovieRequest();
+                return true;
+            }
+        });
+
+        // The main navigation menu with user-specific actions
+        mainNavigationMenu_ = (NavigationView)findViewById(R.id.main_drawer);
+        mainNavigationMenu_.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                executeSelectedAction(menuItem.getItemId());
                 return true;
             }
         });
@@ -169,7 +189,14 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     @Override
     protected void onResume() {
         super.onResume();
+//        if (!login){
+//           getSessionId();
+//        }
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void getSessionId(){
@@ -207,11 +234,20 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         openBrowser(e.getUrl());
     }
 
-    private void sendMovieRequest(){
-        // TODO make reset page when genre is changed!
-        manager_.sendMessage(manager_.obtainMessage(States.MOVIES_REQUEST,page_));
+    // Called when we got session_id and ready to request
+    // user-specific requests (like get watchlist, favorites movies etc)
+    public void onEvent(AuthCompletedEvent e){
+        Timber.v("Auth Completed!");
+        login = true;
+        Toast.makeText(this,"Auth completed",Toast.LENGTH_LONG).show();
     }
 
+    private void sendMovieRequest(){
+        // TODO make reset page when genre is changed!
+        manager_.sendMessage(manager_.obtainMessage(States.MOVIES_REQUEST, page_));
+    }
+
+    // Sends request to get request_token for authentification
     private void sendLoginRequest(){
         manager_.sendMessage(manager_.obtainMessage(States.LOGIN_REQUEST));
     }
@@ -324,7 +360,6 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
             default:
                 break;
         }
-
     }
 
     private void setSortPreferences(int selectedBtnId, boolean mode) {
@@ -432,8 +467,6 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         } else {
             changeSortBtnState(mSelectedId);
         }
-
-
     }
 
     private void changeGenreBtnState(int btnId) {
@@ -486,6 +519,32 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     private void turnOnAscSortBtn(MenuItem menuItem) {
         menuItem.setIcon(getResources().getDrawable(R.drawable.ic_sort_ascending_grey600_24dp));
         menuItem.setChecked(false);
+    }
+
+    private void executeSelectedAction(int itemId){
+        switch (itemId){
+            case R.id.movies_menu_btn:
+                // TODO Sent movie request
+                break;
+            case R.id.favorites_menu_btn:
+                // TODO Sent favorite request
+                break;
+            case R.id.watchlist_menu_btn:
+                // TODO Sent watchlist request
+                break;
+            case R.id.profile_menu_btn:
+                // TODO Sent profile request or smth like this
+                break;
+            case R.id.about_us_menu_btn:
+                // TODO open About Us activity
+                // Or suggest rate this app in google play
+                break;
+            case R.id.settings_menu_btn:
+                // TODO open Settings activity
+                break;
+            default:
+                break;
+        }
     }
 
 
@@ -580,15 +639,43 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         mDrawerLayout.closeDrawer(GravityCompat.START);
     }
 
-    private void openBrowser(String link) {
-        Uri url = Uri.parse(link);
-        Intent intent = new Intent(Intent.ACTION_VIEW, url);
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
-        } else {
-            Timber.d("Couldn't call because no receiving apps installed!");
-            Toast.makeText(this, "Couldn't call because no receiving apps installed!", Toast.LENGTH_SHORT);
-        }
+    private void openBrowser(String link){
+        myWebView_.setVisibility(View.VISIBLE);
+
+        myWebView_.loadUrl(link);
+        myWebView_.getSettings().setJavaScriptEnabled(true);
+        myWebView_.getSettings().setDomStorageEnabled(true);
+        myWebView_.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+                return true;
+             }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                Timber.v("onPageFinished");
+                if (view.getTitle().equals("Authentication Granted — The Movie Database (TMDb)")){
+                    myWebView_.setVisibility(View.GONE);
+                    Toast.makeText(MainActivity.this, "You have logged in", Toast.LENGTH_SHORT).show();
+                    manager_.sendMessage(manager_.obtainMessage(States.SESSION_ID_REQUEST));
+                }
+            }
+
+         });
+
+
     }
+
+//    private void openBrowser(String link) {
+//        Uri url = Uri.parse(link);
+//        Intent intent = new Intent(Intent.ACTION_VIEW, url);
+//        if (intent.resolveActivity(getPackageManager()) != null) {
+//            startActivity(intent);
+//        } else {
+//            Timber.d("Couldn't call because no receiving apps installed!");
+//            Toast.makeText(this, "Couldn't call because no receiving apps installed!", Toast.LENGTH_SHORT);
+//        }
+//    }
 
 }

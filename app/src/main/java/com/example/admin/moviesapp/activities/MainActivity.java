@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
@@ -21,17 +20,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.admin.moviesapp.R;
-import com.example.admin.moviesapp.ViewServer;
 import com.example.admin.moviesapp.adapters.MoviesAdapter;
 import com.example.admin.moviesapp.database.DbHelper;
 import com.example.admin.moviesapp.events.AuthCompletedEvent;
 import com.example.admin.moviesapp.events.RedirectionEvent;
+import com.example.admin.moviesapp.events.ShowWatchlistEvent;
+import com.example.admin.moviesapp.events.UpdateUserProfileEvent;
 import com.example.admin.moviesapp.helpers.Constants;
 import com.example.admin.moviesapp.helpers.GenresMap;
-import com.example.admin.moviesapp.helpers.SortTypeMap;
 import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.helpers.Util;
 import com.example.admin.moviesapp.interfaces.MovieItemClickListener;
@@ -40,6 +41,8 @@ import com.example.admin.moviesapp.managers.RequestManager;
 import com.example.admin.moviesapp.models.CommonMovie;
 import com.example.admin.moviesapp.models.Movie;
 import com.example.admin.moviesapp.models.Trailer;
+import com.example.admin.moviesapp.models.UserAccountInfo;
+import com.example.admin.moviesapp.requests.WatchlistRequest;
 import com.example.admin.moviesapp.ui.RecyclerViewEmptySupport;
 
 import java.util.ArrayList;
@@ -61,6 +64,9 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     private NavigationView mainNavigationMenu_;
     private LinearLayoutManager layoutManager_;
     private RecyclerViewEmptySupport recyclerView_;
+    private ImageView userAvatar_;
+    private TextView userNickname_;
+    private TextView name_;
     private static Context contextOfApplication_;
     private RequestManager manager_;
     private boolean mUserSawDrawer = false;
@@ -70,7 +76,6 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     int pastVisiblesItems, visibleItemCount, totalItemCount;
     int page_= 1;
     boolean login = false;
-
 
 
     @Override
@@ -189,15 +194,8 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     @Override
     protected void onResume() {
         super.onResume();
-//        if (!login){
-//           getSessionId();
-//        }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-    }
 
     private void getSessionId(){
         manager_.sendMessage(manager_.obtainMessage(States.SESSION_ID_REQUEST));
@@ -236,10 +234,57 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
 
     // Called when we got session_id and ready to request
     // user-specific requests (like get watchlist, favorites movies etc)
+    // TODO delete this Event because of useless
     public void onEvent(AuthCompletedEvent e){
         Timber.v("Auth Completed!");
         login = true;
         Toast.makeText(this,"Auth completed",Toast.LENGTH_LONG).show();
+    }
+
+    // Called when we got account_id and ready to request
+    // user-specific requests (like get watchlist, favorites movies etc)
+    public void onEvent(UpdateUserProfileEvent e){
+        Timber.d("UserUpdateEvent");
+        login = true;
+        updateUserProfile(e.getUserAccountInfo());
+    }
+
+    public void onEvent(ShowWatchlistEvent e){
+        // TODO update watchlist
+    }
+
+    private void updateUserProfile(UserAccountInfo userInfo) {
+        showAvatar();
+        // Show user's nickname
+        if (userInfo.getUserNickname() != null) {
+            showUserNickname(userInfo.getUserNickname());
+        }
+
+        // Show name
+        if (userInfo.getName() != null) {
+            showName(userInfo.getName());
+        }
+    }
+
+    // Shows users avatar
+    // Now just make placeholder with avatar visible
+    private void showAvatar() {
+        userAvatar_ = (ImageView) findViewById(R.id.avatar);
+        userAvatar_.setVisibility(View.VISIBLE);
+    }
+
+    // Shows user nickname
+    private void showUserNickname(String nickname){
+        userNickname_ = (TextView)findViewById(R.id.user_nick_name);
+        userNickname_.setVisibility(View.VISIBLE);
+        userNickname_.setText(nickname);
+    }
+
+    // Show name
+    private void showName(String name){
+        name_ = (TextView) findViewById(R.id.name);
+        name_.setText(name);
+        name_.setVisibility(View.VISIBLE);
     }
 
     private void sendMovieRequest(){

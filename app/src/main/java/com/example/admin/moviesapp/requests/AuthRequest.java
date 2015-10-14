@@ -10,6 +10,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.admin.moviesapp.R;
 import com.example.admin.moviesapp.activities.MainActivity;
 import com.example.admin.moviesapp.helpers.Constants;
+import com.example.admin.moviesapp.helpers.SharedPrefUtil;
 import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.managers.AppController;
 import com.example.admin.moviesapp.managers.RequestManager;
@@ -57,53 +58,11 @@ public class AuthRequest {
 
     public static void sendSessionIdRequest() {
         // Get token from shared preferences
-        String requestToken = getRequestTokenFromSharedPrefs();
+        String requestToken = SharedPrefUtil.getRequestTokenFromSharedPrefs();
         // Create Url
         String url = createSessionRequestUrl(requestToken);
         // Send request
         getSessionId(url);
-    }
-
-    // Saves request_token in shared preferences
-    public static void saveRequestTokenInSharedPrefs(String requestToken){
-        SharedPreferences.Editor preferences = getAuthSharedPrefsEditor();
-        preferences.putString(MainActivity.getContextOfApplication().getString(R.string.request_token),requestToken);
-        preferences.commit();
-    }
-
-    // Returns request_token from shared preferences
-    private static String getRequestTokenFromSharedPrefs(){
-        SharedPreferences preferences = getAuthSharedPrefs();
-        String requestToken = preferences.getString(MainActivity.getContextOfApplication().getString(R.string.request_token),null);
-        return requestToken;
-    }
-
-    // Saves session_id in shared preferences
-    public static void saveSessionIdInSharedPrefs(String sessionId){
-        SharedPreferences.Editor preferences = getAuthSharedPrefsEditor();
-        preferences.putString(MainActivity.getContextOfApplication().getString(R.string.session_id),sessionId);
-        preferences.commit();
-    }
-
-    // Returns session_id from shared preferences
-    private static String getSessionIdFromSharedPrefs(){
-        SharedPreferences preferences = getAuthSharedPrefs();
-        String sessionId = preferences.getString(MainActivity.getContextOfApplication().getString(R.string.session_id), null);
-        return sessionId;
-    }
-
-    // Returns authentification sharedpreferences.editor
-    // for writing data in shared preferences
-    private static SharedPreferences.Editor getAuthSharedPrefsEditor(){
-        SharedPreferences.Editor preferences = MainActivity.getContextOfApplication().getSharedPreferences(MainActivity.getContextOfApplication().getString(R.string.auth), Context.MODE_PRIVATE).edit();
-        return preferences;
-    }
-
-    // Returns authentification sharedpreferences to
-    // get authentification data like request_toke or session_id
-    private static SharedPreferences getAuthSharedPrefs(){
-        SharedPreferences preferences = MainActivity.getContextOfApplication().getSharedPreferences(MainActivity.getContextOfApplication().getString(R.string.auth), Context.MODE_PRIVATE);
-        return preferences;
     }
 
     private static String createSessionRequestUrl(String token){
@@ -140,7 +99,7 @@ public class AuthRequest {
     }
 
     /**
-     * Sends request to get request toekn for authentication
+     * Sends request to get request token for authentication
      * @param url
      */
     private void requestToken(final String url){

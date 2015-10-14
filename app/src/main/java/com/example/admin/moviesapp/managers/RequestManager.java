@@ -5,6 +5,7 @@ import android.os.Message;
 
 import com.example.admin.moviesapp.events.AuthCompletedEvent;
 import com.example.admin.moviesapp.events.RedirectionEvent;
+import com.example.admin.moviesapp.events.ShowWatchlistEvent;
 import com.example.admin.moviesapp.events.UpdateCastDetailsImageEvent;
 import com.example.admin.moviesapp.events.UpdateCastDetailsUI;
 import com.example.admin.moviesapp.events.UpdateCastListEvent;
@@ -12,6 +13,8 @@ import com.example.admin.moviesapp.events.UpdateMovieCreditsListEvent;
 import com.example.admin.moviesapp.events.UpdateMovieDescriptionUI;
 import com.example.admin.moviesapp.events.UpdateMovieDetailsImageEvent;
 import com.example.admin.moviesapp.events.UpdateMovieTrailersUI;
+import com.example.admin.moviesapp.events.UpdateUserProfileEvent;
+import com.example.admin.moviesapp.helpers.SharedPrefUtil;
 import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.interfaces.UpdateListener;
 import com.example.admin.moviesapp.models.Cast;
@@ -21,6 +24,8 @@ import com.example.admin.moviesapp.models.Movie;
 import com.example.admin.moviesapp.models.MovieCredits;
 import com.example.admin.moviesapp.models.MovieDetails;
 import com.example.admin.moviesapp.models.Trailer;
+import com.example.admin.moviesapp.models.UserAccountInfo;
+import com.example.admin.moviesapp.requests.AccountRequest;
 import com.example.admin.moviesapp.requests.AuthRequest;
 import com.example.admin.moviesapp.requests.CastDetailsRequest;
 import com.example.admin.moviesapp.requests.CastsRequest;
@@ -256,7 +261,7 @@ public class RequestManager extends Handler {
             case States.TOKEN_REQUEST_RECEIVED:
                 Timber.v("TOKEN_REQUEST_RECEIVED");
                 String requestToken = (String) message.obj;
-                AuthRequest.saveRequestTokenInSharedPrefs(requestToken);
+                SharedPrefUtil.saveRequestTokenInSharedPrefs(requestToken);
                 String redirectionUrl = AuthRequest.getRedirectionUrl(requestToken);
                 EventBus.getDefault().post(new RedirectionEvent(redirectionUrl));
                 break;
@@ -271,8 +276,11 @@ public class RequestManager extends Handler {
                 // Now user can send request for watchlist
                 // And for list of favorites movies
                 String sessionId = (String)message.obj;
-                AuthRequest.saveSessionIdInSharedPrefs(sessionId);
-                EventBus.getDefault().post(new AuthCompletedEvent());
+                SharedPrefUtil.saveSessionIdInSharedPrefs(sessionId);
+                //EventBus.getDefault().post(new AuthCompletedEvent());
+                // Send AccountRequest to get account_id and other user info
+                AccountRequest accountRequest = new AccountRequest(getInstance());
+                accountRequest.getAccountInfo();
                 break;
 
             case States.ACCOUNT_INFO_REQUEST:
@@ -282,11 +290,40 @@ public class RequestManager extends Handler {
 
             case States.ACCOUNT_REQUEST_COMPLETED:
                 Timber.v("ACCOUNT_REQUEST_COMPLETED");
-                // TODO Send Event with account info to MainActivity to update account info
+                UserAccountInfo accountInfo = (UserAccountInfo)message.obj;
+                // Save account_id in Shared Prefs for future usages (watchlist, favorite etc)
+                SharedPrefUtil.saveAccountIdInSharedPrefs(accountInfo.getUserId());
+                // Send Update event with account info to MainActivity to update account info
+                EventBus.getDefault().post(new UpdateUserProfileEvent(accountInfo));
+                break;
+            //endregion
+
+            //region Watchlist request
+            case States.WATCHLIST_REQUEST:
+                Timber.v("WATCHLIST_REQUEST");
+                // TODO Sent watchlist request
+                break;
+
+            case States.WATCHLIST_REQUEST_COMPLETED:
+                Timber.v("WATCHLIST_REQUEST_COMPLETED");
+                List<Movie> movies = (List<Movie>)message.obj;
+                // Update Main activity. Show watchlist.
+                EventBus.getDefault().post(new ShowWatchlistEvent(movies));
+                break;
+            //endregion
+
+            //region
+            case States.FAVORITES_REQUEST:
+                Timber.v("FAVORITES_REQUEST");
+                // TODO Sent favotites request
+                break;
+
+            case States.FAVORITES_REQUEST_COMPLETED:
+                Timber.v("FAVORITES_REQUEST_COMPLETED");
+                // TODO Update Main activity. Show favorites
                 break;
 
             //endregion
-
 
             case States.VOLLEY_REQUEST_FAILED:
                 String errorMsg = (String) message.obj;

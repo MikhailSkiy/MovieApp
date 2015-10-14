@@ -2,10 +2,10 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="162dp"
-                android:background="@color/primary"
-                android:orientation="vertical"
                 android:alpha="0.8"
+                android:background="@color/primary"
                 android:fitsSystemWindows="true"
+                android:orientation="vertical"
                 android:paddingTop="@dimen/status_bar_height"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
@@ -13,26 +13,32 @@
         android:id="@+id/avatar"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:layout_margin="@dimen/spacing_large"
+        android:layout_marginTop="@dimen/spacing_large"
+        android:layout_marginLeft="12dp"
+        android:visibility="invisible"
         android:src="@drawable/ic_account_circle_grey"/>
 
     <TextView
+        android:id="@+id/user_nick_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/email"
+        android:layout_above="@+id/name"
         android:layout_marginLeft="@dimen/spacing_large"
         android:layout_marginStart="@dimen/spacing_large"
         android:text="Username"
+        android:visibility="invisible"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"/>
+
     <TextView
-        android:id="@+id/email"
+        android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/spacing_large"
         android:layout_marginLeft="@dimen/spacing_large"
         android:layout_marginStart="@dimen/spacing_large"
-        android:layout_marginBottom="@dimen/spacing_large"
-        android:text="username@mymail.com"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+        android:text="name"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:visibility="invisible"/>
 
 </RelativeLayout>

@@ -121,6 +121,7 @@
     <string name="auth" translatable="false">auth</string>
     <string name="request_token" translatable="false">request_token</string>
     <string name="session_id" translatable="false">session_id</string>
+    <string name="account_id" translatable="false">account_id</string>
 
     <!-- Empty Movies -->
     <string name="empty_movie_list_and_no_connection">No Movie Information Available. Check your internet connection.</string>">

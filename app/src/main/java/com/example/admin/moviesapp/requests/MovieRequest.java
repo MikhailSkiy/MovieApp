@@ -79,8 +79,6 @@ public class MovieRequest implements RequestFactory {
         postGetRequest(url);
     }
 
-
-
     public static void getMovieObjects(String response) {
         List<Movie> moviesList = getMoviesFromJson(response);
         manager_.sendMessage(manager_.obtainMessage(States.MOVIES_REQUEST_WAS_PARSED, moviesList));
@@ -119,9 +117,6 @@ public class MovieRequest implements RequestFactory {
         }
         return builtList;
     }
-
-
-
 
     // Creates url for movies request
     private String createMoviesUrl() {
@@ -212,7 +207,6 @@ public class MovieRequest implements RequestFactory {
         return entry;
     }
 
-    // use GSON for parsing request
     private static List<Movie> getMoviesFromJson(String response) {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setDateFormat("M/d/yy hh:mm a");
@@ -226,7 +220,6 @@ public class MovieRequest implements RequestFactory {
         JsonObject jsonObject = parser.parse(response).getAsJsonObject();
         JsonElement resultsElement = jsonObject.get("results");
         movies = (List<Movie>) gson.fromJson(resultsElement, listType);
-
         return movies;
     }
 

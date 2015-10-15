@@ -6,7 +6,6 @@
     <style name="BaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/primary</item> 
         <item name="colorPrimaryDark">@color/primary_dark</item> 
-        <item name="colorControlHighlight">@color/accent_translucent</item> 
         <item name="colorAccent">@color/accent</item>
         <item name="selectableItemBackground">@drawable/selectable_item_background</item>
         <item name="android:selectableItemBackground">@drawable/selectable_item_background</item>
@@ -24,6 +23,46 @@
         <item name="rippleColor">@android:color/white</item>
     </style>
 
+    <style name="FavoriteFabStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">90dp</item>
+        <item name="android:layout_marginRight">@dimen/fab_compat_margin</item>
+        <item name="android:src">@drawable/ic_heart_outline_grey</item>
+        <item name="borderWidth">1dp</item>
+        <item name="elevation">6dp</item>
+        <item name="android:paddingBottom">20dp</item>
+        <item name="pressedTranslationZ">12dp</item>
+        <item name="rippleColor">@android:color/white</item>
+    </style>
+
+    <style name="AddToWatchlistFabStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">66dp</item>
+        <item name="android:layout_marginRight">60dp</item>
+        <item name="android:src">@drawable/ic_wunderlist_grey</item>
+        <item name="borderWidth">1dp</item>
+        <item name="elevation">6dp</item>
+        <item name="android:paddingBottom">20dp</item>
+        <item name="pressedTranslationZ">12dp</item>
+        <item name="rippleColor">@android:color/white</item>
+    </style>
+
+    <style name="AddToListFabStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginRight">78dp</item>
+        <item name="android:layout_marginBottom">@dimen/fab_compat_margin</item>
+        <item name="android:src">@drawable/ic_playlist_play_grey</item>
+        <item name="borderWidth">1dp</item>
+        <item name="elevation">6dp</item>
+        <item name="android:paddingBottom">20dp</item>
+        <item name="pressedTranslationZ">12dp</item>
+        <item name="rippleColor">@android:color/white</item>
+    </style>
+
+    <color name="orange">#F4511E</color>
     <color name="primary">#00BCD4</color>
     <color name="primary_dark">#0097A7</color>
     <color name="accent">#FFEB3B</color>

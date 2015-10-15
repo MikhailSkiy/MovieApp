@@ -37,6 +37,9 @@ import com.example.admin.moviesapp.models.Cast;
 import com.example.admin.moviesapp.models.CommonMovie;
 import com.example.admin.moviesapp.models.MovieDetails;
 import com.example.admin.moviesapp.models.Trailer;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
+import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 
 import java.util.List;
 
@@ -57,6 +60,11 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
     private MovieDetailsViewPager mAdapter;
     private TabLayout mTabLayout;
     private CoordinatorLayout mCoordinator;
+    private FloatingActionButton mainFloatingActionButton_;
+    private FloatingActionButton addToFavoriteFloatingActionSubButton_;
+    private FloatingActionButton addToWatchlistFloatingActionSubButton_;
+    private FloatingActionButton addToListFloatingActionSubButton_;
+
 
     private CardView movieCard_;
 
@@ -81,8 +89,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         Timber.v(Long.toString(selectedMovieId_));
 
         cover_ = (ImageView) findViewById(R.id.coverImage);
-
         movieCard_ = (CardView) findViewById(R.id.movie_card);
+        setupFAB();
 
 
         String itemTitle = "Item Name";
@@ -108,6 +116,55 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
 
         ViewServer.get(this).addWindow(this);
     }
+
+
+    private void setupFAB(){
+        ImageView icon = new ImageView(this); // Create an icon
+        icon.setImageDrawable(this.getDrawable(R.drawable.ic_add_black));
+        FloatingActionButton actionButton = new FloatingActionButton.Builder(this)
+                .setContentView(icon)
+                .build();
+
+
+        SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
+// repeat many times:
+        ImageView itemIcon = new ImageView(this);
+        itemIcon.setImageDrawable(this.getDrawable(R.drawable.ic_playlist_play_grey));
+        SubActionButton button1 = itemBuilder.setContentView(itemIcon).build();
+
+        ImageView itemIcon2 = new ImageView(this);
+        itemIcon2.setImageDrawable(this.getDrawable(R.drawable.ic_wunderlist_grey));
+        SubActionButton button2 = itemBuilder.setContentView(itemIcon2).build();
+
+        ImageView itemIcon3 = new ImageView(this);
+        itemIcon3.setImageDrawable(this.getDrawable(R.drawable.ic_heart_outline_grey));
+        SubActionButton button3 = itemBuilder.setContentView(itemIcon3).build();
+
+        FloatingActionMenu actionMenu = new FloatingActionMenu.Builder(this)
+                .addSubActionView(button1)
+                .addSubActionView(button2)
+                .addSubActionView(button3)
+                .attachTo(actionButton)
+                .build();
+    }
+
+//    private void setupFAB() {
+//        mainFloatingActionButton_ = (FloatingActionButton) findViewById(R.id.main_fab);
+//        // Init all subbuttons
+//        addToFavoriteFloatingActionSubButton_ = (FloatingActionButton)findViewById(R.id.favorite_fab);
+//        addToWatchlistFloatingActionSubButton_ = (FloatingActionButton)findViewById(R.id.watchlist_fab);
+//        addToListFloatingActionSubButton_ = (FloatingActionButton)findViewById(R.id.list_fab);
+//
+//        mainFloatingActionButton_.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                addToFavoriteFloatingActionSubButton_.setVisibility(View.VISIBLE);
+//                addToWatchlistFloatingActionSubButton_.setVisibility(View.VISIBLE);
+//                addToListFloatingActionSubButton_.setVisibility(View.VISIBLE);
+//            }
+//        });
+//
+//    }
 
     public void onEvent(UpdateMovieDetailsImageEvent e){
         Timber.v("Event in activity");

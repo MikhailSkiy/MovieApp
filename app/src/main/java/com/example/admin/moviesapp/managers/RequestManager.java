@@ -25,15 +25,18 @@ import com.example.admin.moviesapp.models.MovieCredits;
 import com.example.admin.moviesapp.models.MovieDetails;
 import com.example.admin.moviesapp.models.Trailer;
 import com.example.admin.moviesapp.models.UserAccountInfo;
+import com.example.admin.moviesapp.requests.AbstarctMovieRequest;
 import com.example.admin.moviesapp.requests.AccountRequest;
 import com.example.admin.moviesapp.requests.AuthRequest;
 import com.example.admin.moviesapp.requests.CastDetailsRequest;
 import com.example.admin.moviesapp.requests.CastsRequest;
+import com.example.admin.moviesapp.requests.FavoriteRequest;
 import com.example.admin.moviesapp.requests.ImageRequest;
 import com.example.admin.moviesapp.requests.MovieCreditsRequest;
 import com.example.admin.moviesapp.requests.MovieDetailsRequest;
 import com.example.admin.moviesapp.requests.MovieRequest;
 import com.example.admin.moviesapp.requests.TrailerRequest;
+import com.example.admin.moviesapp.requests.WatchlistRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -136,7 +139,6 @@ public class RequestManager extends Handler {
                 EventBus.getDefault().post(new UpdateMovieDescriptionUI(movieDetailsWithCover));
                 EventBus.getDefault().post(new UpdateMovieDetailsImageEvent(movieDetailsWithCover));
                 //  updateListener_.onUpdate(moviesWithCover);
-
                 break;
 
             //region Trailers requests
@@ -301,26 +303,34 @@ public class RequestManager extends Handler {
             //region Watchlist request
             case States.WATCHLIST_REQUEST:
                 Timber.v("WATCHLIST_REQUEST");
-                // TODO Sent watchlist request
+                AbstarctMovieRequest watchlistRequest = new WatchlistRequest(getInstance());
+                watchlistRequest.sendHttpRequest();
                 break;
 
             case States.WATCHLIST_REQUEST_COMPLETED:
                 Timber.v("WATCHLIST_REQUEST_COMPLETED");
                 List<Movie> movies = (List<Movie>)message.obj;
+                for (counter = 0;counter<movies.size();counter++){
+                    imageRequest.postImageRequest(movies.get(counter));
+                }
                 // Update Main activity. Show watchlist.
-                EventBus.getDefault().post(new ShowWatchlistEvent(movies));
+                //EventBus.getDefault().post(new ShowWatchlistEvent(movies));
                 break;
             //endregion
 
             //region
             case States.FAVORITES_REQUEST:
                 Timber.v("FAVORITES_REQUEST");
-                // TODO Sent favotites request
+                AbstarctMovieRequest favoriteRequest = new FavoriteRequest(getInstance());
+                favoriteRequest.sendHttpRequest();
                 break;
 
             case States.FAVORITES_REQUEST_COMPLETED:
                 Timber.v("FAVORITES_REQUEST_COMPLETED");
-                // TODO Update Main activity. Show favorites
+                List<Movie> favoriteMovies = (List<Movie>)message.obj;
+                for (counter = 0;counter<favoriteMovies.size();counter++){
+                    imageRequest.postImageRequest(favoriteMovies.get(counter));
+                }
                 break;
 
             //endregion

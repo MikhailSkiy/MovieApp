@@ -85,11 +85,39 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        style="@style/FabStyle"
-        android:layout_gravity="bottom|right"
-        android:layout_margin="@dimen/spacing_large"
-        app:layout_behavior="com.example.admin.moviesapp.ui.ScrollAwareFABBehavior"/>
+
+
+    <!--<android.support.design.widget.FloatingActionButton-->
+        <!--android:id="@+id/favorite_fab"-->
+        <!--style="@style/FavoriteFabStyle"-->
+        <!--android:layout_gravity="bottom|right"-->
+        <!--app:fabSize="mini"-->
+        <!--android:visibility="gone"-->
+        <!--app:layout_behavior="com.example.admin.moviesapp.ui.ScrollAwareFABBehavior"/>-->
+
+    <!--<android.support.design.widget.FloatingActionButton-->
+        <!--android:id="@+id/watchlist_fab"-->
+        <!--style="@style/AddToWatchlistFabStyle"-->
+        <!--app:fabSize="mini"-->
+        <!--android:visibility="gone"-->
+        <!--android:layout_gravity="bottom|right"-->
+        <!--app:layout_behavior="com.example.admin.moviesapp.ui.ScrollAwareFABBehavior"/>-->
+
+    <!--<android.support.design.widget.FloatingActionButton-->
+        <!--android:id="@+id/list_fab"-->
+        <!--style="@style/AddToListFabStyle"-->
+        <!--app:fabSize="mini"-->
+        <!--android:layout_gravity="bottom|right"-->
+        <!--android:visibility="gone"-->
+        <!--app:layout_behavior="com.example.admin.moviesapp.ui.ScrollAwareFABBehavior"/>-->
+
+    <!--<android.support.design.widget.FloatingActionButton-->
+        <!--android:id="@+id/main_fab"-->
+        <!--style="@style/FabStyle"-->
+        <!--android:layout_gravity="bottom|right"-->
+        <!--android:layout_margin="@dimen/spacing_large"-->
+        <!--app:layout_behavior="com.example.admin.moviesapp.ui.ScrollAwareFABBehavior"/>-->
+
+
 
 </android.support.design.widget.CoordinatorLayout>

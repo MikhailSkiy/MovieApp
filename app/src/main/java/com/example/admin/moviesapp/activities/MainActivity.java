@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     private boolean isActionSelected = false;
     private WebView myWebView_;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
-    int page_= 1;
+    int page_ = 1;
     boolean login = false;
 
 
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        myWebView_ = (WebView)findViewById(R.id.webview);
+        myWebView_ = (WebView) findViewById(R.id.webview);
 
         //Register EventBus
         EventBus.getDefault().register(this);
@@ -111,13 +111,13 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
             }
         });
 
-        recyclerView_.setOnScrollListener(new RecyclerView.OnScrollListener(){
+        recyclerView_.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-        public void onScrolled(RecyclerView recyclerView1,int dx,int dy){
+            public void onScrolled(RecyclerView recyclerView1, int dx, int dy) {
                 visibleItemCount = layoutManager_.getChildCount();
                 totalItemCount = layoutManager_.getItemCount();
                 pastVisiblesItems = layoutManager_.findFirstVisibleItemPosition();
-                if ((visibleItemCount +pastVisiblesItems)>=totalItemCount){
+                if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
                     page_++;
                     sendMovieRequest();
                 }
@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         });
 
         // The main navigation menu with user-specific actions
-        mainNavigationMenu_ = (NavigationView)findViewById(R.id.main_drawer);
+        mainNavigationMenu_ = (NavigationView) findViewById(R.id.main_drawer);
         mainNavigationMenu_.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     }
 
 
-    private void getSessionId(){
+    private void getSessionId() {
         manager_.sendMessage(manager_.obtainMessage(States.SESSION_ID_REQUEST));
     }
 
@@ -227,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         return contextOfApplication_;
     }
 
-    public void onEvent(RedirectionEvent e){
+    public void onEvent(RedirectionEvent e) {
         Timber.v("Redirection Event");
         openBrowser(e.getUrl());
     }
@@ -235,23 +235,26 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     // Called when we got session_id and ready to request
     // user-specific requests (like get watchlist, favorites movies etc)
     // TODO delete this Event because of useless
-    public void onEvent(AuthCompletedEvent e){
+    public void onEvent(AuthCompletedEvent e) {
         Timber.v("Auth Completed!");
         login = true;
-        Toast.makeText(this,"Auth completed",Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Auth completed", Toast.LENGTH_LONG).show();
     }
 
     // Called when we got account_id and ready to request
     // user-specific requests (like get watchlist, favorites movies etc)
-    public void onEvent(UpdateUserProfileEvent e){
+    public void onEvent(UpdateUserProfileEvent e) {
         Timber.d("UserUpdateEvent");
         login = true;
         updateUserProfile(e.getUserAccountInfo());
     }
 
-    public void onEvent(ShowWatchlistEvent e){
-        // TODO update watchlist
-    }
+//    public void onEvent(ShowWatchlistEvent e){
+//        // TODO update watchlist
+//        for (int i = 0; i < e.getMovies().size(); i++) {
+//            moviesAdapter_.addMovie(e.getMovies().get(i));
+//        }
+//    }
 
     private void updateUserProfile(UserAccountInfo userInfo) {
         showAvatar();
@@ -274,42 +277,40 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     }
 
     // Shows user nickname
-    private void showUserNickname(String nickname){
-        userNickname_ = (TextView)findViewById(R.id.user_nick_name);
+    private void showUserNickname(String nickname) {
+        userNickname_ = (TextView) findViewById(R.id.user_nick_name);
         userNickname_.setVisibility(View.VISIBLE);
         userNickname_.setText(nickname);
     }
 
     // Show name
-    private void showName(String name){
+    private void showName(String name) {
         name_ = (TextView) findViewById(R.id.name);
         name_.setText(name);
         name_.setVisibility(View.VISIBLE);
     }
 
-    private void sendMovieRequest(){
+    private void sendMovieRequest() {
         // TODO make reset page when genre is changed!
+        if (moviesList_!=null){
+            moviesList_.clear();
+        }
         manager_.sendMessage(manager_.obtainMessage(States.MOVIES_REQUEST, page_));
     }
 
     // Sends request to get request_token for authentification
-    private void sendLoginRequest(){
+    private void sendLoginRequest() {
         manager_.sendMessage(manager_.obtainMessage(States.LOGIN_REQUEST));
     }
-
 
     @Override
     public void onUpdate(List<? extends CommonMovie> resultList) {
         List<Movie> movies = (List<Movie>) resultList;
-//        if (movies.size() == 0){
-//            recyclerView_.setEmptyView(this.findViewById(R.id.listview_empty));
-//        }
         for (int i = 0; i < movies.size(); i++) {
             moviesAdapter_.addMovie(movies.get(i));
             // Add items into database
             //helper_.addMovie(movies.get(i));
         }
-
     }
 
     private int getGenreValue(String genreName, boolean mode) {
@@ -318,13 +319,13 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         return id;
     }
 
-    private String getSortType(String sortName, boolean mode){
+    private String getSortType(String sortName, boolean mode) {
         String type = (mode == true) ? "desc" : "asc";
         return type;
     }
 
     private void setFilterPreferences(int selectedBtnId, boolean mode) {
-        String genreName="";
+        String genreName = "";
         switch (selectedBtnId) {
             case R.id.action_btn:
                 genreName = Util.getStringResource(R.string.action_key);
@@ -416,7 +417,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
                 setSelectedSortingType("vote_average", getSortType("vote_average", mode));
                 break;
             case R.id.revenue_filter_menu_btn:
-                setSelectedSortingType("revenue",getSortType("revenue",mode));
+                setSelectedSortingType("revenue", getSortType("revenue", mode));
                 break;
             default:
                 break;
@@ -439,12 +440,12 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     private void setSelectedSortingType(String key, String sortType) {
         SharedPreferences preferences = this.getSharedPreferences(getString(R.string.filter_preferences), this.MODE_PRIVATE);
         SharedPreferences.Editor preferenceEditor = preferences.edit();
-        preferenceEditor.putString("Sort_type",key);
+        preferenceEditor.putString("Sort_type", key);
         preferenceEditor.putString(key, sortType);
         preferenceEditor.commit();
     }
 
-    private void restoreFilterMenu(){
+    private void restoreFilterMenu() {
         restoreGenresSubMenu();
         restoreSortingSubMenu();
     }
@@ -466,14 +467,14 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         }
     }
 
-    private void restoreSortingSubMenu(){
+    private void restoreSortingSubMenu() {
         Menu menu = filterNavigationMenu_.getMenu();
 
         Context applicationContext = MainActivity.getContextOfApplication();
         SharedPreferences sharedPreferences = applicationContext.getSharedPreferences(applicationContext.getString(R.string.filter_preferences), Context.MODE_PRIVATE);
 
-        String sortType = sharedPreferences.getString("Sort_type","popularity");
-        String sortValue = sharedPreferences.getString(sortType,"desc");
+        String sortType = sharedPreferences.getString("Sort_type", "popularity");
+        String sortValue = sharedPreferences.getString(sortType, "desc");
 
         if (sortType.equals("popularity")) {
             MenuItem item = menu.findItem(R.id.popularity_filter_menu_btn);
@@ -491,7 +492,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
             }
         } else if (sortType.equals("revenue")) {
             MenuItem item = menu.findItem(R.id.revenue_filter_menu_btn);
-            if (sortValue == "desc"){
+            if (sortValue == "desc") {
                 turnOnDescSortBtn(item);
             } else {
                 turnOnAscSortBtn(item);
@@ -545,10 +546,10 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         MenuItem selectedMenuItem = filterNavigationMenu_.getMenu().findItem(btnId);
         if (!isBtnChecked) {
             turnOnDescSortBtn(selectedMenuItem);
-            setSortPreferences(btnId,true);
+            setSortPreferences(btnId, true);
         } else {
             turnOnAscSortBtn(selectedMenuItem);
-            setSortPreferences(btnId,false);
+            setSortPreferences(btnId, false);
         }
 
         // Tricky solution http://stackoverflow.com/questions/31181024/cant-change-icons-for-subitems-in-navigationview
@@ -566,17 +567,29 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         menuItem.setChecked(false);
     }
 
-    private void executeSelectedAction(int itemId){
-        switch (itemId){
+    // Handle click buttons on main navigation menu
+    private void executeSelectedAction(int itemId) {
+        mainNavigationMenu_.getMenu().findItem(itemId).setChecked(true);
+        switch (itemId) {
+            // Show all movies
             case R.id.movies_menu_btn:
-                // TODO Sent movie request
+
+                sendMovieRequest();
                 break;
+
+            // For favorite movies request user should be logged in
+            // TODO add check that user have logged in
             case R.id.favorites_menu_btn:
-                // TODO Sent favorite request
+
+                sendUserSpecificRequest(States.FAVORITES_REQUEST);
                 break;
+
+            // For watchlist request user should be logged in
+            // TODO add check that user have logged in
             case R.id.watchlist_menu_btn:
-                // TODO Sent watchlist request
+                sendUserSpecificRequest(States.WATCHLIST_REQUEST);
                 break;
+
             case R.id.profile_menu_btn:
                 // TODO Sent profile request or smth like this
                 break;
@@ -590,6 +603,13 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
             default:
                 break;
         }
+    }
+
+    // Sends user-specific request
+    private void sendUserSpecificRequest(int RequestType) {
+        // Clear all previous movies and sent new request
+        moviesList_.clear();
+        manager_.sendMessage(manager_.obtainMessage(RequestType));
     }
 
 
@@ -648,7 +668,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
 
         int id = item.getItemId();
 
-        if (id == R.id.action_login){
+        if (id == R.id.action_login) {
             sendLoginRequest();
         }
 
@@ -684,7 +704,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         mDrawerLayout.closeDrawer(GravityCompat.START);
     }
 
-    private void openBrowser(String link){
+    private void openBrowser(String link) {
         myWebView_.setVisibility(View.VISIBLE);
 
         myWebView_.loadUrl(link);
@@ -695,19 +715,19 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);
                 return true;
-             }
+            }
 
             @Override
             public void onPageFinished(WebView view, String url) {
                 Timber.v("onPageFinished");
-                if (view.getTitle().equals("Authentication Granted — The Movie Database (TMDb)")){
+                if (view.getTitle().equals("Authentication Granted — The Movie Database (TMDb)")) {
                     myWebView_.setVisibility(View.GONE);
                     Toast.makeText(MainActivity.this, "You have logged in", Toast.LENGTH_SHORT).show();
                     manager_.sendMessage(manager_.obtainMessage(States.SESSION_ID_REQUEST));
                 }
             }
 
-         });
+        });
 
 
     }

@@ -66,7 +66,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:headerLayout="@layout/header_main_navigation_menu"
-        app:itemIconTint="@color/colorAccent"
+        app:itemIconTint="@color/state_list"
         app:itemTextColor="@color/primary"
         app:menu="@menu/main_menu_drawer"/>
 
@@ -77,7 +77,7 @@
         android:layout_gravity="end"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/header_filter_navigation_menu"
-        app:itemIconTint="@color/colorAccent"
+        app:itemIconTint="@color/orange"
         app:itemTextColor="@color/primary"
         app:menu="@menu/menu_filter"/>
 

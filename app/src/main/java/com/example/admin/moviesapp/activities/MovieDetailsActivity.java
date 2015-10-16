@@ -1,9 +1,15 @@
 package com.example.admin.moviesapp.activities;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.graphics.drawable.Animatable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
@@ -17,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -37,9 +44,8 @@ import com.example.admin.moviesapp.models.Cast;
 import com.example.admin.moviesapp.models.CommonMovie;
 import com.example.admin.moviesapp.models.MovieDetails;
 import com.example.admin.moviesapp.models.Trailer;
-import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
-import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
-import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
+import com.example.admin.moviesapp.ui.ScrollAwareFABBehavior;
+
 
 import java.util.List;
 
@@ -52,6 +58,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
     private long selectedMovieId_;
     private ImageView cover_;
     private DbHelper helper_ = new DbHelper(this);
+    private boolean expanded = false;
 
     private Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
@@ -64,6 +71,11 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
     private FloatingActionButton addToFavoriteFloatingActionSubButton_;
     private FloatingActionButton addToWatchlistFloatingActionSubButton_;
     private FloatingActionButton addToListFloatingActionSubButton_;
+
+    private float offset1;
+    private float offset1a;
+    private float offset2;
+    private float offset3;
 
 
     private CardView movieCard_;
@@ -118,53 +130,125 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
     }
 
 
-    private void setupFAB(){
-        ImageView icon = new ImageView(this); // Create an icon
-        icon.setImageDrawable(this.getDrawable(R.drawable.ic_add_black));
-        FloatingActionButton actionButton = new FloatingActionButton.Builder(this)
-                .setContentView(icon)
-                .build();
-
-
-        SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
-// repeat many times:
-        ImageView itemIcon = new ImageView(this);
-        itemIcon.setImageDrawable(this.getDrawable(R.drawable.ic_playlist_play_grey));
-        SubActionButton button1 = itemBuilder.setContentView(itemIcon).build();
-
-        ImageView itemIcon2 = new ImageView(this);
-        itemIcon2.setImageDrawable(this.getDrawable(R.drawable.ic_wunderlist_grey));
-        SubActionButton button2 = itemBuilder.setContentView(itemIcon2).build();
-
-        ImageView itemIcon3 = new ImageView(this);
-        itemIcon3.setImageDrawable(this.getDrawable(R.drawable.ic_heart_outline_grey));
-        SubActionButton button3 = itemBuilder.setContentView(itemIcon3).build();
-
-        FloatingActionMenu actionMenu = new FloatingActionMenu.Builder(this)
-                .addSubActionView(button1)
-                .addSubActionView(button2)
-                .addSubActionView(button3)
-                .attachTo(actionButton)
-                .build();
-    }
-
-//    private void setupFAB() {
-//        mainFloatingActionButton_ = (FloatingActionButton) findViewById(R.id.main_fab);
-//        // Init all subbuttons
-//        addToFavoriteFloatingActionSubButton_ = (FloatingActionButton)findViewById(R.id.favorite_fab);
-//        addToWatchlistFloatingActionSubButton_ = (FloatingActionButton)findViewById(R.id.watchlist_fab);
-//        addToListFloatingActionSubButton_ = (FloatingActionButton)findViewById(R.id.list_fab);
+//    private void setupFAB(){
 //
-//        mainFloatingActionButton_.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
+//
+//
+//        ImageView icon = new ImageView(this); // Create an icon
+//        icon.setImageDrawable(this.getDrawable(R.drawable.ic_add_black));
+//        FloatingActionButton actionButton = new FloatingActionButton.Builder(this)
+//                .setContentView(icon)
+//                .build();
+//
+//
+//
+//        SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
+//// repeat many times:
+//        ImageView itemIcon = new ImageView(this);
+//        itemIcon.setImageDrawable(this.getDrawable(R.drawable.ic_playlist_play_grey));
+//        SubActionButton button1 = itemBuilder.setContentView(itemIcon).build();
+//
+//        ImageView itemIcon2 = new ImageView(this);
+//        itemIcon2.setImageDrawable(this.getDrawable(R.drawable.ic_wunderlist_grey));
+//        SubActionButton button2 = itemBuilder.setContentView(itemIcon2).build();
+//
+//        ImageView itemIcon3 = new ImageView(this);
+//        itemIcon3.setImageDrawable(this.getDrawable(R.drawable.ic_heart_outline_grey));
+//        SubActionButton button3 = itemBuilder.setContentView(itemIcon3).build();
+//
+//        FloatingActionMenu actionMenu = new FloatingActionMenu.Builder(this)
+//                .addSubActionView(button1)
+//                .addSubActionView(button2)
+//                .addSubActionView(button3)
+//                .attachTo(actionButton)
+//                .build();
+//    }
+
+    private void setupFAB() {
+        mainFloatingActionButton_ = (FloatingActionButton) findViewById(R.id.main_fab);
+        // Init all subbuttons
+        addToFavoriteFloatingActionSubButton_ = (FloatingActionButton)findViewById(R.id.favorite_fab);
+        addToWatchlistFloatingActionSubButton_ = (FloatingActionButton)findViewById(R.id.watchlist_fab);
+        addToListFloatingActionSubButton_ = (FloatingActionButton)findViewById(R.id.list_fab);
+
+        final ViewGroup fabContainer = (ViewGroup)findViewById(R.id.root_coordinator);
+
+        mainFloatingActionButton_.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 //                addToFavoriteFloatingActionSubButton_.setVisibility(View.VISIBLE);
 //                addToWatchlistFloatingActionSubButton_.setVisibility(View.VISIBLE);
 //                addToListFloatingActionSubButton_.setVisibility(View.VISIBLE);
-//            }
-//        });
-//
-//    }
+                expanded =!expanded;
+                if (expanded){
+                    expandFab();
+                } else {
+                    collapseFab();
+                }
+
+            }
+        });
+
+        fabContainer.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                fabContainer.getViewTreeObserver().removeOnPreDrawListener(this);
+                offset1 = mainFloatingActionButton_.getY() - addToListFloatingActionSubButton_.getY();
+                //offset1a =mainFloatingActionButton_.getX()- addToListFloatingActionSubButton_.getX();
+
+                 addToListFloatingActionSubButton_.setTranslationY(offset1);
+               // addToListFloatingActionSubButton_.setTranslationX(offset1a);
+
+                offset2 = mainFloatingActionButton_.getY() - addToWatchlistFloatingActionSubButton_.getY();
+                addToWatchlistFloatingActionSubButton_.setTranslationY(offset2);
+
+                offset3 = mainFloatingActionButton_.getY() - addToFavoriteFloatingActionSubButton_.getY();
+                addToFavoriteFloatingActionSubButton_.setTranslationY(offset3);
+                return true;
+            }
+        });
+
+    }
+
+    private void collapseFab() {
+        mainFloatingActionButton_.setImageResource(R.drawable.animated_minus);
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether( createCollapseAnimator(addToListFloatingActionSubButton_,offset1),
+
+                createCollapseAnimator(addToWatchlistFloatingActionSubButton_, offset2),
+                createCollapseAnimator(addToFavoriteFloatingActionSubButton_, offset3));
+        animatorSet.start();
+        animateFab();
+    }
+
+    private void expandFab() {
+        mainFloatingActionButton_.setImageResource(R.drawable.animated_plus);
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(createExpandAnimator(addToListFloatingActionSubButton_, offset1),
+                createExpandAnimator(addToWatchlistFloatingActionSubButton_, offset2),
+                createExpandAnimator(addToFavoriteFloatingActionSubButton_, offset3));
+        animatorSet.start();
+        animateFab();
+    }
+
+    private static final String TRANSLATION_Y = "translationY";
+
+    private Animator createCollapseAnimator(View view, float offset) {
+        return ObjectAnimator.ofFloat(view, TRANSLATION_Y, 0, offset)
+                .setDuration(getResources().getInteger(android.R.integer.config_mediumAnimTime));
+    }
+
+    private Animator createExpandAnimator(View view, float offset) {
+        return ObjectAnimator.ofFloat(view, TRANSLATION_Y, offset, 0)
+                .setDuration(getResources().getInteger(android.R.integer.config_mediumAnimTime));
+    }
+
+    private void animateFab() {
+        Drawable drawable = mainFloatingActionButton_.getDrawable();
+        if (drawable instanceof Animatable) {
+            ((Animatable) drawable).start();
+        }
+    }
 
     public void onEvent(UpdateMovieDetailsImageEvent e){
         Timber.v("Event in activity");

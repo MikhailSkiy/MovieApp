@@ -26,8 +26,8 @@
     <style name="FavoriteFabStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginBottom">90dp</item>
-        <item name="android:layout_marginRight">@dimen/fab_compat_margin</item>
+        <item name="android:layout_marginBottom">180dp</item>
+        <item name="android:layout_marginRight">@dimen/fab_compat_margin_min</item>
         <item name="android:src">@drawable/ic_heart_outline_grey</item>
         <item name="borderWidth">1dp</item>
         <item name="elevation">6dp</item>
@@ -39,8 +39,8 @@
     <style name="AddToWatchlistFabStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginBottom">66dp</item>
-        <item name="android:layout_marginRight">60dp</item>
+        <item name="android:layout_marginBottom">130dp</item>
+        <item name="android:layout_marginRight">@dimen/fab_compat_margin_min</item>
         <item name="android:src">@drawable/ic_wunderlist_grey</item>
         <item name="borderWidth">1dp</item>
         <item name="elevation">6dp</item>
@@ -52,8 +52,8 @@
     <style name="AddToListFabStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginRight">78dp</item>
-        <item name="android:layout_marginBottom">@dimen/fab_compat_margin</item>
+        <item name="android:layout_marginRight">@dimen/fab_compat_margin_min</item>
+        <item name="android:layout_marginBottom">80dp</item>
         <item name="android:src">@drawable/ic_playlist_play_grey</item>
         <item name="borderWidth">1dp</item>
         <item name="elevation">6dp</item>

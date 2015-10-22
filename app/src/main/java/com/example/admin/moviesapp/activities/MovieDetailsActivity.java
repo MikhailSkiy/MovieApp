@@ -36,10 +36,13 @@ import com.example.admin.moviesapp.ViewServer;
 import com.example.admin.moviesapp.adapters.MovieDetailsViewPager;
 import com.example.admin.moviesapp.adapters.TrailersAdapter;
 import com.example.admin.moviesapp.database.DbHelper;
+import com.example.admin.moviesapp.events.SuccessfullAlert;
 import com.example.admin.moviesapp.events.UpdateMovieDetailsImageEvent;
 import com.example.admin.moviesapp.helpers.Constants;
+import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.helpers.Util;
 import com.example.admin.moviesapp.interfaces.UpdateListener;
+import com.example.admin.moviesapp.managers.RequestManager;
 import com.example.admin.moviesapp.models.Cast;
 import com.example.admin.moviesapp.models.CommonMovie;
 import com.example.admin.moviesapp.models.MovieDetails;
@@ -71,9 +74,10 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
     private FloatingActionButton addToFavoriteFloatingActionSubButton_;
     private FloatingActionButton addToWatchlistFloatingActionSubButton_;
     private FloatingActionButton addToListFloatingActionSubButton_;
+    private RequestManager manager_;
+    private MovieDetails movieDetails_;
 
     private float offset1;
-    private float offset1a;
     private float offset2;
     private float offset3;
 
@@ -93,6 +97,11 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
 
         //Register EventBus
         EventBus.getDefault().register(this);
+
+        // Get instance of RequestManger
+        manager_ = RequestManager.getInstance();
+        // Initialize it by UpdateListener
+        manager_.init(this);
 
         // Get selected movie Id
         Intent intent = getIntent();
@@ -115,7 +124,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        mAdapter = new MovieDetailsViewPager(getSupportFragmentManager(),this,  selectedMovieId_);
+        mAdapter = new MovieDetailsViewPager(getSupportFragmentManager(), this, selectedMovieId_);
         mPager = (ViewPager) findViewById(R.id.movie_details_view_pager);
         mPager.setAdapter(mAdapter);
 
@@ -130,62 +139,32 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
     }
 
 
-//    private void setupFAB(){
-//
-//
-//
-//        ImageView icon = new ImageView(this); // Create an icon
-//        icon.setImageDrawable(this.getDrawable(R.drawable.ic_add_black));
-//        FloatingActionButton actionButton = new FloatingActionButton.Builder(this)
-//                .setContentView(icon)
-//                .build();
-//
-//
-//
-//        SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
-//// repeat many times:
-//        ImageView itemIcon = new ImageView(this);
-//        itemIcon.setImageDrawable(this.getDrawable(R.drawable.ic_playlist_play_grey));
-//        SubActionButton button1 = itemBuilder.setContentView(itemIcon).build();
-//
-//        ImageView itemIcon2 = new ImageView(this);
-//        itemIcon2.setImageDrawable(this.getDrawable(R.drawable.ic_wunderlist_grey));
-//        SubActionButton button2 = itemBuilder.setContentView(itemIcon2).build();
-//
-//        ImageView itemIcon3 = new ImageView(this);
-//        itemIcon3.setImageDrawable(this.getDrawable(R.drawable.ic_heart_outline_grey));
-//        SubActionButton button3 = itemBuilder.setContentView(itemIcon3).build();
-//
-//        FloatingActionMenu actionMenu = new FloatingActionMenu.Builder(this)
-//                .addSubActionView(button1)
-//                .addSubActionView(button2)
-//                .addSubActionView(button3)
-//                .attachTo(actionButton)
-//                .build();
-//    }
-
     private void setupFAB() {
         mainFloatingActionButton_ = (FloatingActionButton) findViewById(R.id.main_fab);
         // Init all subbuttons
-        addToFavoriteFloatingActionSubButton_ = (FloatingActionButton)findViewById(R.id.favorite_fab);
-        addToWatchlistFloatingActionSubButton_ = (FloatingActionButton)findViewById(R.id.watchlist_fab);
-        addToListFloatingActionSubButton_ = (FloatingActionButton)findViewById(R.id.list_fab);
+        addToFavoriteFloatingActionSubButton_ = (FloatingActionButton) findViewById(R.id.favorite_fab);
+        addToWatchlistFloatingActionSubButton_ = (FloatingActionButton) findViewById(R.id.watchlist_fab);
+        addToListFloatingActionSubButton_ = (FloatingActionButton) findViewById(R.id.list_fab);
 
-        final ViewGroup fabContainer = (ViewGroup)findViewById(R.id.root_coordinator);
+        final ViewGroup fabContainer = (ViewGroup) findViewById(R.id.root_coordinator);
+
+        // Mark current movie if user clicked on favorite button
+        addToFavoriteFloatingActionSubButton_.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                manager_.sendMessage(manager_.obtainMessage(States.MARK_AS_FAVORITE, movieDetails_.getId()));
+            }
+        });
 
         mainFloatingActionButton_.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                addToFavoriteFloatingActionSubButton_.setVisibility(View.VISIBLE);
-//                addToWatchlistFloatingActionSubButton_.setVisibility(View.VISIBLE);
-//                addToListFloatingActionSubButton_.setVisibility(View.VISIBLE);
-                expanded =!expanded;
-                if (expanded){
+                expanded = !expanded;
+                if (expanded) {
                     expandFab();
                 } else {
                     collapseFab();
                 }
-
             }
         });
 
@@ -194,11 +173,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
             public boolean onPreDraw() {
                 fabContainer.getViewTreeObserver().removeOnPreDrawListener(this);
                 offset1 = mainFloatingActionButton_.getY() - addToListFloatingActionSubButton_.getY();
-                //offset1a =mainFloatingActionButton_.getX()- addToListFloatingActionSubButton_.getX();
 
-                 addToListFloatingActionSubButton_.setTranslationY(offset1);
-               // addToListFloatingActionSubButton_.setTranslationX(offset1a);
-
+                addToListFloatingActionSubButton_.setTranslationY(offset1);
                 offset2 = mainFloatingActionButton_.getY() - addToWatchlistFloatingActionSubButton_.getY();
                 addToWatchlistFloatingActionSubButton_.setTranslationY(offset2);
 
@@ -213,7 +189,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
     private void collapseFab() {
         mainFloatingActionButton_.setImageResource(R.drawable.animated_minus);
         AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.playTogether( createCollapseAnimator(addToListFloatingActionSubButton_,offset1),
+        animatorSet.playTogether(createCollapseAnimator(addToListFloatingActionSubButton_, offset1),
 
                 createCollapseAnimator(addToWatchlistFloatingActionSubButton_, offset2),
                 createCollapseAnimator(addToFavoriteFloatingActionSubButton_, offset3));
@@ -250,12 +226,21 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         }
     }
 
-    public void onEvent(UpdateMovieDetailsImageEvent e){
-        Timber.v("Event in activity");
-        updateImage(e.getMovieDetails());
+    // Show user that the "mark movie as favorite" request was succefully completed
+    public void onEvent(SuccessfullAlert e){
+        Timber.v("Succesfull action in activity");
+        Toast.makeText(this,e.getAlertText(),Toast.LENGTH_LONG).show();
+        // Change the image of button
+        addToFavoriteFloatingActionSubButton_.setImageDrawable(getDrawable(R.drawable.ic_heart));
     }
 
-    private void updateImage(MovieDetails movieDetails){
+    public void onEvent(UpdateMovieDetailsImageEvent e) {
+        Timber.v("Event in activity");
+        updateImage(e.getMovieDetails());
+        movieDetails_ = e.getMovieDetails();
+    }
+
+    private void updateImage(MovieDetails movieDetails) {
         cover_.setImageBitmap(Util.getBitmapFromBytes(movieDetails.getCover()));
         cover_.setVisibility(View.VISIBLE);
         collapsingToolbarLayout_.setTitle(movieDetails.getTitle());
@@ -382,7 +367,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
     }
 
 
-
     @Override
     public void UpdateTrailers(List<Trailer> trailers) {
     }
@@ -391,7 +375,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
     public void UpdateCasts(List<? extends CommonMovie> casts) {
         List<Cast> castList = (List<Cast>) casts;
         for (int i = 0; i < casts.size(); i++) {
-            helper_.addCast(castList.get(i),selectedMovieId_);
+            helper_.addCast(castList.get(i), selectedMovieId_);
             createCastItem(castList.get(i));
         }
     }

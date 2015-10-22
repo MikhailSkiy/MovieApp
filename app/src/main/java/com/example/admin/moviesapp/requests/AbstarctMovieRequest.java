@@ -32,7 +32,8 @@ public abstract class AbstarctMovieRequest {
     protected final String MOVIES_KEY = "movies";
     protected final String SESSION_KEY = "session_id";
 
-    public abstract void sendHttpRequest();
+    public abstract void sendGetRequest();
+    public abstract void sendPostRequest(long movieId);
 
 
     /**
@@ -50,6 +51,29 @@ public abstract class AbstarctMovieRequest {
                 .appendPath(userId)
                 .appendPath(requestSpecificKey)
                 .appendPath(MOVIES_KEY)
+                .appendQueryParameter(API_KEY, getApiKey())
+                .appendQueryParameter(SESSION_KEY, sessionId)
+                .build();
+
+        String url = uri.toString();
+        Timber.d("Created URL", url);
+        return url;
+    }
+
+    /**
+     * Creates url for POST request to
+     * add selected movie in favorite list or to watchlist
+     * @param requestSpecificKey Can be "favorite" or "watchlist"
+     */
+    protected String createPostRequestUrl(String requestSpecificKey) {
+        // Get session_id from SharedPrefs
+        String sessionId = SharedPrefUtil.getSessionIdFromSharedPrefs();
+        // Get user_id from SharedPrefs
+        String userId = SharedPrefUtil.getAccountIdFromSharedPrefs();
+        // Buld uri
+        Uri uri = Uri.parse(BASE_URL).buildUpon()
+                .appendPath(userId)
+                .appendPath(requestSpecificKey)
                 .appendQueryParameter(API_KEY, getApiKey())
                 .appendQueryParameter(SESSION_KEY, sessionId)
                 .build();

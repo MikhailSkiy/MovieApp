@@ -3,9 +3,8 @@ package com.example.admin.moviesapp.managers;
 import android.os.Handler;
 import android.os.Message;
 
-import com.example.admin.moviesapp.events.AuthCompletedEvent;
 import com.example.admin.moviesapp.events.RedirectionEvent;
-import com.example.admin.moviesapp.events.ShowWatchlistEvent;
+import com.example.admin.moviesapp.events.SuccessfullAlert;
 import com.example.admin.moviesapp.events.UpdateCastDetailsImageEvent;
 import com.example.admin.moviesapp.events.UpdateCastDetailsUI;
 import com.example.admin.moviesapp.events.UpdateCastListEvent;
@@ -304,7 +303,7 @@ public class RequestManager extends Handler {
             case States.WATCHLIST_REQUEST:
                 Timber.v("WATCHLIST_REQUEST");
                 AbstarctMovieRequest watchlistRequest = new WatchlistRequest(getInstance());
-                watchlistRequest.sendHttpRequest();
+                watchlistRequest.sendGetRequest();
                 break;
 
             case States.WATCHLIST_REQUEST_COMPLETED:
@@ -322,7 +321,7 @@ public class RequestManager extends Handler {
             case States.FAVORITES_REQUEST:
                 Timber.v("FAVORITES_REQUEST");
                 AbstarctMovieRequest favoriteRequest = new FavoriteRequest(getInstance());
-                favoriteRequest.sendHttpRequest();
+                favoriteRequest.sendGetRequest();
                 break;
 
             case States.FAVORITES_REQUEST_COMPLETED:
@@ -332,6 +331,20 @@ public class RequestManager extends Handler {
                     imageRequest.postImageRequest(favoriteMovies.get(counter));
                 }
                 break;
+
+            case States.MARK_AS_FAVORITE:
+                Timber.v("MARK_AS_FAVORITE");
+                long markAsFavoriteId = (long)message.obj;
+                AbstarctMovieRequest markAsfavoriteRequest = new FavoriteRequest(getInstance());
+                markAsfavoriteRequest.sendPostRequest(markAsFavoriteId);
+                break;
+
+            case States.MOVIE_MARKED_SUCCESSFULLY:
+                Timber.v("MOVIE_MARKED_SUCCESSFULLY");
+                String successAlertText = (String)message.obj;
+                EventBus.getDefault().post(new SuccessfullAlert(successAlertText));
+                break;
+
 
             //endregion
 

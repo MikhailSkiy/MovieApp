@@ -56,6 +56,8 @@ public class States {
     // Favorites requests 100-109
     public static final int FAVORITES_REQUEST = 100;
     public static final int FAVORITES_REQUEST_COMPLETED = 101;
+    public static final int MARK_AS_FAVORITE = 102;
+    public static final int MOVIE_MARKED_SUCCESSFULLY = 103;
 
     // Error msgs starts from 200-209
     public static final int VOLLEY_REQUEST_FAILED = 200;

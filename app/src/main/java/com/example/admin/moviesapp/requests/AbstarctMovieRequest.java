@@ -98,4 +98,8 @@ public abstract class AbstarctMovieRequest {
         return response;
     }
 
+    private String getApiKey() {
+        return Constants.API_KEY_VALUE;
+    }
+
 }

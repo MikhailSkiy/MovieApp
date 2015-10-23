@@ -41,6 +41,9 @@ public abstract class UpdateItemRequest {
     // Returns selected item id
     public abstract long getItemId();
 
+    // Set item id
+    public abstract void setItemId(long itemId);
+
     // Checks is send request was successful
     public abstract boolean isRequestSuccesfull(String statusCode);
 

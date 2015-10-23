@@ -83,7 +83,7 @@ public class FavoriteMovieRequest extends UpdateItemRequest {
 
     @Override
     public String getType() {
-        return null;
+        return "favorite";
     }
 
     @Override
@@ -91,6 +91,7 @@ public class FavoriteMovieRequest extends UpdateItemRequest {
         return this.itemId_;
     }
 
+    @Override
     public void setItemId(long itemId) {
         itemId_ = itemId;
     }

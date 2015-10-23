@@ -24,16 +24,18 @@ import com.example.admin.moviesapp.models.MovieCredits;
 import com.example.admin.moviesapp.models.MovieDetails;
 import com.example.admin.moviesapp.models.Trailer;
 import com.example.admin.moviesapp.models.UserAccountInfo;
+import com.example.admin.moviesapp.models.requests.FavoriteMovieRequest;
+import com.example.admin.moviesapp.models.requests.UpdateItemRequest;
 import com.example.admin.moviesapp.requests.AbstarctMovieRequest;
 import com.example.admin.moviesapp.requests.AccountRequest;
 import com.example.admin.moviesapp.requests.AuthRequest;
 import com.example.admin.moviesapp.requests.CastDetailsRequest;
 import com.example.admin.moviesapp.requests.CastsRequest;
-import com.example.admin.moviesapp.requests.FavoriteRequest;
 import com.example.admin.moviesapp.requests.ImageRequest;
 import com.example.admin.moviesapp.requests.MovieCreditsRequest;
 import com.example.admin.moviesapp.requests.MovieDetailsRequest;
 import com.example.admin.moviesapp.requests.MovieRequest;
+import com.example.admin.moviesapp.requests.RequestExecutor;
 import com.example.admin.moviesapp.requests.TrailerRequest;
 import com.example.admin.moviesapp.requests.WatchlistRequest;
 
@@ -72,6 +74,7 @@ public class RequestManager extends Handler {
 
 
         ImageRequest imageRequest = new ImageRequest(getInstance());
+        RequestExecutor executor = new RequestExecutor(getInstance());
 
         switch (message.what) {
             case States.MOVIES_REQUEST:
@@ -320,8 +323,9 @@ public class RequestManager extends Handler {
             //region
             case States.FAVORITES_REQUEST:
                 Timber.v("FAVORITES_REQUEST");
-                AbstarctMovieRequest favoriteRequest = new FavoriteRequest(getInstance());
-                favoriteRequest.sendGetRequest();
+                UpdateItemRequest favoriteRequest = new FavoriteMovieRequest();
+
+                executor.sendGetRequest(favoriteRequest);
                 break;
 
             case States.FAVORITES_REQUEST_COMPLETED:
@@ -335,8 +339,9 @@ public class RequestManager extends Handler {
             case States.MARK_AS_FAVORITE:
                 Timber.v("MARK_AS_FAVORITE");
                 long markAsFavoriteId = (long)message.obj;
-                AbstarctMovieRequest markAsfavoriteRequest = new FavoriteRequest(getInstance());
-                markAsfavoriteRequest.sendPostRequest(markAsFavoriteId);
+                UpdateItemRequest markRequest = new FavoriteMovieRequest();
+                markRequest.setItemId(markAsFavoriteId);
+                executor.sendPostRequest(markRequest);
                 break;
 
             case States.MOVIE_MARKED_SUCCESSFULLY:

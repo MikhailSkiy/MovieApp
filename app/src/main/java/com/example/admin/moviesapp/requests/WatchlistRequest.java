@@ -9,10 +9,18 @@ import com.example.admin.moviesapp.managers.AppController;
 import com.example.admin.moviesapp.managers.RequestManager;
 import com.example.admin.moviesapp.models.Movie;
 import com.example.admin.moviesapp.models.network.Response;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -116,5 +124,26 @@ public class WatchlistRequest extends AbstarctMovieRequest {
         };
 
         AppController.getInstance().addToRequestQueue(stringRequest);
+    }
+
+    /**
+     * Returns list of movies from json
+     * @param jsonResponse - response from server
+     * @return list of Movie objects
+     */
+    private List<Movie> getMoviesFromJson(String jsonResponse){
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.setDateFormat("M/d/yy hh:mm a");
+        Gson gson = gsonBuilder.create();
+
+        Type listType = new TypeToken<List<Movie>>() {
+        }.getType();
+        List<Movie> movies = new ArrayList<Movie>();
+
+        JsonParser parser = new JsonParser();
+        JsonObject jsonObject = parser.parse(jsonResponse).getAsJsonObject();
+        JsonElement resultsElement = jsonObject.get("results");
+        movies = (List<Movie>) gson.fromJson(resultsElement, listType);
+        return movies;
     }
 }

@@ -1,19 +1,14 @@
 package com.example.admin.moviesapp.requests;
 
-import android.net.Uri;
-
 import com.android.volley.Request;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.admin.moviesapp.helpers.Constants;
-import com.example.admin.moviesapp.helpers.SharedPrefUtil;
 import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.managers.AppController;
 import com.example.admin.moviesapp.managers.RequestManager;
 import com.example.admin.moviesapp.models.Movie;
-import com.example.admin.moviesapp.models.UserAccountInfo;
-import com.example.admin.moviesapp.models.network.MarkAsFavoriteResponse;
+import com.example.admin.moviesapp.models.network.Response;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,7 +52,7 @@ public class WatchlistRequest extends AbstarctMovieRequest {
     private void sendWatchlistRequest(String url) {
         String tag = "watchlist_request";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(JsonObjectRequest.Method.GET, url,
-                new Response.Listener<JSONObject>() {
+                new com.android.volley.Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         String responseString = response.toString();
@@ -65,7 +60,7 @@ public class WatchlistRequest extends AbstarctMovieRequest {
                         manager_.sendMessage(manager_.obtainMessage(States.WATCHLIST_REQUEST_COMPLETED, account));
                     }
                 },
-                new Response.ErrorListener() {
+                new com.android.volley.Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         String errorMsg = error.getMessage();
@@ -91,15 +86,15 @@ public class WatchlistRequest extends AbstarctMovieRequest {
             e.printStackTrace();
         }
 
-        JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.POST, url, new Response.Listener<JSONObject>() {
+        JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.POST, url, new com.android.volley.Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                MarkAsFavoriteResponse markAsFavoriteResponse = getResponseFromJson(response.toString());
-                if (markAsFavoriteResponse.statusCode.equals("12")) {
-                    manager_.sendMessage(manager_.obtainMessage(States.MOVIE_MARKED_SUCCESSFULLY,markAsFavoriteResponse.statusMessage));
+                Response watchlistResponse = getResponseFromJson(response.toString());
+                if (watchlistResponse.statusCode.equals(Integer.toString(Constants.WATCHLIST_SUCCESS_CODE))) {
+                    manager_.sendMessage(manager_.obtainMessage(States.MOVIE_MARKED_SUCCESSFULLY,watchlistResponse.statusMessage));
                 }
             }
-        }, new Response.ErrorListener() {
+        }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
 

@@ -4,24 +4,15 @@ package com.example.admin.moviesapp.requests;
  * Created by Mikhail Valuyskiy on 15.10.2015.
  */
 
-import android.net.Uri;
-
 import com.android.volley.Request;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.example.admin.moviesapp.helpers.SharedPrefUtil;
+import com.example.admin.moviesapp.helpers.Constants;
 import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.managers.AppController;
 import com.example.admin.moviesapp.managers.RequestManager;
 import com.example.admin.moviesapp.models.Movie;
-import com.example.admin.moviesapp.models.UserAccountInfo;
-import com.example.admin.moviesapp.models.network.MarkAsFavoriteResponse;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.example.admin.moviesapp.models.network.Response;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,11 +31,7 @@ public class FavoriteRequest extends AbstarctMovieRequest {
 
     private final String FAVORITES_KEY = "favorite";
 
-    private static RequestManager manager_;
 
-    public FavoriteRequest(RequestManager manager) {
-        this.manager_ = manager;
-    }
 
     /**
      * Sends GET request to get list of favorite movies
@@ -72,7 +59,7 @@ public class FavoriteRequest extends AbstarctMovieRequest {
         String tag = "favorite_request";
 
              JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(JsonObjectRequest.Method.GET, url,
-                new Response.Listener<JSONObject>() {
+                new com.android.volley.Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         String responseString = response.toString();
@@ -80,7 +67,7 @@ public class FavoriteRequest extends AbstarctMovieRequest {
                         manager_.sendMessage(manager_.obtainMessage(States.FAVORITES_REQUEST_COMPLETED, account));
                     }
                 },
-                new Response.ErrorListener() {
+                new com.android.volley.Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         String errorMsg = error.getMessage();
@@ -106,15 +93,15 @@ public class FavoriteRequest extends AbstarctMovieRequest {
             e.printStackTrace();
         }
 
-        JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.POST, url, new Response.Listener<JSONObject>() {
+        JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.POST, url, new com.android.volley.Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                MarkAsFavoriteResponse markAsFavoriteResponse = getResponseFromJson(response.toString());
-                if (markAsFavoriteResponse.statusCode.equals("12")) {
+                Response markAsFavoriteResponse = getResponseFromJson(response.toString());
+                if (markAsFavoriteResponse.statusCode.equals(Integer.toString(Constants.FAVORITE_SUCCESS_CODE))) {
                     manager_.sendMessage(manager_.obtainMessage(States.MOVIE_MARKED_SUCCESSFULLY,markAsFavoriteResponse.statusMessage));
                 }
             }
-        }, new Response.ErrorListener() {
+        }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
 
@@ -136,19 +123,6 @@ public class FavoriteRequest extends AbstarctMovieRequest {
         };
 
         AppController.getInstance().addToRequestQueue(stringRequest);
-    }
-
-    /**
-     * Parse json result and get status_code and status_message
-     * @param json
-     * @return session_id
-     */
-    private MarkAsFavoriteResponse getResponseFromJson(String json){
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        Gson gson = gsonBuilder.create();
-        MarkAsFavoriteResponse response = new MarkAsFavoriteResponse();
-        response = gson.fromJson(json,MarkAsFavoriteResponse.class);
-        return response;
     }
 
 }

@@ -18,4 +18,12 @@ public class Constants {
 
     public static final int CONNECTION_STATUS_OK = 0;
     public static final int NO_CONNECTION = 1;
+
+    // Constants for movie operations such as add to favorite list
+    // or add to watchlist
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({FAVORITE_SUCCESS_CODE,WATCHLIST_SUCCESS_CODE})
+    public @interface MoviesStatus{}
+    public static final int FAVORITE_SUCCESS_CODE = 12;
+    public static final int WATCHLIST_SUCCESS_CODE = 1;
 }

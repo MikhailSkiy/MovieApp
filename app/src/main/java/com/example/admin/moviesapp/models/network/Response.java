@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 
 // This class represents the response
 // from mark movie as favorite post request
-public class MarkAsFavoriteResponse {
+public class Response {
     @SerializedName("status_code")
     public String statusCode;
     @SerializedName("status_message")

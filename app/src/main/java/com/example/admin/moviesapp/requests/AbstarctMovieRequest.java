@@ -8,8 +8,8 @@ import android.net.Uri;
 
 import com.example.admin.moviesapp.helpers.Constants;
 import com.example.admin.moviesapp.helpers.SharedPrefUtil;
-import com.example.admin.moviesapp.models.CommonMovie;
 import com.example.admin.moviesapp.models.Movie;
+import com.example.admin.moviesapp.models.network.Response;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -83,30 +83,19 @@ public abstract class AbstarctMovieRequest {
         return url;
     }
 
+
+
     /**
-     * Returns list of movies from json
-     * @param jsonResponse - response from server
-     * @return list of Movie objects
+     * Parse json result and get status_code and status_message
+     * @param json
+     * @return session_id
      */
-    protected List<Movie> getMoviesFromJson(String jsonResponse){
+    protected Response getResponseFromJson(String json){
         GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.setDateFormat("M/d/yy hh:mm a");
         Gson gson = gsonBuilder.create();
-
-        Type listType = new TypeToken<List<Movie>>() {
-        }.getType();
-        List<Movie> movies = new ArrayList<Movie>();
-
-        JsonParser parser = new JsonParser();
-        JsonObject jsonObject = parser.parse(jsonResponse).getAsJsonObject();
-        JsonElement resultsElement = jsonObject.get("results");
-        movies = (List<Movie>) gson.fromJson(resultsElement, listType);
-        return movies;
-    }
-
-    // Method for getting api_key value
-    protected static String getApiKey() {
-        return Constants.API_KEY_VALUE;
+        Response response = new Response();
+        response = gson.fromJson(json,Response.class);
+        return response;
     }
 
 }

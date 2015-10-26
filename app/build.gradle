@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.admin.moviesapp"
-        minSdkVersion 21
+        minSdkVersion 14
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -30,6 +30,5 @@ dependencies {
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.jakewharton.timber:timber:3.1.0'
     compile 'de.greenrobot:eventbus:2.4.0'
-    compile 'com.oguzdev:CircularFloatingActionMenu:1.0.2'
 
 }

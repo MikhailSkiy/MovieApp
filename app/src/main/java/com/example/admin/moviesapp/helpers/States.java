@@ -52,6 +52,7 @@ public class States {
     // Watchlist requests 90-99
     public static final int WATCHLIST_REQUEST = 90;
     public static final int WATCHLIST_REQUEST_COMPLETED = 91;
+    public static final int ADD_TO_WATCHLIST = 92;
 
     // Favorites requests 100-109
     public static final int FAVORITES_REQUEST = 100;

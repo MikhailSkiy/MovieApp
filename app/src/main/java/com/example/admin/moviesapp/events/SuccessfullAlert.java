@@ -1,17 +1,23 @@
 package com.example.admin.moviesapp.events;
 
+import com.example.admin.moviesapp.models.network.Response;
+
 /**
  * Created by Mikhail Valuyskiy on 22.10.2015.
  */
 public class SuccessfullAlert {
 
-    private String alertText_;
+    private Response response_;
 
-    public SuccessfullAlert(String alertText){
-        this.alertText_ = alertText;
+    public SuccessfullAlert(Response listOperationResponse ){
+        response_ = listOperationResponse;
     }
 
     public String getAlertText(){
-        return this.alertText_;
+        return response_.statusMessage;
+    }
+
+    public String getAlertStatus(){
+        return response_.statusCode;
     }
 }

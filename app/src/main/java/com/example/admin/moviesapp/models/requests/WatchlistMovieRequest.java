@@ -9,13 +9,14 @@ import com.example.admin.moviesapp.helpers.States;
 import timber.log.Timber;
 
 /**
- * Created by Mikhail Valuyskiy on 23.10.2015.
+ * Created by Mikhail on 26.10.15.
  */
-public class FavoriteMovieRequest extends UpdateFavoriteItemRequest {
+public class WatchlistMovieRequest extends UpdateWatchlistItemRequest {
 
-    private final String TAG = "FavoriteMovieRequest";
+    private final String TAG = "WatchlistMovieRequest";
+    protected final String MOVIES_KEY = "movies";
 
-     private long itemId_;
+    private long itemId_;
 
     @Override
     public String getTag() {
@@ -24,7 +25,7 @@ public class FavoriteMovieRequest extends UpdateFavoriteItemRequest {
 
     @Override
     public int getSuccessfulGetRequestStatus() {
-        return States.FAVORITES_REQUEST_COMPLETED;
+        return States.WATCHLIST_REQUEST_COMPLETED;
     }
 
     @Override
@@ -34,7 +35,7 @@ public class FavoriteMovieRequest extends UpdateFavoriteItemRequest {
 
     @Override
     public String getType() {
-        return Constants.FAVORITE;
+        return Constants.WATCHLIST;
     }
 
     @Override
@@ -44,12 +45,12 @@ public class FavoriteMovieRequest extends UpdateFavoriteItemRequest {
 
     @Override
     public void setItemId(long itemId) {
-        itemId_ = itemId;
+        this.itemId_ = itemId;
     }
 
     @Override
     public boolean isRequestSuccesfull(String statusCode) {
-        if (statusCode.equals(Integer.toString(Constants.FAVORITE_SUCCESS_CODE))) {
+        if (statusCode.equals(Integer.toString(Constants.WATCHLIST_SUCCESS_CODE))){
             return true;
         } else {
             return false;

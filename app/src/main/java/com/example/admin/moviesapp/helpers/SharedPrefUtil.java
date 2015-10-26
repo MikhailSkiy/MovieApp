@@ -70,4 +70,14 @@ public class SharedPrefUtil {
         SharedPreferences.Editor preferences = MainActivity.getContextOfApplication().getSharedPreferences(MainActivity.getContextOfApplication().getString(R.string.auth), Context.MODE_PRIVATE).edit();
         return preferences;
     }
+
+    public static boolean isUserLogedIn(){
+        String sessionId = getSessionIdFromSharedPrefs();
+        if (sessionId == null){
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
 }

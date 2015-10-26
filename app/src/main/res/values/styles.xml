@@ -41,7 +41,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginBottom">130dp</item>
         <item name="android:layout_marginRight">@dimen/fab_compat_margin_min</item>
-        <item name="android:src">@drawable/ic_wunderlist_grey</item>
+        <item name="android:src">@drawable/ic_playlist_plus_grey</item>
         <item name="borderWidth">1dp</item>
         <item name="elevation">6dp</item>
         <item name="android:paddingBottom">20dp</item>

@@ -3,6 +3,7 @@ package com.example.admin.moviesapp.activities;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
@@ -24,9 +25,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,12 +42,14 @@ import com.example.admin.moviesapp.database.DbHelper;
 import com.example.admin.moviesapp.events.SuccessfullAlert;
 import com.example.admin.moviesapp.events.UpdateMovieDetailsImageEvent;
 import com.example.admin.moviesapp.helpers.Constants;
+import com.example.admin.moviesapp.helpers.SharedPrefUtil;
 import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.helpers.Util;
 import com.example.admin.moviesapp.interfaces.UpdateListener;
 import com.example.admin.moviesapp.managers.RequestManager;
 import com.example.admin.moviesapp.models.Cast;
 import com.example.admin.moviesapp.models.CommonMovie;
+import com.example.admin.moviesapp.models.Movie;
 import com.example.admin.moviesapp.models.MovieDetails;
 import com.example.admin.moviesapp.models.Trailer;
 import com.example.admin.moviesapp.ui.ScrollAwareFABBehavior;
@@ -74,8 +79,12 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
     private FloatingActionButton addToFavoriteFloatingActionSubButton_;
     private FloatingActionButton addToWatchlistFloatingActionSubButton_;
     private FloatingActionButton addToListFloatingActionSubButton_;
+    private RatingBar ratingBar_;
+    private Dialog ratingDialog_;
     private RequestManager manager_;
     private MovieDetails movieDetails_;
+    private double movieRatingGivenByUser_;
+    private Button cancelBtn_;
 
     private float offset1;
     private float offset2;
@@ -111,7 +120,9 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
 
         cover_ = (ImageView) findViewById(R.id.coverImage);
         movieCard_ = (CardView) findViewById(R.id.movie_card);
+        setupDialog();
         setupFAB();
+
 
 
         String itemTitle = "Item Name";
@@ -138,6 +149,38 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         ViewServer.get(this).addWindow(this);
     }
 
+    private void setupRatingBar(){
+        ratingBar_ = (RatingBar)findViewById(R.id.ratingBar);
+
+        ratingBar_.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                movieRatingGivenByUser_ = rating;
+            }
+        });
+
+    }
+
+    private void showRatingDialog(){
+        ratingDialog_.show();
+    }
+
+    private void setupDialog(){
+        ratingDialog_ = new Dialog(MovieDetailsActivity.this);
+        ratingDialog_.setContentView(R.layout.dialog_rate_movies);
+        ratingDialog_.setCancelable(true);
+
+        //setupRatingBar();
+
+        cancelBtn_ = (Button) findViewById(R.id.btnSubmit);
+        cancelBtn_.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ratingDialog_.dismiss();
+            }
+        });
+    }
+
 
     private void setupFAB() {
         mainFloatingActionButton_ = (FloatingActionButton) findViewById(R.id.main_fab);
@@ -152,7 +195,35 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         addToFavoriteFloatingActionSubButton_.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                manager_.sendMessage(manager_.obtainMessage(States.MARK_AS_FAVORITE, movieDetails_.getId()));
+                // Checks is the user loged in
+                if (SharedPrefUtil.isUserLogedIn()) {
+                    manager_.sendMessage(manager_.obtainMessage(States.MARK_AS_FAVORITE, movieDetails_.getId()));
+                }
+                // Otherwise send request for login
+                else {
+                    manager_.sendMessage(manager_.obtainMessage(States.LOGIN_REQUEST));
+                }
+
+            }
+        });
+
+        // Add current movie into user watchlist when he ckicked to button
+        addToWatchlistFloatingActionSubButton_.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (SharedPrefUtil.isUserLogedIn()) {
+                    manager_.sendMessage(manager_.obtainMessage(States.ADD_TO_WATCHLIST, movieDetails_.getId()));
+                } else {
+                    manager_.sendMessage(manager_.obtainMessage(States.LOGIN_REQUEST));
+                }
+            }
+        });
+
+        // Rate current movie
+        addToListFloatingActionSubButton_.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showRatingDialog();
             }
         });
 
@@ -228,10 +299,23 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
 
     // Show user that the "mark movie as favorite" request was succefully completed
     public void onEvent(SuccessfullAlert e){
-        Timber.v("Succesfull action in activity");
+        Timber.v("SuccessfullAlert");
         Toast.makeText(this,e.getAlertText(),Toast.LENGTH_LONG).show();
         // Change the image of button
-        addToFavoriteFloatingActionSubButton_.setImageDrawable(getDrawable(R.drawable.ic_heart));
+
+        switch (Integer.parseInt(e.getAlertStatus())){
+            case Constants.FAVORITE_SUCCESS_CODE :
+                    addToFavoriteFloatingActionSubButton_.setImageDrawable(getDrawable(R.drawable.ic_heart));
+                break;
+
+            case Constants.WATCHLIST_SUCCESS_CODE :
+                addToWatchlistFloatingActionSubButton_.setImageDrawable(getDrawable(R.drawable.ic_playlist_remove_grey));
+                break;
+
+            default:break;
+
+        }
+
     }
 
     public void onEvent(UpdateMovieDetailsImageEvent e) {

@@ -42,7 +42,6 @@ import com.example.admin.moviesapp.models.CommonMovie;
 import com.example.admin.moviesapp.models.Movie;
 import com.example.admin.moviesapp.models.Trailer;
 import com.example.admin.moviesapp.models.UserAccountInfo;
-import com.example.admin.moviesapp.requests.WatchlistRequest;
 import com.example.admin.moviesapp.ui.RecyclerViewEmptySupport;
 
 import java.util.ArrayList;

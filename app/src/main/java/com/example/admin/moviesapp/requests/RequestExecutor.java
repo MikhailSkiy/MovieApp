@@ -87,7 +87,7 @@ public class RequestExecutor {
             public void onResponse(JSONObject response) {
                 Response markAsFavoriteResponse = getResponseFromJson(response.toString());
                 if (itemRequest.isRequestSuccesfull(markAsFavoriteResponse.statusCode)) {
-                    manager_.sendMessage(manager_.obtainMessage(itemRequest.getSuccessfullPostRequestStatus(),markAsFavoriteResponse.statusMessage));
+                    manager_.sendMessage(manager_.obtainMessage(itemRequest.getSuccessfullPostRequestStatus(),markAsFavoriteResponse));
                 }
             }
         }, new com.android.volley.Response.ErrorListener() {

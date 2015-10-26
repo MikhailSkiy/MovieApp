@@ -24,8 +24,10 @@ import com.example.admin.moviesapp.models.MovieCredits;
 import com.example.admin.moviesapp.models.MovieDetails;
 import com.example.admin.moviesapp.models.Trailer;
 import com.example.admin.moviesapp.models.UserAccountInfo;
+import com.example.admin.moviesapp.models.network.Response;
 import com.example.admin.moviesapp.models.requests.FavoriteMovieRequest;
 import com.example.admin.moviesapp.models.requests.UpdateItemRequest;
+import com.example.admin.moviesapp.models.requests.WatchlistMovieRequest;
 import com.example.admin.moviesapp.requests.AbstarctMovieRequest;
 import com.example.admin.moviesapp.requests.AccountRequest;
 import com.example.admin.moviesapp.requests.AuthRequest;
@@ -305,8 +307,10 @@ public class RequestManager extends Handler {
             //region Watchlist request
             case States.WATCHLIST_REQUEST:
                 Timber.v("WATCHLIST_REQUEST");
-                AbstarctMovieRequest watchlistRequest = new WatchlistRequest(getInstance());
-                watchlistRequest.sendGetRequest();
+                UpdateItemRequest watchlistRequest = new WatchlistMovieRequest();
+                executor.sendGetRequest(watchlistRequest);
+//                AbstarctMovieRequest watchlistRequest = new WatchlistRequest(getInstance());
+//                watchlistRequest.sendGetRequest();
                 break;
 
             case States.WATCHLIST_REQUEST_COMPLETED:
@@ -318,6 +322,16 @@ public class RequestManager extends Handler {
                 // Update Main activity. Show watchlist.
                 //EventBus.getDefault().post(new ShowWatchlistEvent(movies));
                 break;
+
+            case States.ADD_TO_WATCHLIST:
+                Timber.v("ADD_TO_WATCHLIST");
+                long idForWatchlist = (long)message.obj;
+                UpdateItemRequest watchlistMovieRequest = new WatchlistMovieRequest();
+                // TODO Is it better to create UpdateItemRequest object with movie Id instead
+                watchlistMovieRequest.setItemId(idForWatchlist);
+                executor.sendPostRequest(watchlistMovieRequest);
+                break;
+
             //endregion
 
             //region
@@ -346,8 +360,8 @@ public class RequestManager extends Handler {
 
             case States.MOVIE_MARKED_SUCCESSFULLY:
                 Timber.v("MOVIE_MARKED_SUCCESSFULLY");
-                String successAlertText = (String)message.obj;
-                EventBus.getDefault().post(new SuccessfullAlert(successAlertText));
+                Response listOperationResponse = (Response)message.obj;
+                EventBus.getDefault().post(new SuccessfullAlert(listOperationResponse));
                 break;
 
 

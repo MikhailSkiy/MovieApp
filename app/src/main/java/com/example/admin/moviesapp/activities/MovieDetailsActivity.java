@@ -180,7 +180,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
     private void setupRatingDialog(){
         ratingDialog_ = new Dialog(MovieDetailsActivity.this);
         ratingDialog_.setContentView(R.layout.dialog_rate_movies);
-        ratingDialog_.requestWindowFeature(Window.FEATURE_NO_TITLE);
         text_ = (TextView)ratingDialog_.findViewById(R.id.rating_value);
 
         cancelBtn_ = (Button) ratingDialog_.findViewById(R.id.btnSubmit);

@@ -2,20 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/lblRateMe"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Rate current movie"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <RatingBar
         android:id="@+id/ratingBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:numStars="10"
+        android:numStars="5"
         android:stepSize="0.5"
         android:rating="0" />
 
@@ -24,5 +18,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Rate" />
+
+    <TextView
+        android:id="@+id/rating_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="value"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </LinearLayout>

@@ -5,8 +5,11 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -20,11 +23,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -85,6 +90,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
     private MovieDetails movieDetails_;
     private double movieRatingGivenByUser_;
     private Button cancelBtn_;
+    private TextView text_;
 
     private float offset1;
     private float offset2;
@@ -120,9 +126,12 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
 
         cover_ = (ImageView) findViewById(R.id.coverImage);
         movieCard_ = (CardView) findViewById(R.id.movie_card);
-        setupDialog();
-        setupFAB();
 
+        // Create new dialog
+        setupRatingDialog();
+
+
+        setupFAB();
 
 
         String itemTitle = "Item Name";
@@ -149,36 +158,51 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         ViewServer.get(this).addWindow(this);
     }
 
-    private void setupRatingBar(){
-        ratingBar_ = (RatingBar)findViewById(R.id.ratingBar);
+    private void setupRatingBar(View v){
+        ratingBar_ = (RatingBar)v.findViewById(R.id.ratingBar);
+        LayerDrawable stars = (LayerDrawable)ratingBar_.getProgressDrawable();
+        stars.getDrawable(0).setColorFilter(Color.BLUE, PorterDuff.Mode.SRC_ATOP);
 
         ratingBar_.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+
+                LayerDrawable stars = (LayerDrawable) ratingBar.getProgressDrawable();
+                stars.getDrawable(1).setColorFilter(getResources().getColor(R.color.primary_dark), PorterDuff.Mode.SRC_ATOP);
+
                 movieRatingGivenByUser_ = rating;
+                text_.setText(Double.toString(rating));
             }
         });
 
     }
 
-    private void showRatingDialog(){
-        ratingDialog_.show();
-    }
-
-    private void setupDialog(){
+    private void setupRatingDialog(){
         ratingDialog_ = new Dialog(MovieDetailsActivity.this);
         ratingDialog_.setContentView(R.layout.dialog_rate_movies);
-        ratingDialog_.setCancelable(true);
+        ratingDialog_.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        text_ = (TextView)ratingDialog_.findViewById(R.id.rating_value);
 
-        //setupRatingBar();
-
-        cancelBtn_ = (Button) findViewById(R.id.btnSubmit);
+        cancelBtn_ = (Button) ratingDialog_.findViewById(R.id.btnSubmit);
         cancelBtn_.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                float rating = ratingBar_.getRating();
+                Toast.makeText(getApplicationContext(), "Your Selected Ratings  : " + String.valueOf(rating), Toast.LENGTH_LONG).show();
+                text_.setText(Double.toString(rating));
                 ratingDialog_.dismiss();
             }
         });
+
+        ratingBar_ = (RatingBar)ratingDialog_.findViewById(R.id.ratingBar);
+        ratingBar_.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                movieRatingGivenByUser_ = rating;
+                text_.setText( Double.toString(2*rating));
+            }
+        });
+
     }
 
 
@@ -223,7 +247,9 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         addToListFloatingActionSubButton_.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showRatingDialog();
+               //showRatingDialog();
+               // setupDialog();
+                ratingDialog_.show();
             }
         });
 

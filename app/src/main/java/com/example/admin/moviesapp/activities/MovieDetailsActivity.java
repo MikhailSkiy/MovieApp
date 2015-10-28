@@ -60,6 +60,7 @@ import com.example.admin.moviesapp.models.Trailer;
 import com.example.admin.moviesapp.ui.ScrollAwareFABBehavior;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
@@ -130,7 +131,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         // Create new dialog
         setupRatingDialog();
 
-
         setupFAB();
 
 
@@ -171,34 +171,42 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
                 stars.getDrawable(1).setColorFilter(getResources().getColor(R.color.primary_dark), PorterDuff.Mode.SRC_ATOP);
 
                 movieRatingGivenByUser_ = rating;
-                text_.setText(Double.toString(rating));
+                //text_.setText(Double.toString(rating));
             }
         });
 
     }
 
+
     private void setupRatingDialog(){
         ratingDialog_ = new Dialog(MovieDetailsActivity.this);
         ratingDialog_.setContentView(R.layout.dialog_rate_movies);
-        text_ = (TextView)ratingDialog_.findViewById(R.id.rating_value);
+       // text_ = (TextView)ratingDialog_.findViewById(R.id.rating_value);
 
         cancelBtn_ = (Button) ratingDialog_.findViewById(R.id.btnSubmit);
         cancelBtn_.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 float rating = ratingBar_.getRating();
-                Toast.makeText(getApplicationContext(), "Your Selected Ratings  : " + String.valueOf(rating), Toast.LENGTH_LONG).show();
-                text_.setText(Double.toString(rating));
+                movieRatingGivenByUser_ = rating*2;
+                Toast.makeText(getApplicationContext(), "Your Selected Ratings  : " + String.valueOf(rating*2), Toast.LENGTH_LONG).show();
                 ratingDialog_.dismiss();
+
+                List<String> attr = new ArrayList<String>();
+                attr.add(String.valueOf(movieDetails_.getId()));
+                attr.add(String.valueOf(movieRatingGivenByUser_));
+                manager_.sendMessage(manager_.obtainMessage(States.RATE_MOVIE_REQUEST,attr));
+
             }
         });
+
 
         ratingBar_ = (RatingBar)ratingDialog_.findViewById(R.id.ratingBar);
         ratingBar_.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
                 movieRatingGivenByUser_ = rating;
-                text_.setText( Double.toString(2*rating));
+                //text_.setText( Double.toString(2*rating));
             }
         });
 
@@ -246,8 +254,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         addToListFloatingActionSubButton_.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               //showRatingDialog();
-               // setupDialog();
                 ratingDialog_.show();
             }
         });

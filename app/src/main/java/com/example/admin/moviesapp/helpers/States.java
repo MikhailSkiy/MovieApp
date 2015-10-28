@@ -60,6 +60,10 @@ public class States {
     public static final int MARK_AS_FAVORITE = 102;
     public static final int MOVIE_MARKED_SUCCESSFULLY = 103;
 
+    // Rate movie request 110-119
+    public static final int RATE_MOVIE_REQUEST = 110;
+    public static final int MOVIE_RATED_SUCCESSFULLY = 111;
+
     // Error msgs starts from 200-209
     public static final int VOLLEY_REQUEST_FAILED = 200;
 }

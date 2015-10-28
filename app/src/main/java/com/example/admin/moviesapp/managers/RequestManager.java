@@ -37,6 +37,7 @@ import com.example.admin.moviesapp.requests.ImageRequest;
 import com.example.admin.moviesapp.requests.MovieCreditsRequest;
 import com.example.admin.moviesapp.requests.MovieDetailsRequest;
 import com.example.admin.moviesapp.requests.MovieRequest;
+import com.example.admin.moviesapp.requests.RateMovieRequest;
 import com.example.admin.moviesapp.requests.RequestExecutor;
 import com.example.admin.moviesapp.requests.TrailerRequest;
 import com.example.admin.moviesapp.requests.WatchlistRequest;
@@ -363,6 +364,19 @@ public class RequestManager extends Handler {
                 Response listOperationResponse = (Response)message.obj;
                 EventBus.getDefault().post(new SuccessfullAlert(listOperationResponse));
                 break;
+
+            case States.RATE_MOVIE_REQUEST:
+                Timber.v("RATE_MOVIE_REQUEST");
+                List<String> attrs = (List<String>)message.obj;
+                RateMovieRequest rateMovieRequest = new RateMovieRequest(getInstance());
+                rateMovieRequest.setMovieRating(Long.valueOf(attrs.get(0)),Double.valueOf(attrs.get(1)));
+                break;
+
+            case States.MOVIE_RATED_SUCCESSFULLY:
+                Timber.v("MOVIE_RATED_SUCCESSFULLY");
+
+                break;
+
 
 
             //endregion

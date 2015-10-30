@@ -17,6 +17,7 @@ import com.example.admin.moviesapp.models.Trailer;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.admin.moviesapp.database.Contract.*;
 import static com.example.admin.moviesapp.database.Contract.CastDetailsEntry;
 import static com.example.admin.moviesapp.database.Contract.CastEntry;
 import static com.example.admin.moviesapp.database.Contract.GenreEntry;
@@ -30,7 +31,7 @@ import static com.example.admin.moviesapp.database.Contract.TrailersEntry;
 public class DbHelper extends SQLiteOpenHelper {
 
     // When the database schema was changed, you must increment the database version
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 7;
     public static final String DATABASE_NAME = "movies.db";
 
     public DbHelper(Context context) {
@@ -74,6 +75,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 MoviesDetailsEntry.COLUMN_VIDEO + " INTEGER, " +
                 MoviesDetailsEntry.COLUMN_VOTE_AVERAGE + " REAL, " +
                 MoviesDetailsEntry.COLUMN_VOTE_COUNT + " INTEGER, " +
+                MoviesDetailsEntry.COLUMN_USER_RATING + " REAL, " +
                 MoviesDetailsEntry.COLUMN_COVER + " BLOB);";
 
         final String SQL_CREATE_MOVIE_GENRE_TABLE = "CREATE TABLE " + MovieGenreEntry.TABLE_NAME + " (" +
@@ -132,14 +134,19 @@ public class DbHelper extends SQLiteOpenHelper {
                 " FOREIGN KEY (" + TrailersEntry.COLUMN_MOVIE_ID + ") REFERENCES " +
                 MoviesDetailsEntry.TABLE_NAME + " (" + MoviesDetailsEntry._ID + ")" + " );";
 
+        final String SQL_CREATE_FAVORITE_MOVIES_TABLE = "CREATE TABLE " + FavoriteMoviesEntry.TABLE_NAME + " (" +
+                FavoriteMoviesEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                FavoriteMoviesEntry.COLUMN_MOVIE_ID + " INTEGER, " +
+                " FOREIGN KEY (" + FavoriteMoviesEntry.COLUMN_MOVIE_ID + ") REFERENCES " +
+                MoviesDetailsEntry.TABLE_NAME + " (" + MoviesDetailsEntry._ID + ")" + " );";
+
         sqLiteDatabase.execSQL(SQL_CREATE_MOVIES_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_MOVIES_DETAILS_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_GENRES_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_GENRE_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_CAST_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_TRAILER_TABLE);
-
-
+        sqLiteDatabase.execSQL(SQL_CREATE_FAVORITE_MOVIES_TABLE);
     }
 
     @Override
@@ -151,12 +158,76 @@ public class DbHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MoviesDetailsEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + GenreEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MovieGenreEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + FavoriteMoviesEntry.TABLE_NAME);
         onCreate(sqLiteDatabase);
     }
 
     public void deleteDatabase(Context context) {
         context.deleteDatabase(DbHelper.DATABASE_NAME);
     }
+
+    //region Favorite Movies operations
+
+    // Adds id of selected movie to the favorite tables
+    public void addMovieToFavorites(long movieId) {
+        if (!isMovieIsFavorite(movieId)) {
+            SQLiteDatabase database = this.getWritableDatabase();
+            ContentValues values = insertFavoriteMovieIntoContentValues(movieId);
+            database.insert(FavoriteMoviesEntry.TABLE_NAME, null, values);
+            database.close();
+        }
+    }
+
+    private ContentValues insertFavoriteMovieIntoContentValues(long movieId){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(FavoriteMoviesEntry.COLUMN_MOVIE_ID,movieId);
+        return contentValues;
+    }
+
+    // Checks is this movie in the favorite table
+    public boolean isMovieIsFavorite(long movieId){
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        String query = "SELECT * FROM " + FavoriteMoviesEntry.TABLE_NAME + " WHERE " + FavoriteMoviesEntry.COLUMN_MOVIE_ID + " = " + movieId;
+        Cursor cursor = sqLiteDatabase.rawQuery(query,null);
+        if (cursor.getCount() <= 0){
+            cursor.close();
+            return false;
+        }
+        cursor.close();
+        return true;
+    }
+
+    // Returns the list of all movies which in the favorite movies table
+    public List<MovieDetails> getAllFavoriteMovies() {
+        SQLiteDatabase database = this.getWritableDatabase();
+        List<MovieDetails> movieDetailses = new ArrayList<>();
+        List<Integer> favoritesMovieId = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + FavoriteMoviesEntry.TABLE_NAME;
+        Cursor cursor = database.rawQuery(selectQuery, null);
+        if (cursor.moveToFirst()) {
+            do {
+                int id = getIdFromCursor(cursor);
+                String selectFavoriteMovieQuery = "SELECT * FROM " + MoviesDetailsEntry.TABLE_NAME + "WHERE " + MoviesDetailsEntry._ID +  "= " + id;
+                Cursor movieCursor = database.rawQuery(selectFavoriteMovieQuery, null);
+                if (movieCursor.moveToFirst()) {
+                    do {
+                        MovieDetails movieDetails = getMovieDetailsFromCursor(movieCursor);
+                        movieDetailses.add(movieDetails);
+                    } while (movieCursor.moveToNext());
+                }
+            } while (cursor.moveToNext());
+        }
+        database.close();
+
+        return movieDetailses;
+    }
+
+    private int getIdFromCursor(Cursor cursor){
+        int id = cursor.getInt(cursor.getColumnIndex(FavoriteMoviesEntry.COLUMN_MOVIE_ID));
+        return id;
+    }
+
+    //endregion
 
     //region Movie operations
     // TODO add limit for 20 results per one operation
@@ -371,6 +442,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 " ON " + " ( " + MoviesDetailsEntry.TABLE_NAME  + "." + MoviesDetailsEntry._ID +
                 " = " + TrailersEntry.TABLE_NAME + "." + TrailersEntry.COLUMN_MOVIE_ID + " )" +
                 " WHERE " + TrailersEntry.TABLE_NAME + "." + TrailersEntry.COLUMN_MOVIE_ID + " = " + movieId;
+
         Cursor cursor = database.rawQuery(query,null);
 
         if (cursor.moveToFirst()){
@@ -482,8 +554,18 @@ public class DbHelper extends SQLiteOpenHelper {
         values.put(MoviesDetailsEntry.COLUMN_VOTE_AVERAGE, movieDetails.getVoteAverage());
         values.put(MoviesDetailsEntry.COLUMN_VOTE_COUNT, movieDetails.getVoteCount());
         values.put(MoviesDetailsEntry.COLUMN_COVER, movieDetails.getCover());
+        values.put(MoviesDetailsEntry.COLUMN_USER_RATING,movieDetails.getUserRating());
 
         return values;
+    }
+
+    public long updateMovieRatingGivenByUser(long movieId, double newRating){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MoviesDetailsEntry.COLUMN_USER_RATING,newRating);
+
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        int updatedRows = sqLiteDatabase.update(MoviesDetailsEntry.TABLE_NAME, contentValues,"_id" +"=" + movieId,null);
+        return updatedRows;
     }
 
     private ContentValues insertMovieGenresInCntnValues(Genre genre) {
@@ -588,6 +670,7 @@ public class DbHelper extends SQLiteOpenHelper {
         double voteAverage = cursor.getDouble(cursor.getColumnIndex(MoviesDetailsEntry.COLUMN_VOTE_AVERAGE));
         long voteCount = cursor.getLong(cursor.getColumnIndex(MoviesDetailsEntry.COLUMN_VOTE_COUNT));
         byte[] cover = cursor.getBlob(cursor.getColumnIndex(MoviesDetailsEntry.COLUMN_COVER));
+        double userRating = cursor.getDouble(cursor.getColumnIndex(MoviesDetailsEntry.COLUMN_USER_RATING));
         // Set values into MovieDetails object
         MovieDetails movieDetails = new MovieDetails();
         movieDetails.setId(id);
@@ -610,6 +693,7 @@ public class DbHelper extends SQLiteOpenHelper {
         movieDetails.setVoteAverage(voteAverage);
         movieDetails.setVoteCount(voteCount);
         movieDetails.setCover(cover);
+        movieDetails.setUserRating(userRating);
 
         return movieDetails;
     }

@@ -4,7 +4,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.example.admin.moviesapp.events.RedirectionEvent;
-import com.example.admin.moviesapp.events.SuccessfullAlert;
+import com.example.admin.moviesapp.events.successfullResponse.SuccessfullAlert;
 import com.example.admin.moviesapp.events.UpdateCastDetailsImageEvent;
 import com.example.admin.moviesapp.events.UpdateCastDetailsUI;
 import com.example.admin.moviesapp.events.UpdateCastListEvent;
@@ -28,7 +28,6 @@ import com.example.admin.moviesapp.models.network.Response;
 import com.example.admin.moviesapp.models.requests.FavoriteMovieRequest;
 import com.example.admin.moviesapp.models.requests.UpdateItemRequest;
 import com.example.admin.moviesapp.models.requests.WatchlistMovieRequest;
-import com.example.admin.moviesapp.requests.AbstarctMovieRequest;
 import com.example.admin.moviesapp.requests.AccountRequest;
 import com.example.admin.moviesapp.requests.AuthRequest;
 import com.example.admin.moviesapp.requests.CastDetailsRequest;
@@ -40,7 +39,6 @@ import com.example.admin.moviesapp.requests.MovieRequest;
 import com.example.admin.moviesapp.requests.RateMovieRequest;
 import com.example.admin.moviesapp.requests.RequestExecutor;
 import com.example.admin.moviesapp.requests.TrailerRequest;
-import com.example.admin.moviesapp.requests.WatchlistRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -333,6 +331,12 @@ public class RequestManager extends Handler {
                 executor.sendPostRequest(watchlistMovieRequest);
                 break;
 
+            case States.MOVIE_WAS_ADDED_TO_WATCHLIST_SUCCESSFULLY:
+                Timber.v("MOVIE_WAS_ADDED_TO_WATCHLIST_SUCCESSFULLY");
+                Response listOperationResponse = (Response)message.obj;
+                EventBus.getDefault().post(new SuccessfullAlert(listOperationResponse, SuccessfullAlert.WatchlistMovieRequestType));
+                break;
+
             //endregion
 
             //region
@@ -361,8 +365,8 @@ public class RequestManager extends Handler {
 
             case States.MOVIE_MARKED_SUCCESSFULLY:
                 Timber.v("MOVIE_MARKED_SUCCESSFULLY");
-                Response listOperationResponse = (Response)message.obj;
-                EventBus.getDefault().post(new SuccessfullAlert(listOperationResponse));
+                Response listOperatResponse = (Response)message.obj;
+                EventBus.getDefault().post(new SuccessfullAlert(listOperatResponse,SuccessfullAlert.FavoriteMovieRequestType));
                 break;
 
             case States.RATE_MOVIE_REQUEST:
@@ -374,9 +378,9 @@ public class RequestManager extends Handler {
 
             case States.MOVIE_RATED_SUCCESSFULLY:
                 Timber.v("MOVIE_RATED_SUCCESSFULLY");
-
+                Response r = (Response)message.obj;
+                EventBus.getDefault().post(new SuccessfullAlert(r,SuccessfullAlert.RateMovieRequestType));
                 break;
-
 
 
             //endregion

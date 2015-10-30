@@ -84,6 +84,8 @@ public class MovieDetails extends CommonMovie {
 
     private byte[] cover_;
 
+    private double userRating_;
+
 
     public boolean isAdult() {
         return adult_;
@@ -276,6 +278,14 @@ public class MovieDetails extends CommonMovie {
 
     public void setCover(byte[] cover) {
         this.cover_ = cover;
+    }
+
+    public void setUserRating(double rating){
+        this.userRating_ = rating;
+    }
+
+    public double getUserRating(){
+        return this.userRating_;
     }
 
 

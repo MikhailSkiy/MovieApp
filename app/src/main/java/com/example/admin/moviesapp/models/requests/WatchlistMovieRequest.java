@@ -59,6 +59,6 @@ public class WatchlistMovieRequest extends UpdateWatchlistItemRequest {
 
     @Override
     public int getSuccessfullPostRequestStatus() {
-        return States.MOVIE_MARKED_SUCCESSFULLY;
+        return States.MOVIE_WAS_ADDED_TO_WATCHLIST_SUCCESSFULLY;
     }
 }

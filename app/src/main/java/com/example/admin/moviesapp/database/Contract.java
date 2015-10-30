@@ -48,6 +48,7 @@ public class Contract {
         public static final String COLUMN_VIDEO = "video";
         public static final String COLUMN_VOTE_AVERAGE = "vote_average";
         public static final String COLUMN_VOTE_COUNT = "vote_count";
+        public static final String COLUMN_USER_RATING = "user_rating";
         public static final String COLUMN_COVER = "cover";
     }
 
@@ -105,6 +106,16 @@ public class Contract {
         public static final String COLUMN_SIZE = "size";
         public static final String COLUMN_TYPE = "type";
         // this column for foreign key
+        public static final String COLUMN_MOVIE_ID = "movie_id";
+    }
+
+    public static final class FavoriteMoviesEntry implements BaseColumns{
+        public static final String TABLE_NAME = "favorits";
+        public static final String COLUMN_MOVIE_ID = "movie_id";
+    }
+
+    public static final class WatchlistMoviesEntry implements BaseColumns{
+        public static final String TABLE_NAME = "watchlist";
         public static final String COLUMN_MOVIE_ID = "movie_id";
     }
 }

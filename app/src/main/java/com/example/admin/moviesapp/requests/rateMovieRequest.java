@@ -71,7 +71,7 @@ public class RateMovieRequest {
             public void onResponse(JSONObject response) {
                 Response watchlistResponse = getResponseFromJson(response.toString());
                 if (watchlistResponse.statusCode.equals(Integer.toString(Constants.WATCHLIST_SUCCESS_CODE))) {
-                    manager_.sendMessage(manager_.obtainMessage(States.MOVIE_RATED_SUCCESSFULLY,watchlistResponse.statusMessage));
+                    manager_.sendMessage(manager_.obtainMessage(States.MOVIE_RATED_SUCCESSFULLY,watchlistResponse));
                 }
             }
         }, new com.android.volley.Response.ErrorListener() {

@@ -17,6 +17,7 @@ public class WatchlistMovieRequest extends UpdateWatchlistItemRequest {
     protected final String MOVIES_KEY = "movies";
 
     private long itemId_;
+    private boolean operationFlag_;
 
     @Override
     public String getTag() {
@@ -36,6 +37,16 @@ public class WatchlistMovieRequest extends UpdateWatchlistItemRequest {
     @Override
     public String getType() {
         return Constants.WATCHLIST;
+    }
+
+    @Override
+    public void setOperationFlag(boolean flag) {
+        this.operationFlag_ = flag;
+    }
+
+    @Override
+    public boolean getOperationFlag() {
+        return this.operationFlag_;
     }
 
     @Override

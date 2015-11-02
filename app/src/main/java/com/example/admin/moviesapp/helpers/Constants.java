@@ -42,4 +42,12 @@ public class Constants {
     public @interface ListType{}
     public static final String FAVORITE = "favorite";
     public static final String WATCHLIST = "watchlist";
+
+    // Constants for type of requests in main menu list
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({MOVIES_MODE,FAVORITE_MOVIES_MODE,WATCHLIST_MODE})
+    public @interface MoviesActivityListMode{}
+    public static final int MOVIES_MODE = 0;
+    public static final int FAVORITE_MOVIES_MODE = 1;
+    public static final int WATCHLIST_MODE = 2;
 }

@@ -15,7 +15,8 @@ public class FavoriteMovieRequest extends UpdateFavoriteItemRequest {
 
     private final String TAG = "FavoriteMovieRequest";
 
-     private long itemId_;
+    private long itemId_;
+    private boolean operationFlag_;
 
     @Override
     public String getTag() {
@@ -35,6 +36,16 @@ public class FavoriteMovieRequest extends UpdateFavoriteItemRequest {
     @Override
     public String getType() {
         return Constants.FAVORITE;
+    }
+
+    @Override
+    public void setOperationFlag(boolean flag) {
+        this.operationFlag_ = flag;
+    }
+
+    @Override
+    public boolean getOperationFlag() {
+        return this.operationFlag_;
     }
 
     @Override

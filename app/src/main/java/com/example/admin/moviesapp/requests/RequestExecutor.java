@@ -77,7 +77,7 @@ public class RequestExecutor {
         try{
             body.put("media_type",itemRequest.getMediaType());
             body.put("media_id",Long.toString(itemRequest.getItemId()));
-            body.put(itemRequest.getType(),true);
+            body.put(itemRequest.getType(),itemRequest.getOperationFlag());
         } catch (JSONException e){
             e.printStackTrace();
         }
@@ -86,9 +86,11 @@ public class RequestExecutor {
             @Override
             public void onResponse(JSONObject response) {
                 Response markAsFavoriteResponse = getResponseFromJson(response.toString());
-                if (itemRequest.isRequestSuccesfull(markAsFavoriteResponse.statusCode)) {
+                Timber.v("Status code");
+                Timber.v(markAsFavoriteResponse.statusCode);
+//                if (itemRequest.isRequestSuccesfull(markAsFavoriteResponse.statusCode)) {
                     manager_.sendMessage(manager_.obtainMessage(itemRequest.getSuccessfullPostRequestStatus(),markAsFavoriteResponse));
-                }
+                //}
             }
         }, new com.android.volley.Response.ErrorListener() {
             @Override

@@ -51,7 +51,8 @@ public class MovieRequest implements RequestFactory {
     private final String POPULARITY = "popularity.";
     private final String RATING = "rating.";
     private final String Revenue = "revenue.";
-    private final String LANGUAGE_VALUE = "ru";
+   // private final String LANGUAGE_VALUE = "ru";
+   private final String LANGUAGE_VALUE = "en";
     //endregion
 
     private static RequestManager manager_;

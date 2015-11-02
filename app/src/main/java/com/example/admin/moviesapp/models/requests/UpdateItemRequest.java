@@ -1,6 +1,7 @@
 package com.example.admin.moviesapp.models.requests;
 
 import android.net.Uri;
+import android.support.annotation.IntDef;
 
 import com.example.admin.moviesapp.helpers.Constants;
 import com.example.admin.moviesapp.helpers.SharedPrefUtil;
@@ -8,12 +9,16 @@ import com.example.admin.moviesapp.models.network.Response;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 import timber.log.Timber;
 
 /**
  * Created by Mikhail Valuyskiy on 23.10.2015.
  */
 public abstract class UpdateItemRequest {
+
 
     protected final String BASE_URL = "http://api.themoviedb.org/3/account/";
     protected final String API_KEY = "api_key";
@@ -41,8 +46,16 @@ public abstract class UpdateItemRequest {
     // Returns selected item id
     public abstract long getItemId();
 
-    // Set item id
+    // Sets item id
     public abstract void setItemId(long itemId);
+
+    // Sets the operation flag: true - add, false - delete
+    // Used for adding or deleting item as post parameter
+    // TRUE for adding item. FALSE for deleting item
+    public abstract void setOperationFlag(boolean flag);
+
+    // Returns the operation flag
+    public abstract boolean getOperationFlag();
 
     // Checks is send request was successful
     public abstract boolean isRequestSuccesfull(@Constants.MoviesStatus String statusCode);

@@ -167,11 +167,6 @@
                     android:icon="@drawable/ic_sort_descending_grey600_24dp"
                     android:title="@string/revenue_filter_menu_item" />
 
-
-                <item
-                    android:id="@+id/settings_menu_btn"
-                    android:icon="@drawable/ic_settings_grey"
-                    android:title="@string/settings_main_menu_item" />
             </menu>
         </item>
     </group>

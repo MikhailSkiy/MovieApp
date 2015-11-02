@@ -35,7 +35,8 @@ public class MovieDetailsRequest implements RequestFactory {
     //endregion
 
     //region Values for building query
-    private final String LANGUAGE_VALUE = "ru";
+//    private final String LANGUAGE_VALUE = "ru";
+    private final String LANGUAGE_VALUE = "en";
     //endregion
 
     private static RequestManager manager_;

@@ -328,6 +328,7 @@ public class RequestManager extends Handler {
                 UpdateItemRequest watchlistMovieRequest = new WatchlistMovieRequest();
                 // TODO Is it better to create UpdateItemRequest object with movie Id instead
                 watchlistMovieRequest.setItemId(idForWatchlist);
+                watchlistMovieRequest.setOperationFlag(true);
                 executor.sendPostRequest(watchlistMovieRequest);
                 break;
 
@@ -336,6 +337,16 @@ public class RequestManager extends Handler {
                 Response listOperationResponse = (Response)message.obj;
                 EventBus.getDefault().post(new SuccessfullAlert(listOperationResponse, SuccessfullAlert.WatchlistMovieRequestType));
                 break;
+
+            case States.DELETE_FROM_WATCHLIST:
+                Timber.v("DELETE_FROM_WATCHLIST");
+                long deleteWatchlistId = (long)message.obj;
+                UpdateItemRequest deleteMovieFromWatchlistRequest = new WatchlistMovieRequest();
+                deleteMovieFromWatchlistRequest.setItemId(deleteWatchlistId);
+                deleteMovieFromWatchlistRequest.setOperationFlag(false);
+                executor.sendPostRequest(deleteMovieFromWatchlistRequest);
+                break;
+
 
             //endregion
 
@@ -360,6 +371,7 @@ public class RequestManager extends Handler {
                 long markAsFavoriteId = (long)message.obj;
                 UpdateItemRequest markRequest = new FavoriteMovieRequest();
                 markRequest.setItemId(markAsFavoriteId);
+                markRequest.setOperationFlag(true);
                 executor.sendPostRequest(markRequest);
                 break;
 
@@ -368,6 +380,18 @@ public class RequestManager extends Handler {
                 Response listOperatResponse = (Response)message.obj;
                 EventBus.getDefault().post(new SuccessfullAlert(listOperatResponse,SuccessfullAlert.FavoriteMovieRequestType));
                 break;
+
+            case States.DELETE_FROM_FAVORITS:
+                Timber.v("DELETE_FROM_FAVORITS");
+                long unmarkFavoriteId = (long)message.obj;
+                UpdateItemRequest unmarkRequest = new FavoriteMovieRequest();
+                unmarkRequest.setItemId(unmarkFavoriteId);
+                unmarkRequest.setOperationFlag(false);
+                executor.sendPostRequest(unmarkRequest);
+                break;
+
+
+
 
             case States.RATE_MOVIE_REQUEST:
                 Timber.v("RATE_MOVIE_REQUEST");

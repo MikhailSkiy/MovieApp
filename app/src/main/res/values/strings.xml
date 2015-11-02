@@ -126,5 +126,10 @@
     <!-- Empty Movies -->
     <string name="empty_movie_list_and_no_connection">No Movie Information Available. Check your internet connection.</string>">
 
+    <!-- Titles for toasts in MovieDetailsActivity -->
+    <string name="added_to_favorits">lala</string>
+    <string name="deleted_from_favorits">This movie was deleted from your favorite list</string>
+    <string name="deleted_from_watchlist">This movie was deleted from your watchlist</string>
+
 
 </resources>

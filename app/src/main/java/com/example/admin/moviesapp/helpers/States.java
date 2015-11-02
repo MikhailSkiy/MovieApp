@@ -54,12 +54,14 @@ public class States {
     public static final int WATCHLIST_REQUEST_COMPLETED = 91;
     public static final int ADD_TO_WATCHLIST = 92;
     public static final int MOVIE_WAS_ADDED_TO_WATCHLIST_SUCCESSFULLY = 93;
+    public static final int DELETE_FROM_WATCHLIST = 94;
 
     // Favorites requests 100-109
     public static final int FAVORITES_REQUEST = 100;
     public static final int FAVORITES_REQUEST_COMPLETED = 101;
     public static final int MARK_AS_FAVORITE = 102;
     public static final int MOVIE_MARKED_SUCCESSFULLY = 103;
+    public static final int DELETE_FROM_FAVORITS = 104;
 
     // Rate movie request 110-119
     public static final int RATE_MOVIE_REQUEST = 110;

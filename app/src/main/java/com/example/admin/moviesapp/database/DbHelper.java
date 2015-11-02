@@ -140,6 +140,12 @@ public class DbHelper extends SQLiteOpenHelper {
                 " FOREIGN KEY (" + FavoriteMoviesEntry.COLUMN_MOVIE_ID + ") REFERENCES " +
                 MoviesDetailsEntry.TABLE_NAME + " (" + MoviesDetailsEntry._ID + ")" + " );";
 
+        final String SQL_CREATE_WATCHLIST_TABLE = "CREATE TABLE " + WatchlistMoviesEntry.TABLE_NAME + " (" +
+                WatchlistMoviesEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                WatchlistMoviesEntry.COLUMN_MOVIE_ID + " INTEGER, " +
+                " FOREIGN KEY (" + WatchlistMoviesEntry.COLUMN_MOVIE_ID +  ") REFERENCES " +
+                MoviesDetailsEntry.TABLE_NAME + " (" + MoviesDetailsEntry._ID + ")" + " );";
+
         sqLiteDatabase.execSQL(SQL_CREATE_MOVIES_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_MOVIES_DETAILS_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_GENRES_TABLE);
@@ -147,6 +153,7 @@ public class DbHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(SQL_CREATE_CAST_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_TRAILER_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_FAVORITE_MOVIES_TABLE);
+        sqLiteDatabase.execSQL(SQL_CREATE_WATCHLIST_TABLE);
     }
 
     @Override
@@ -159,6 +166,7 @@ public class DbHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + GenreEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MovieGenreEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + FavoriteMoviesEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + WatchlistMoviesEntry.TABLE_NAME);
         onCreate(sqLiteDatabase);
     }
 
@@ -166,35 +174,109 @@ public class DbHelper extends SQLiteOpenHelper {
         context.deleteDatabase(DbHelper.DATABASE_NAME);
     }
 
-    //region Favorite Movies operations
+    //region Watchlist operations
 
-    // Adds id of selected movie to the favorite tables
-    public void addMovieToFavorites(long movieId) {
-        if (!isMovieIsFavorite(movieId)) {
+    /**
+     * Adds id of selected movie to the watchlist
+     * Returns rowId if data was successfully inserted
+     * Otherwise, if the data exists return 0
+     */
+    public long addMovieToWatchlist(long movieId) {
+        if (!isMovieInWatchlist(movieId)) {
             SQLiteDatabase database = this.getWritableDatabase();
-            ContentValues values = insertFavoriteMovieIntoContentValues(movieId);
-            database.insert(FavoriteMoviesEntry.TABLE_NAME, null, values);
+            ContentValues values = insertMovieInWatchlist(movieId);
+            long rowId = database.insert(WatchlistMoviesEntry.TABLE_NAME, null, values);
             database.close();
+            return rowId;
+        } else return 0;
+    }
+
+    public boolean isMovieInWatchlist(long movieId) {
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        String query = "SELECT * FROM " + WatchlistMoviesEntry.TABLE_NAME + " WHERE " + WatchlistMoviesEntry.COLUMN_MOVIE_ID + " = " + movieId;
+        Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+        if (cursor.moveToFirst()) {
+            cursor.close();
+            return true;
+        } else {
+            cursor.close();
+            return false;
         }
     }
 
-    private ContentValues insertFavoriteMovieIntoContentValues(long movieId){
+    private ContentValues insertMovieInWatchlist(long movieId) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(FavoriteMoviesEntry.COLUMN_MOVIE_ID,movieId);
+        contentValues.put(WatchlistMoviesEntry.COLUMN_MOVIE_ID, movieId);
+        return contentValues;
+    }
+
+    /**
+     * Delets movie from watchlist table
+     * @return true - succeses, otherwise - false
+     */
+
+    public boolean deleteMovieFromWatchlist(long movieId) {
+        SQLiteDatabase database = this.getWritableDatabase();
+        int rowsDeleted = database.delete(WatchlistMoviesEntry.TABLE_NAME, WatchlistMoviesEntry.COLUMN_MOVIE_ID + "=?", new String[]{Long.toString(movieId)});
+        if (rowsDeleted > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    //endregions
+
+    //region Favorite Movies operations
+
+    /**
+     * Adds id of selected movie to the favorite tables
+     * Returns rowId if data was succesfully inserted
+     * Otherwise, if the data exists returns 0
+     */
+    public long addMovieToFavorites(long movieId) {
+        if (!isMovieIsFavorite(movieId)) {
+            SQLiteDatabase database = this.getWritableDatabase();
+            ContentValues values = insertFavoriteMovieIntoContentValues(movieId);
+            long rowId = database.insert(FavoriteMoviesEntry.TABLE_NAME, null, values);
+            database.close();
+            return rowId;
+        } else return 0;
+    }
+
+    /**
+     * Delets movie from favorits table
+     * @return true - succeses, otherwise - false
+     */
+    public boolean deleteFavoriteMovie(long movieId) {
+        SQLiteDatabase database = this.getWritableDatabase();
+        int rowsDeleted = database.delete(FavoriteMoviesEntry.TABLE_NAME, FavoriteMoviesEntry.COLUMN_MOVIE_ID + "=?", new String[]{Long.toString(movieId)});
+        if (rowsDeleted > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private ContentValues insertFavoriteMovieIntoContentValues(long movieId) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(FavoriteMoviesEntry.COLUMN_MOVIE_ID, movieId);
         return contentValues;
     }
 
     // Checks is this movie in the favorite table
-    public boolean isMovieIsFavorite(long movieId){
+    public boolean isMovieIsFavorite(long movieId) {
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
         String query = "SELECT * FROM " + FavoriteMoviesEntry.TABLE_NAME + " WHERE " + FavoriteMoviesEntry.COLUMN_MOVIE_ID + " = " + movieId;
-        Cursor cursor = sqLiteDatabase.rawQuery(query,null);
-        if (cursor.getCount() <= 0){
+        Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            cursor.close();
+            return true;
+        } else {
             cursor.close();
             return false;
         }
-        cursor.close();
-        return true;
     }
 
     // Returns the list of all movies which in the favorite movies table
@@ -207,7 +289,7 @@ public class DbHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 int id = getIdFromCursor(cursor);
-                String selectFavoriteMovieQuery = "SELECT * FROM " + MoviesDetailsEntry.TABLE_NAME + "WHERE " + MoviesDetailsEntry._ID +  "= " + id;
+                String selectFavoriteMovieQuery = "SELECT * FROM " + MoviesDetailsEntry.TABLE_NAME + "WHERE " + MoviesDetailsEntry._ID + "= " + id;
                 Cursor movieCursor = database.rawQuery(selectFavoriteMovieQuery, null);
                 if (movieCursor.moveToFirst()) {
                     do {
@@ -222,7 +304,7 @@ public class DbHelper extends SQLiteOpenHelper {
         return movieDetailses;
     }
 
-    private int getIdFromCursor(Cursor cursor){
+    private int getIdFromCursor(Cursor cursor) {
         int id = cursor.getInt(cursor.getColumnIndex(FavoriteMoviesEntry.COLUMN_MOVIE_ID));
         return id;
     }
@@ -355,7 +437,7 @@ public class DbHelper extends SQLiteOpenHelper {
         SQLiteDatabase database = this.getWritableDatabase();
         List<Cast> castList = new ArrayList<>();
         String query = "SELECT * FROM " +
-                CastEntry.TABLE_NAME + " WHERE "  + CastEntry.COLUMN_MOVIE_ID + " = " + movieId;
+                CastEntry.TABLE_NAME + " WHERE " + CastEntry.COLUMN_MOVIE_ID + " = " + movieId;
         Cursor cursor = database.rawQuery(query, null);
 
         if (cursor.moveToFirst()) {
@@ -369,7 +451,7 @@ public class DbHelper extends SQLiteOpenHelper {
         return castList;
     }
 
-    private Cast getCastFromCursor(Cursor cursor){
+    private Cast getCastFromCursor(Cursor cursor) {
         long id = cursor.getLong(cursor.getColumnIndex(CastEntry._ID));
         long castId = cursor.getLong(cursor.getColumnIndex(CastEntry.COLUMN_CAST_ID));
         String character = cursor.getString(cursor.getColumnIndex(CastEntry.COLUMN_CHARACTER));
@@ -377,7 +459,7 @@ public class DbHelper extends SQLiteOpenHelper {
         String name = cursor.getString(cursor.getColumnIndex(CastEntry.COLUMN_NAME));
         int order = cursor.getInt(cursor.getColumnIndex(CastEntry.COLUMN_ORDER));
         String profilePath = cursor.getString(cursor.getColumnIndex(CastEntry.COLUMN_PROFILE_PATH));
-        byte [] cover = cursor.getBlob(cursor.getColumnIndex(CastEntry.COLUMN_COVER));
+        byte[] cover = cursor.getBlob(cursor.getColumnIndex(CastEntry.COLUMN_COVER));
         // Set values to Casr object
         Cast cast = new Cast();
         cast.setId(id);
@@ -392,25 +474,25 @@ public class DbHelper extends SQLiteOpenHelper {
         return cast;
     }
 
-    private ContentValues insertCastInContentValues(Cast cast, long movieId){
+    private ContentValues insertCastInContentValues(Cast cast, long movieId) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(CastEntry._ID,cast.getId());
-        contentValues.put(CastEntry.COLUMN_CHARACTER,cast.getCharacter());
-        contentValues.put(CastEntry.COLUMN_CREDIT_ID,cast.getCreditId());
-        contentValues.put(CastEntry.COLUMN_CAST_ID,cast.getCastId());
-        contentValues.put(CastEntry.COLUMN_NAME,cast.getName());
-        contentValues.put(CastEntry.COLUMN_ORDER,cast.getOrder());
-        contentValues.put(CastEntry.COLUMN_PROFILE_PATH,cast.getProfilePath());
+        contentValues.put(CastEntry._ID, cast.getId());
+        contentValues.put(CastEntry.COLUMN_CHARACTER, cast.getCharacter());
+        contentValues.put(CastEntry.COLUMN_CREDIT_ID, cast.getCreditId());
+        contentValues.put(CastEntry.COLUMN_CAST_ID, cast.getCastId());
+        contentValues.put(CastEntry.COLUMN_NAME, cast.getName());
+        contentValues.put(CastEntry.COLUMN_ORDER, cast.getOrder());
+        contentValues.put(CastEntry.COLUMN_PROFILE_PATH, cast.getProfilePath());
         contentValues.put(CastEntry.COLUMN_COVER, cast.getCover());
-        contentValues.put(CastEntry.COLUMN_MOVIE_ID,movieId);
+        contentValues.put(CastEntry.COLUMN_MOVIE_ID, movieId);
 
         return contentValues;
     }
 
-    private boolean isCastExists(long castId){
+    private boolean isCastExists(long castId) {
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
         String query = "SELECT * FROM " + CastEntry.TABLE_NAME + " WHERE " + CastEntry._ID + " = " + castId;
-        Cursor castCursor = sqLiteDatabase.rawQuery(query,null);
+        Cursor castCursor = sqLiteDatabase.rawQuery(query, null);
         if (castCursor.getCount() <= 0) {
             castCursor.close();
             return false;
@@ -422,11 +504,11 @@ public class DbHelper extends SQLiteOpenHelper {
     //endregion
 
     //region Trailers operations
-    public void addTrailer(Trailer trailer,long movieId) {
+    public void addTrailer(Trailer trailer, long movieId) {
         if (trailer != null) {
             if (!isTrailerExists(trailer.getId())) {
                 SQLiteDatabase database = this.getWritableDatabase();
-                ContentValues trailerValues = insertTrailerInContentValues(trailer,movieId);
+                ContentValues trailerValues = insertTrailerInContentValues(trailer, movieId);
                 database.insert(TrailersEntry.TABLE_NAME, null, trailerValues);
                 database.close();
             }
@@ -435,17 +517,17 @@ public class DbHelper extends SQLiteOpenHelper {
         }
     }
 
-    public List<Trailer> getAllTrailers(long movieId){
+    public List<Trailer> getAllTrailers(long movieId) {
         SQLiteDatabase database = this.getWritableDatabase();
         List<Trailer> trailerList = new ArrayList<>();
         String query = "SELECT * FROM " + MoviesDetailsEntry.TABLE_NAME + " JOIN " + TrailersEntry.TABLE_NAME +
-                " ON " + " ( " + MoviesDetailsEntry.TABLE_NAME  + "." + MoviesDetailsEntry._ID +
+                " ON " + " ( " + MoviesDetailsEntry.TABLE_NAME + "." + MoviesDetailsEntry._ID +
                 " = " + TrailersEntry.TABLE_NAME + "." + TrailersEntry.COLUMN_MOVIE_ID + " )" +
                 " WHERE " + TrailersEntry.TABLE_NAME + "." + TrailersEntry.COLUMN_MOVIE_ID + " = " + movieId;
 
-        Cursor cursor = database.rawQuery(query,null);
+        Cursor cursor = database.rawQuery(query, null);
 
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             do {
                 Trailer trailer = getTrailerFromCursor(cursor);
                 trailerList.add(trailer);
@@ -456,7 +538,7 @@ public class DbHelper extends SQLiteOpenHelper {
         return trailerList;
     }
 
-    private Trailer getTrailerFromCursor(Cursor cursor){
+    private Trailer getTrailerFromCursor(Cursor cursor) {
         String trailerId = cursor.getString(cursor.getColumnIndex(TrailersEntry._ID));
         String code = cursor.getString(cursor.getColumnIndex(TrailersEntry.COLUMN_CODE));
         String key = cursor.getString(cursor.getColumnIndex(TrailersEntry.COLUMN_KEY));
@@ -477,25 +559,25 @@ public class DbHelper extends SQLiteOpenHelper {
         return trailer;
     }
 
-    private ContentValues insertTrailerInContentValues(Trailer trailer,long movieId){
+    private ContentValues insertTrailerInContentValues(Trailer trailer, long movieId) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(TrailersEntry._ID,trailer.getId());
-        contentValues.put(TrailersEntry.COLUMN_CODE,trailer.getIso_639_1());
-        contentValues.put(TrailersEntry.COLUMN_KEY,trailer.getKey());
-        contentValues.put(TrailersEntry.COLUMN_NAME,trailer.getName());
-        contentValues.put(TrailersEntry.COLUMN_SITE,trailer.getSite());
-        contentValues.put(TrailersEntry.COLUMN_SIZE,trailer.getSize());
-        contentValues.put(TrailersEntry.COLUMN_TYPE,trailer.getType());
-        contentValues.put(TrailersEntry.COLUMN_MOVIE_ID,movieId);
+        contentValues.put(TrailersEntry._ID, trailer.getId());
+        contentValues.put(TrailersEntry.COLUMN_CODE, trailer.getIso_639_1());
+        contentValues.put(TrailersEntry.COLUMN_KEY, trailer.getKey());
+        contentValues.put(TrailersEntry.COLUMN_NAME, trailer.getName());
+        contentValues.put(TrailersEntry.COLUMN_SITE, trailer.getSite());
+        contentValues.put(TrailersEntry.COLUMN_SIZE, trailer.getSize());
+        contentValues.put(TrailersEntry.COLUMN_TYPE, trailer.getType());
+        contentValues.put(TrailersEntry.COLUMN_MOVIE_ID, movieId);
 
         return contentValues;
     }
 
-    private boolean isTrailerExists(String trailerId){
+    private boolean isTrailerExists(String trailerId) {
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
         String query = "SELECT * FROM " + TrailersEntry.TABLE_NAME + " WHERE " + TrailersEntry._ID + " = " + "\"" + trailerId + "\"";
-        Cursor trailerCursor = sqLiteDatabase.rawQuery(query,null);
-        if (trailerCursor.getCount() <= 0){
+        Cursor trailerCursor = sqLiteDatabase.rawQuery(query, null);
+        if (trailerCursor.getCount() <= 0) {
             trailerCursor.close();
             return false;
         }
@@ -554,19 +636,39 @@ public class DbHelper extends SQLiteOpenHelper {
         values.put(MoviesDetailsEntry.COLUMN_VOTE_AVERAGE, movieDetails.getVoteAverage());
         values.put(MoviesDetailsEntry.COLUMN_VOTE_COUNT, movieDetails.getVoteCount());
         values.put(MoviesDetailsEntry.COLUMN_COVER, movieDetails.getCover());
-        values.put(MoviesDetailsEntry.COLUMN_USER_RATING,movieDetails.getUserRating());
+        values.put(MoviesDetailsEntry.COLUMN_USER_RATING, movieDetails.getUserRating());
 
         return values;
     }
 
-    public long updateMovieRatingGivenByUser(long movieId, double newRating){
+    public long updateMovieRatingGivenByUser(long movieId, double newRating) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(MoviesDetailsEntry.COLUMN_USER_RATING,newRating);
+        contentValues.put(MoviesDetailsEntry.COLUMN_USER_RATING, newRating);
 
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-        int updatedRows = sqLiteDatabase.update(MoviesDetailsEntry.TABLE_NAME, contentValues,"_id" +"=" + movieId,null);
+        int updatedRows = sqLiteDatabase.update(MoviesDetailsEntry.TABLE_NAME, contentValues, "_id" + "=" + movieId, null);
         return updatedRows;
     }
+
+    /**
+     *   Checks is there is rating of movie, given by user
+     *   False - if there is no such rating
+     *   True - if user has rated this movie
+     */
+    public boolean isRatingGivenByUserExist(long movieId){
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        String query = "SELECT " + MoviesDetailsEntry.COLUMN_USER_RATING + " FROM " + MoviesDetailsEntry.TABLE_NAME + " WHERE " +
+                MoviesDetailsEntry._ID + " = " + movieId;
+        Cursor cursor = sqLiteDatabase.rawQuery(query,null);
+        if (cursor.getCount()<=0){
+            cursor.close();
+            return false;
+        } else {
+            cursor.close();
+            return true;
+        }
+    }
+
 
     private ContentValues insertMovieGenresInCntnValues(Genre genre) {
         ContentValues values = new ContentValues();
@@ -591,10 +693,10 @@ public class DbHelper extends SQLiteOpenHelper {
         if (cursor.getCount() <= 0) {
             cursor.close();
             return false;
+        } else {
+            cursor.close();
+            return true;
         }
-        cursor.close();
-
-        return true;
     }
 
     public boolean isMovieDetailsExists(long movieDetailsId) {

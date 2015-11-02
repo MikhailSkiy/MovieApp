@@ -37,4 +37,9 @@
 
     <!--> Details Casts card view <-->
     <string name="biography_label">Биография</string>
+
+    <!-- Titles for toasts in MovieDetailsActivity -->
+    <string name="added_to_favorits">lala</string>
+    <string name="deleted_from_favorits">Данный фильм был удален из списка "Избранные"</string>
+    <string name="deleted_from_watchlist">Данный фильм был удален из списка "Посмотрю позже"</string>
 </resources>

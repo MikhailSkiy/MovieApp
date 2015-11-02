@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     private NavigationView filterNavigationMenu_;
     private NavigationView mainNavigationMenu_;
     private LinearLayoutManager layoutManager_;
-    private RecyclerViewEmptySupport recyclerView_;
+    private RecyclerView recyclerView_;
     private ImageView userAvatar_;
     private TextView userNickname_;
     private TextView name_;
@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     int pastVisiblesItems, visibleItemCount, totalItemCount;
     int page_ = 1;
     boolean login = false;
+    @Constants.MoviesActivityListMode int listMode = Constants.MOVIES_MODE;
 
 
     @Override
@@ -94,8 +95,8 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         // Initialize the context
         contextOfApplication_ = getApplicationContext();
         layoutManager_ = new LinearLayoutManager(this);
-        recyclerView_ = (RecyclerViewEmptySupport) findViewById(R.id.recycler_view);
-        recyclerView_.setEmptyView(this.findViewById(R.id.listview_empty));
+        recyclerView_ = (RecyclerView) findViewById(R.id.recycler_view);
+        //recyclerView_.setEmptyView(this.findViewById(R.id.listview_empty));
 
         // Update UI in case of bad connection
         // updateEmptyView();
@@ -114,11 +115,21 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
             @Override
             public void onScrolled(RecyclerView recyclerView1, int dx, int dy) {
                 visibleItemCount = layoutManager_.getChildCount();
-                totalItemCount = layoutManager_.getItemCount();
+                //totalItemCount = layoutManager_.getItemCount();
+                totalItemCount = moviesList_.size();
                 pastVisiblesItems = layoutManager_.findFirstVisibleItemPosition();
                 if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
                     page_++;
-                    sendMovieRequest();
+                    if (listMode == Constants.MOVIES_MODE) {
+                        sendMovieRequest();
+                    }
+                    if (listMode == Constants.FAVORITE_MOVIES_MODE){
+                        sendUserSpecificRequest(States.FAVORITES_REQUEST);
+                    }
+                    if (listMode == Constants.WATCHLIST_MODE){
+                        sendUserSpecificRequest(States.WATCHLIST_REQUEST);
+                    }
+
                 }
             }
         });
@@ -206,21 +217,21 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         EventBus.getDefault().unregister(this);
     }
 
-    private void updateEmptyView() {
-        if (moviesList_.size() == 0) {
-            int status = Util.getConnectionStatus(this);
-            switch (status) {
-                case Constants.CONNECTION_STATUS_OK:
-                    break;
-                case Constants.NO_CONNECTION:
-                    recyclerView_.setEmptyView(this.findViewById(R.id.listview_empty));
-                    break;
-                default:
-                    break;
-            }
-
-        }
-    }
+//    private void updateEmptyView() {
+//        if (moviesList_.size() == 0) {
+//            int status = Util.getConnectionStatus(this);
+//            switch (status) {
+//                case Constants.CONNECTION_STATUS_OK:
+//                    break;
+//                case Constants.NO_CONNECTION:
+//                    recyclerView_.setEmptyView(this.findViewById(R.id.listview_empty));
+//                    break;
+//                default:
+//                    break;
+//            }
+//
+//        }
+//    }
 
     public static Context getContextOfApplication() {
         return contextOfApplication_;
@@ -291,9 +302,6 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
 
     private void sendMovieRequest() {
         // TODO make reset page when genre is changed!
-        if (moviesList_!=null){
-            moviesList_.clear();
-        }
         manager_.sendMessage(manager_.obtainMessage(States.MOVIES_REQUEST, page_));
     }
 
@@ -579,13 +587,14 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
             // For favorite movies request user should be logged in
             // TODO add check that user have logged in
             case R.id.favorites_menu_btn:
-
+                listMode = Constants.FAVORITE_MOVIES_MODE;
                 sendUserSpecificRequest(States.FAVORITES_REQUEST);
                 break;
 
             // For watchlist request user should be logged in
             // TODO add check that user have logged in
             case R.id.watchlist_menu_btn:
+                listMode = Constants.WATCHLIST_MODE;
                 sendUserSpecificRequest(States.WATCHLIST_REQUEST);
                 break;
 

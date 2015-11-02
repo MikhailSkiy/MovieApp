@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     private boolean mUserSawDrawer = false;
     private int mSelectedId;
     private boolean isActionSelected = false;
-    private WebView myWebView_;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
     int page_ = 1;
     boolean login = false;
@@ -82,7 +81,6 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        myWebView_ = (WebView) findViewById(R.id.webview);
 
         //Register EventBus
         EventBus.getDefault().register(this);
@@ -111,12 +109,12 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
             }
         });
 
-        recyclerView_.setOnScrollListener(new RecyclerView.OnScrollListener() {
+        recyclerView_.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView1, int dx, int dy) {
                 visibleItemCount = layoutManager_.getChildCount();
-                //totalItemCount = layoutManager_.getItemCount();
-                totalItemCount = moviesList_.size();
+                totalItemCount = layoutManager_.getItemCount();
+                //totalItemCount = moviesList_.size();
                 pastVisiblesItems = layoutManager_.findFirstVisibleItemPosition();
                 if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
                     page_++;
@@ -239,7 +237,9 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
 
     public void onEvent(RedirectionEvent e) {
         Timber.v("Redirection Event");
-        openBrowser(e.getUrl());
+        Intent loginIntent = new Intent(MainActivity.this,LoginActivity.class);
+        loginIntent.putExtra("link", e.getUrl());
+        startActivity(loginIntent);
     }
 
     // Called when we got session_id and ready to request
@@ -580,7 +580,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         switch (itemId) {
             // Show all movies
             case R.id.movies_menu_btn:
-
+                listMode = Constants.MOVIES_MODE;
                 sendMovieRequest();
                 break;
 
@@ -712,33 +712,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         mDrawerLayout.closeDrawer(GravityCompat.START);
     }
 
-    private void openBrowser(String link) {
-        myWebView_.setVisibility(View.VISIBLE);
 
-        myWebView_.loadUrl(link);
-        myWebView_.getSettings().setJavaScriptEnabled(true);
-        myWebView_.getSettings().setDomStorageEnabled(true);
-        myWebView_.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return true;
-            }
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                Timber.v("onPageFinished");
-                if (view.getTitle().equals("Authentication Granted — The Movie Database (TMDb)")) {
-                    myWebView_.setVisibility(View.GONE);
-                    Toast.makeText(MainActivity.this, "You have logged in", Toast.LENGTH_SHORT).show();
-                    manager_.sendMessage(manager_.obtainMessage(States.SESSION_ID_REQUEST));
-                }
-            }
-
-        });
-
-
-    }
 
 //    private void openBrowser(String link) {
 //        Uri url = Uri.parse(link);

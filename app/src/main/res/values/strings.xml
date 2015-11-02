@@ -130,6 +130,7 @@
     <string name="added_to_favorits">lala</string>
     <string name="deleted_from_favorits">This movie was deleted from your favorite list</string>
     <string name="deleted_from_watchlist">This movie was deleted from your watchlist</string>
+    <string name="title_activity_login">LoginActivity</string>
 
 
 </resources>

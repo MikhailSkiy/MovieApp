@@ -42,6 +42,7 @@ import com.example.admin.moviesapp.ViewServer;
 import com.example.admin.moviesapp.adapters.MovieDetailsViewPager;
 import com.example.admin.moviesapp.adapters.TrailersAdapter;
 import com.example.admin.moviesapp.database.DbHelper;
+import com.example.admin.moviesapp.events.RedirectionEvent;
 import com.example.admin.moviesapp.events.successfullResponse.SuccessfullAlert;
 import com.example.admin.moviesapp.events.UpdateMovieDetailsImageEvent;
 import com.example.admin.moviesapp.helpers.Constants;
@@ -294,6 +295,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         rateMovieFloatingActionSubButton_.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // TODO ADD LOGIN FOR RATING
                 ratingDialog_.show();
             }
         });
@@ -388,6 +390,13 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
 
     private void setFullIconForRateBtn() {
         rateMovieFloatingActionSubButton_.setImageDrawable(getDrawable(R.drawable.ic_star_grey600_24dp));
+    }
+
+    public void onEvent(RedirectionEvent e) {
+        Timber.v("Redirection Event");
+        Intent loginIntent = new Intent(MovieDetailsActivity.this,LoginActivity.class);
+        loginIntent.putExtra("link", e.getUrl());
+        startActivity(loginIntent);
     }
 
     // Show user that the "mark movie as favorite" request was succefully completed

@@ -1,15 +1,14 @@
 <android.support.v4.widget.DrawerLayout
-    android:id="@+id/main_activity_drawer_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_activity_drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
-    <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
@@ -17,18 +16,24 @@
         android:fitsSystemWindows="true"
         tools:context=".MainActivity">
 
-        <android.support.v7.widget.RecyclerView
+        <com.example.admin.moviesapp.ui.RecyclerViewEmptySupport
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingTop="55dp"/>
+            android:paddingTop="55dp" />
 
+        <TextView
+            android:id="@+id/listview_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="71dp"
+            android:visibility="invisible"
+            android:text="@string/empty_movie_list_and_no_connection" />
 
-        <WebView  xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:id="@+id/webview"
-                  android:layout_width="fill_parent"
-                  android:layout_height="fill_parent"
-                  android:visibility="gone"/>
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/app_bar_layout"
@@ -42,7 +47,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
 
         </android.support.design.widget.AppBarLayout>
@@ -56,7 +61,7 @@
         app:headerLayout="@layout/header_main_navigation_menu"
         app:itemIconTint="@color/state_list"
         app:itemTextColor="@color/primary"
-        app:menu="@menu/main_menu_drawer"/>
+        app:menu="@menu/main_menu_drawer" />
 
     <android.support.design.widget.NavigationView
         android:id="@+id/filter_navigation_menu"
@@ -67,6 +72,6 @@
         app:headerLayout="@layout/header_filter_navigation_menu"
         app:itemIconTint="@color/orange"
         app:itemTextColor="@color/primary"
-        app:menu="@menu/menu_filter"/>
+        app:menu="@menu/menu_filter" />
 
 </android.support.v4.widget.DrawerLayout>

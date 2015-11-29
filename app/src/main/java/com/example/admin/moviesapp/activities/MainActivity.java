@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     private NavigationView filterNavigationMenu_;
     private NavigationView mainNavigationMenu_;
     private LinearLayoutManager layoutManager_;
-    private RecyclerView recyclerView_;
+    private RecyclerViewEmptySupport recyclerView_;
     private ImageView userAvatar_;
     private TextView userNickname_;
     private TextView name_;
@@ -93,11 +93,11 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         // Initialize the context
         contextOfApplication_ = getApplicationContext();
         layoutManager_ = new LinearLayoutManager(this);
-        recyclerView_ = (RecyclerView) findViewById(R.id.recycler_view);
-        //recyclerView_.setEmptyView(this.findViewById(R.id.listview_empty));
+        recyclerView_ = (RecyclerViewEmptySupport) findViewById(R.id.recycler_view);
+        recyclerView_.setEmptyView(findViewById(R.id.listview_empty));
 
         // Update UI in case of bad connection
-        // updateEmptyView();
+
 
 
         moviesAdapter_ = new MoviesAdapter(moviesList_, R.layout.item_movie_card, this, new MovieItemClickListener() {
@@ -215,21 +215,24 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         EventBus.getDefault().unregister(this);
     }
 
-//    private void updateEmptyView() {
-//        if (moviesList_.size() == 0) {
-//            int status = Util.getConnectionStatus(this);
-//            switch (status) {
-//                case Constants.CONNECTION_STATUS_OK:
-//                    break;
-//                case Constants.NO_CONNECTION:
-//                    recyclerView_.setEmptyView(this.findViewById(R.id.listview_empty));
-//                    break;
-//                default:
-//                    break;
-//            }
-//
-//        }
-//    }
+    private void updateEmptyView() {
+        if (moviesList_.size() == 0) {
+            int status = Util.getConnectionStatus(this);
+            switch (status) {
+                case Constants.CONNECTION_STATUS_OK:
+                    break;
+                case Constants.NO_CONNECTION:
+                    recyclerView_.setEmptyView(this.findViewById(R.id.listview_empty));
+                    break;
+                default:
+                    break;
+            }
+
+        }
+        else {
+            recyclerView_.hideEmptyView(this.findViewById(R.id.listview_empty));
+        }
+    }
 
     public static Context getContextOfApplication() {
         return contextOfApplication_;
@@ -318,6 +321,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
             // Add items into database
             //helper_.addMovie(movies.get(i));
         }
+        updateEmptyView();
     }
 
     private int getGenreValue(String genreName, boolean mode) {
@@ -655,6 +659,8 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     @Override
     public void onErrorRaised(String errorMsg) {
         Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show();
+        updateEmptyView();
+
     }
 
     @Override

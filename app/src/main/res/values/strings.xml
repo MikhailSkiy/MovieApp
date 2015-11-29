@@ -130,5 +130,11 @@
     <string name="deleted_from_watchlist">This movie was deleted from your watchlist</string>
     <string name="title_activity_login">LoginActivity</string>
 
+    <!-- Titles for About Us page -->
+    <string name="about_rate_app">Rate app on the Play Store</string>
+    <string name="about_share_your_ideas">Let us know how improve the app</string>
+    <string name="about_invite_friends">Invite your friends</string>
+    <string name="about_us">About us</string>
+
 
 </resources>

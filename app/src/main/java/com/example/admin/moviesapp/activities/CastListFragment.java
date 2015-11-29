@@ -1,6 +1,5 @@
 package com.example.admin.moviesapp.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,14 +19,12 @@ import com.example.admin.moviesapp.database.DbHelper;
 import com.example.admin.moviesapp.events.UpdateCastListEvent;
 import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.interfaces.ExploreMoreBtnListener;
-import com.example.admin.moviesapp.interfaces.MovieItemClickListener;
 import com.example.admin.moviesapp.managers.RequestManager;
 import com.example.admin.moviesapp.models.Cast;
 import com.example.admin.moviesapp.ui.CustomDividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import de.greenrobot.event.EventBus;
 import timber.log.Timber;

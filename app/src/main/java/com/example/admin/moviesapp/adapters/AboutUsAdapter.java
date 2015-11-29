@@ -12,39 +12,40 @@ import android.widget.TextView;
 import com.example.admin.moviesapp.R;
 import com.example.admin.moviesapp.helpers.Util;
 import com.example.admin.moviesapp.interfaces.CustomItemClickListener;
+import com.example.admin.moviesapp.models.AboutItem;
 import com.example.admin.moviesapp.models.Movie;
 
 import java.util.List;
 
 /**
- * Created by Mikhail Valuyskiy on 01.09.2015.
+ * Created by Mikhail on 29.11.15.
  */
-public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesViewHolder> {
+public class AboutUsAdapter extends RecyclerView.Adapter<AboutUsAdapter.AboutUsViewHolder> {
 
-    private static List<Movie> movies_;
-    private int rowLayout_;
+    private static List<AboutItem> aboutItems_;
     private Context context_;
     private static CustomItemClickListener listener_;
+    private int rowLayout_;
 
-    public static class MoviesViewHolder extends RecyclerView.ViewHolder {
-        public TextView movieName;
-        public ImageView movieCover;
+    public static class AboutUsViewHolder extends RecyclerView.ViewHolder {
+        public TextView itemName;
+        public ImageView itemIcon;
         public CardView cardView_;
 
-        public MoviesViewHolder(View view) {
+        public AboutUsViewHolder(View view) {
             super(view);
-            movieName = (TextView) view.findViewById(R.id.movie_title);
-            movieCover = (ImageView) view.findViewById(R.id.movie_cover);
-            cardView_ = (CardView) view.findViewById(R.id.movie_card);
+            itemName = (TextView) view.findViewById(R.id.about_item_title);
+            itemIcon = (ImageView) view.findViewById(R.id.about_item_icon);
+            cardView_ = (CardView) view.findViewById(R.id.about_item_card);
 
             cardView_.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
-                        long movieId = movies_.get(position).getId();
+                        long itemId = aboutItems_.get(position).getId();
                         if (listener_ != null) {
-                            listener_.onCustomItemClick(movieId);
+                            listener_.onCustomItemClick(itemId);
                         }
                     }
                 }
@@ -53,33 +54,30 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
         }
     }
 
-    public MoviesAdapter(List<Movie> movies, int rowLayout, Context context, CustomItemClickListener listener) {
-        this.movies_ = movies;
+
+    public AboutUsAdapter(List<AboutItem> items, int rowLayout, Context context, CustomItemClickListener listener) {
+        this.aboutItems_ = items;
         this.rowLayout_ = rowLayout;
         this.context_ = context;
         this.listener_ = listener;
     }
 
     @Override
-    public MoviesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public AboutUsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(rowLayout_, parent, false);
-        return new MoviesViewHolder(view);
+        return new AboutUsViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(MoviesViewHolder viewHolder, int i) {
-        Movie movie = movies_.get(i);
-        viewHolder.movieName.setText(movie.getTitle());
-        viewHolder.movieCover.setImageBitmap(Util.getBitmapFromBytes(movie.getCover()));
-    }
-
-    public void addMovie(Movie movie) {
-        movies_.add(movie);
-        notifyDataSetChanged();
+    public void onBindViewHolder(AboutUsViewHolder viewHolder, int i) {
+        AboutItem item = aboutItems_.get(i);
+        viewHolder.itemName.setText(item.getTitle());
+        viewHolder.itemIcon.setImageDrawable(context_.getDrawable(Util.getIconId(item.getId())));
     }
 
     @Override
     public int getItemCount() {
-        return movies_.size();
+        return aboutItems_.size();
     }
+
 }

@@ -26,4 +26,24 @@
     <dimen name="fab_margin">16dp</dimen>
 
 
+    <!--Dimens for AboutUs Items -->
+    <dimen name="ruler_width">1dp</dimen>
+    <dimen name="button_corner_radius">2dp</dimen>
+    <dimen name="button_rounded_radius">53.3dp</dimen>
+    <dimen name="button_elevation">0dp</dimen>
+    <dimen name="list_item_elevation">4dp</dimen>
+    <dimen name="detail_item_elevation">0dp</dimen>
+
+    <dimen name="call_item_title_vertical_margin">8dp</dimen>
+    <dimen name="call_item_margin">12dp</dimen>
+    <dimen name="call_item_vet_image_size">68dp</dimen>
+    <dimen name="call_item_vet_image_margin">12dp</dimen>
+    <dimen name="call_item_pet_image_size">38dp</dimen>
+    <dimen name="call_item_pet_image_left_margin">53dp</dimen>
+    <dimen name="call_item_icon_right_margin">8dp</dimen>
+    <dimen name="call_item_rating_margin">8dp</dimen>
+
+    <dimen name="fragment_padding">8dp</dimen>
+
+
 </resources>

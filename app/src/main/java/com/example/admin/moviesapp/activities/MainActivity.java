@@ -16,11 +16,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,14 +27,13 @@ import com.example.admin.moviesapp.adapters.MoviesAdapter;
 import com.example.admin.moviesapp.database.DbHelper;
 import com.example.admin.moviesapp.events.AuthCompletedEvent;
 import com.example.admin.moviesapp.events.RedirectionEvent;
-import com.example.admin.moviesapp.events.ShowWatchlistEvent;
 import com.example.admin.moviesapp.events.UpdateMoviesEvent;
 import com.example.admin.moviesapp.events.UpdateUserProfileEvent;
 import com.example.admin.moviesapp.helpers.Constants;
 import com.example.admin.moviesapp.helpers.GenresMap;
 import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.helpers.Util;
-import com.example.admin.moviesapp.interfaces.MovieItemClickListener;
+import com.example.admin.moviesapp.interfaces.CustomItemClickListener;
 import com.example.admin.moviesapp.interfaces.UpdateListener;
 import com.example.admin.moviesapp.managers.RequestManager;
 import com.example.admin.moviesapp.models.CommonMovie;
@@ -104,9 +100,9 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
 
 
 
-        moviesAdapter_ = new MoviesAdapter(moviesList_, R.layout.item_movie_card, this, new MovieItemClickListener() {
+        moviesAdapter_ = new MoviesAdapter(moviesList_, R.layout.item_movie_card, this, new CustomItemClickListener() {
             @Override
-            public void onMovieItemClick(final long movieId) {
+            public void onCustomItemClick(final long movieId) {
                 Intent intent = new Intent(MainActivity.this, MovieDetailsActivity.class);
                 intent.putExtra("movieId", movieId);
                 startActivity(intent);
@@ -632,7 +628,8 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         } else {
             switch (itemId) {
                 case R.id.about_us_menu_btn:
-                    // TODO open About Us activity
+                    Intent intent = new Intent(MainActivity.this, AboutUsActivity.class);
+                    startActivity(intent);
                     // Or suggest rate this app in google play
                     break;
                 case R.id.settings_menu_btn:

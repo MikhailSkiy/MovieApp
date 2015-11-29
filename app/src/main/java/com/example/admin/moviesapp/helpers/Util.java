@@ -139,6 +139,32 @@ public class Util {
         return decodedImage;
     }
 
+    public static int getIconId(int itemId){
+        int id=0;
+        switch (itemId){
+            case R.id.rate_app_title_id :
+            id = R.drawable.rate;
+            break;
+
+            case R.id.share_ideas_title_id:
+                // Todo change icon for feedback
+                id = R.drawable.rate;
+                break;
+
+            case R.id.invite_friends_title_id:
+                // Todo change icon for invate friends
+                id = R.drawable.rate;
+            break;
+
+            case R.id.about_title_id:
+                id = R.drawable.ic_information_outline_grey;
+                break;
+
+            default:break;
+        }
+        return id;
+    }
+
     public static Drawable getDrawable(byte[] image) {
         Drawable drawable = new BitmapDrawable(BitmapFactory.decodeByteArray(image, 0, image.length));
         return drawable;

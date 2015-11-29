@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- About -->
+    <string-array name="about_titles">
+        <item>@string/about_rate_app</item>
+        <item>@string/about_share_your_ideas</item>
+        <item>@string/about_invite_friends</item>
+        <item>@string/about_us</item>
+    </string-array>
+
+    <string-array name="about_ids">
+        <item>@id/rate_app_title_id</item>
+        <item>@id/share_ideas_title_id</item>
+        <item>@id/invite_friends_title_id</item>
+        <item>@id/about_title_id</item>
+        </string-array>
+</resources>

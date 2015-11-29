@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="butterscotch">#fdb14a</color>
+    <color name="darkish_purple">#49237a</color>
+    <color name="darkish_purple_80">#CC49237a</color>
+    <color name="darkish_purple_85">#D949237a</color>
+    <color name="darkish_purple_95">#F249237a</color>
+    <color name="grape_purple">#3a1c61</color>
+    <color name="silver">#d0d2d3</color>
+    <color name="black">#000000</color>
+    <color name="off_white">#fafafa</color>
+    <color name="turquoise">#00bfa5</color>
+    <color name="rose_red">#c2003c</color>
+    <color name="brick">#9d2b24</color>
+    <color name="denim_blue">#3b5791</color>
+    <color name="cool_grey">#acadad</color>
+    <color name="light_grey">#e7e7e7</color>
+    <color name="greyish_brown">#4a4a4a</color>
+    <color name="brownish_grey">#666666</color>
+    <color name="greyish">#b5b5b5</color>
+    <color name="white_50">#80ffffff</color>
+    <color name="black_54">#8b000000</color>
+    <color name="black_87">#DD000000</color>
+    <color name="white_divider">#dfdfdf</color>
+    <color name="greenblue_90">#E100bca3</color>
+    <color name="pale_grey">#fbfafc</color>
+    <color name="pale_grey_50">#80fbfafc</color>
+    <color name="eggplant">#271043</color>
+
+    <color name="shade_black">#6F000000</color>
+    <color name="shade_dark_black">#99000000</color>
+    <color name="shade_light_black">#22000000</color>
+    <color name="shade_white">#1FFFFFFF</color>
+
+</resources>

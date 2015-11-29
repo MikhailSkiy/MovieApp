@@ -33,6 +33,8 @@
             android:label="@string/title_activity_login"
             android:theme="@style/AppTheme" >
         </activity>
+        <activity android:name=".activities.AboutUsActivity" >
+        </activity>
     </application>
 
 </manifest>

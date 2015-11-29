@@ -2,6 +2,11 @@
 <resources>
     <item name="frameId" type="id"/>
     <item name="frameId2" type="id"/>
-
     <item name="cast_name" type="id"/>
+
+    <item name="rate_app_title_id" type="id"/>
+    <item name="share_ideas_title_id" type="id"/>
+    <item name="invite_friends_title_id" type="id"/>
+    <item name="about_title_id" type="id"/>
+
 </resources>

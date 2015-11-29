@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.example.admin.moviesapp.events.RedirectionEvent;
+import com.example.admin.moviesapp.events.UpdateMoviesEvent;
 import com.example.admin.moviesapp.events.successfullResponse.SuccessfullAlert;
 import com.example.admin.moviesapp.events.UpdateCastDetailsImageEvent;
 import com.example.admin.moviesapp.events.UpdateCastDetailsUI;
@@ -112,6 +113,7 @@ public class RequestManager extends Handler {
                 Timber.v(Integer.toString(counter));
                 Timber.v(Integer.toString(size));
                 updateListener_.onUpdate(moviesWithImages);
+                EventBus.getDefault().post(new UpdateMoviesEvent(moviesWithImages));
                 break;
 
             case States.MOVIES_DETAILS_REQUEST:

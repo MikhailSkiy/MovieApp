@@ -184,6 +184,15 @@ public class Util {
         }
     }
 
+    public static boolean isUserLogedIn(){
+        String userId = SharedPrefUtil.getAccountIdFromSharedPrefs();
+        if (userId!=null){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * Returns true if the network is available or about to become available
      */

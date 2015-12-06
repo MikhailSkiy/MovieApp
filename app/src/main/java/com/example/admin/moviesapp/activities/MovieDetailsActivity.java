@@ -10,6 +10,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -373,23 +374,36 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
 
     // Methods for changing button state visually
     private void setFullIconForFavoriteBtn() {
-        addToFavoriteFloatingActionSubButton_.setImageDrawable(getDrawable(R.drawable.ic_heart));
+        getButtonIcon(R.drawable.ic_heart);
+        //addToFavoriteFloatingActionSubButton_.setImageDrawable(getDrawable(R.drawable.ic_heart));
     }
 
     private void setOutlineIconForFavoriteBtn() {
-        addToFavoriteFloatingActionSubButton_.setImageDrawable(getDrawable(R.drawable.ic_heart_outline_grey));
+        getButtonIcon(R.drawable.ic_heart_outline_grey);
+        //addToFavoriteFloatingActionSubButton_.setImageDrawable(getResources().getDrawable(R.drawable.ic_heart_outline_grey));
     }
 
     private void setRemoveIconForWatchlistBtn() {
-        addToWatchlistFloatingActionSubButton_.setImageDrawable(getDrawable(R.drawable.ic_playlist_remove_grey));
+        getButtonIcon(R.drawable.ic_playlist_remove_grey);
+        //addToWatchlistFloatingActionSubButton_.setImageDrawable(getDrawable(R.drawable.ic_playlist_remove_grey));
     }
 
     private void setPlusIconForWatchlistBtn() {
-        addToWatchlistFloatingActionSubButton_.setImageDrawable(getDrawable(R.drawable.ic_playlist_plus_grey));
+        getButtonIcon(R.drawable.ic_playlist_plus_grey);
+        //addToWatchlistFloatingActionSubButton_.setImageDrawable(getDrawable(R.drawable.ic_playlist_plus_grey));
     }
 
     private void setFullIconForRateBtn() {
-        rateMovieFloatingActionSubButton_.setImageDrawable(getDrawable(R.drawable.ic_star_grey600_24dp));
+        getButtonIcon(R.drawable.ic_star_grey600_24dp);
+        //rateMovieFloatingActionSubButton_.setImageDrawable(getDrawable(R.drawable.ic_star_grey600_24dp));
+    }
+
+    private Drawable getButtonIcon(int iconId){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+           return getResources().getDrawable(iconId, getApplicationContext().getTheme());
+        } else {
+            return getResources().getDrawable(iconId);
+        }
     }
 
     public void onEvent(RedirectionEvent e) {

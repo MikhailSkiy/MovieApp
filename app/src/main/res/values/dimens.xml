@@ -45,5 +45,7 @@
 
     <dimen name="fragment_padding">8dp</dimen>
 
+    <dimen name="fab_compat_margin_min">24dp</dimen>
+
 
 </resources>

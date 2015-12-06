@@ -46,7 +46,7 @@
         <item name="elevation">6dp</item>
         <item name="android:paddingBottom">20dp</item>
         <item name="pressedTranslationZ">12dp</item>
-        <item name="rippleColor">@android:color/white</item>
+        <item name="rippleColor">@color/white</item>
     </style>
 
     <style name="AddToListFabStyle">

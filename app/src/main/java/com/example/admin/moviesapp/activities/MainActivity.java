@@ -202,6 +202,9 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     @Override
     protected void onResume() {
         super.onResume();
+        if (Util.isNetworkAvailable(this)){
+            sendMovieRequest();
+        }
     }
 
 

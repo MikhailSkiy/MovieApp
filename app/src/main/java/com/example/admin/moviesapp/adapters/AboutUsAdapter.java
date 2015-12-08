@@ -1,6 +1,9 @@
 package com.example.admin.moviesapp.adapters;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,12 +13,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.admin.moviesapp.R;
+import com.example.admin.moviesapp.activities.AboutUsActivity;
 import com.example.admin.moviesapp.helpers.Util;
 import com.example.admin.moviesapp.interfaces.CustomItemClickListener;
 import com.example.admin.moviesapp.models.AboutItem;
 import com.example.admin.moviesapp.models.Movie;
 
 import java.util.List;
+
+import timber.log.Timber;
 
 /**
  * Created by Mikhail on 29.11.15.
@@ -43,7 +49,7 @@ public class AboutUsAdapter extends RecyclerView.Adapter<AboutUsAdapter.AboutUsV
                 public void onClick(View v) {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
-                        long itemId = aboutItems_.get(position).getId();
+                        long itemId = aboutItems_.get(position).id;
                         if (listener_ != null) {
                             listener_.onCustomItemClick(itemId);
                         }
@@ -64,19 +70,23 @@ public class AboutUsAdapter extends RecyclerView.Adapter<AboutUsAdapter.AboutUsV
 
     @Override
     public AboutUsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Timber.d("About" + "onCreateViewHolder");
         View view = LayoutInflater.from(parent.getContext()).inflate(rowLayout_, parent, false);
         return new AboutUsViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(AboutUsViewHolder viewHolder, int i) {
+        Timber.d("About" + "onBindViewHolder");
         AboutItem item = aboutItems_.get(i);
         viewHolder.itemName.setText(item.getTitle());
-        viewHolder.itemIcon.setImageDrawable(context_.getDrawable(Util.getIconId(item.getId())));
+        viewHolder.itemIcon.setImageDrawable(aboutItems_.get(i).getId());
+
     }
 
     @Override
     public int getItemCount() {
+        Timber.d("About" + aboutItems_.size());
         return aboutItems_.size();
     }
 

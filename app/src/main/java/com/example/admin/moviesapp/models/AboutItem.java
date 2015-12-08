@@ -1,15 +1,19 @@
 package com.example.admin.moviesapp.models;
 
+import android.graphics.drawable.Drawable;
+
 /**
  * Created by Mikhail on 29.11.15.
  */
 public class AboutItem {
     private String title_;
-    private int id_;
+    public int id;
+    private Drawable image_id;
 
-    public AboutItem(String title, int id){
+    public AboutItem(int id, String title, Drawable image_id){
+        this.id = id;
         this.title_ = title;
-        this.id_ = id;
+        this.image_id= image_id;
     }
 
     public String getTitle() {
@@ -20,11 +24,11 @@ public class AboutItem {
         this.title_ = title;
     }
 
-    public int getId() {
-        return id_;
+    public Drawable getId() {
+        return image_id;
     }
 
-    public void setId_(int id) {
-        this.id_ = id;
+    public void setId_(Drawable image_id) {
+        this.image_id = image_id;
     }
 }

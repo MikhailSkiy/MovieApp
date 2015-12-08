@@ -1,6 +1,7 @@
 package com.example.admin.moviesapp.activities;
 
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -33,10 +34,11 @@ public class AboutUsActivity extends AppCompatActivity {
 
         List<AboutItem> aboutItemList = new ArrayList<>();
         String[] titles = getResources().getStringArray(R.array.about_titles);
-        int[] links = getResources().getIntArray(R.array.about_ids);
+        int[] links = getResources().getIntArray(R.array.number_array);
+        TypedArray icons = getResources().obtainTypedArray(R.array.about_ids);
 
-        for (int i=0;i<titles.length;i++){
-            aboutItemList.add(new AboutItem(titles[i],links[i]));
+        for (int i=0;i<titles.length-1;i++){
+            aboutItemList.add(new AboutItem(links[i],titles[i],icons.getDrawable(i)));
         }
 
 

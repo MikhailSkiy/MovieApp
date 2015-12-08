@@ -8,10 +8,20 @@
         <item>@string/about_us</item>
     </string-array>
 
-    <string-array name="about_ids">
-        <item>@id/rate_app_title_id</item>
-        <item>@id/share_ideas_title_id</item>
-        <item>@id/invite_friends_title_id</item>
-        <item>@id/about_title_id</item>
-        </string-array>
+    <!-- TODO add like an array of icons ids -->
+
+    <integer-array name="about_ids">
+        <item>@drawable/ic_star_grey600_24dp</item>
+        <item>@drawable/ic_star_grey600_24dp</item>
+        <item>@drawable/ic_star_grey600_24dp</item>
+        <item>@drawable/ic_star_grey600_24dp</item>
+    </integer-array>
+
+    <array name="number_array">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </array>
+
 </resources>

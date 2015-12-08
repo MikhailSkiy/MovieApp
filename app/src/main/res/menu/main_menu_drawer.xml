@@ -27,6 +27,10 @@
                     android:icon="@drawable/ic_information_outline_grey"
                     android:title="@string/about_us_main_menu_item"/>
                 <item
+                    android:id="@+id/rate_app_menu_btn"
+                    android:icon="@drawable/ic_star_outline_grey"
+                    android:title="@string/about_rate_app"/>
+                <item
                     android:id="@+id/settings_menu_btn"
                     android:icon="@drawable/ic_settings_grey"
                     android:title="@string/settings_main_menu_item"/>

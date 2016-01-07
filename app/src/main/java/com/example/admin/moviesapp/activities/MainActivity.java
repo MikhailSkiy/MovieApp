@@ -592,10 +592,16 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         menuItem.setChecked(false);
     }
 
+
+
     // Handle click buttons on main navigation menu
     private void executeSelectedAction(int itemId) {
         mainNavigationMenu_.getMenu().findItem(itemId).setChecked(true);
-        if ((itemId != R.id.about_us_menu_btn) && (itemId != R.id.settings_menu_btn)) {
+        if ((itemId != R.id.about_us_menu_btn) &&
+                (itemId != R.id.settings_menu_btn) &&
+                (itemId != R.id.rate_app_title_id)
+                )
+        {
             if (Util.getConnectionStatus(this) == Constants.CONNECTION_STATUS_OK) {
                 if (Util.isUserLogedIn()) {
                     switch (itemId) {

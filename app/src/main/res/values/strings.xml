@@ -16,6 +16,8 @@
     <string name="more_main_menu_item">More</string>
     <string name="about_us_main_menu_item">About us</string>
     <string name="settings_main_menu_item">Settings</string>
+    <string name="login_main_menu_item">Login</string>
+    <string name="logout_main_menu_item">Logout</string>
 
     <!--> Values for filter navigation menu in main activity <-->
     <string name="genres_filter_menu_item">Genres</string>

@@ -16,6 +16,8 @@
     <string name="more_main_menu_item">Еще</string>
     <string name="about_us_main_menu_item">О нас</string>
     <string name="settings_main_menu_item">Настройки</string>
+    <string name="login_main_menu_item">Войти</string>
+    <string name="logout_main_menu_item">Выйти</string>
 
     <!--> Details card view <-->
     <string name="details_label">Детали</string>

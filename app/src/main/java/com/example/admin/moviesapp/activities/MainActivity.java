@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     private DbHelper helper_ = new DbHelper(this);
     private List<Movie> moviesList_ = new ArrayList<>();
     private Toolbar mToolbar;
-    private Menu menu_;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private NavigationView filterNavigationMenu_;
@@ -74,7 +73,8 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     int pastVisiblesItems, visibleItemCount, totalItemCount;
     int page_ = 1;
     boolean login = false;
-    @Constants.MoviesActivityListMode int listMode = Constants.MOVIES_MODE;
+    @Constants.MoviesActivityListMode
+    int listMode = Constants.MOVIES_MODE;
 
 
     @Override
@@ -99,7 +99,6 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         // Update UI in case of bad connection
 
 
-
         moviesAdapter_ = new MoviesAdapter(moviesList_, R.layout.item_movie_card, this, new CustomItemClickListener() {
             @Override
             public void onCustomItemClick(final long movieId) {
@@ -121,10 +120,10 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
                     if (listMode == Constants.MOVIES_MODE) {
                         sendMovieRequest();
                     }
-                    if (listMode == Constants.FAVORITE_MOVIES_MODE){
+                    if (listMode == Constants.FAVORITE_MOVIES_MODE) {
                         sendUserSpecificRequest(States.FAVORITES_REQUEST);
                     }
-                    if (listMode == Constants.WATCHLIST_MODE){
+                    if (listMode == Constants.WATCHLIST_MODE) {
                         sendUserSpecificRequest(States.WATCHLIST_REQUEST);
                     }
 
@@ -202,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     @Override
     protected void onResume() {
         super.onResume();
-        if (Util.isNetworkAvailable(this)){
+        if (Util.isNetworkAvailable(this)) {
             sendMovieRequest();
         }
     }
@@ -231,8 +230,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
                     break;
             }
 
-        }
-        else {
+        } else {
             recyclerView_.hideEmptyView(this.findViewById(R.id.listview_empty));
         }
     }
@@ -243,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
 
     public void onEvent(RedirectionEvent e) {
         Timber.v("Redirection Event");
-        Intent loginIntent = new Intent(MainActivity.this,LoginActivity.class);
+        Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
         loginIntent.putExtra("link", e.getUrl());
         startActivity(loginIntent);
     }
@@ -286,8 +284,13 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         }
     }
 
-    private void switchToLogout(){
-        menu_.findItem(R.id.action_login).setIcon(R.drawable.ic_logout_white_24dp);
+    private void switchToLogout() {
+        mainNavigationMenu_.getMenu().findItem(R.id.login_logout_menu_btn).setIcon(R.drawable.ic_logout_white_24dp);
+        mainNavigationMenu_.getMenu().findItem(R.id.login_logout_menu_btn).setTitle(R.string.logout_main_menu_item);
+
+        // Tricky solution http://stackoverflow.com/questions/31181024/cant-change-icons-for-subitems-in-navigationview
+        // So resetting the title of top level item will update UI
+        mainNavigationMenu_.getMenu().getItem(0).setTitle(mainNavigationMenu_.getMenu().getItem(0).getTitle());
     }
 
     // Shows users avatar
@@ -326,7 +329,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
 
     }
 
-    public void onEvent(UpdateMoviesEvent e){
+    public void onEvent(UpdateMoviesEvent e) {
         List<Movie> movies = (List<Movie>) e.getMovies();
         for (int i = 0; i < movies.size(); i++) {
             moviesAdapter_.addMovie(movies.get(i));
@@ -335,7 +338,6 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         }
         updateEmptyView();
     }
-
 
 
     private int getGenreValue(String genreName, boolean mode) {
@@ -592,62 +594,72 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         menuItem.setChecked(false);
     }
 
-
-
     // Handle click buttons on main navigation menu
     private void executeSelectedAction(int itemId) {
         mainNavigationMenu_.getMenu().findItem(itemId).setChecked(true);
-        if ((itemId != R.id.about_us_menu_btn) &&
-                (itemId != R.id.settings_menu_btn) &&
-                (itemId != R.id.rate_app_title_id)
-                )
-        {
-            if (Util.getConnectionStatus(this) == Constants.CONNECTION_STATUS_OK) {
-                if (Util.isUserLogedIn()) {
-                    switch (itemId) {
-                        // Show all movies
-                        case R.id.movies_menu_btn:
-                            listMode = Constants.MOVIES_MODE;
-                            sendMovieRequest();
-                            break;
-
-                        case R.id.favorites_menu_btn:
-                            listMode = Constants.FAVORITE_MOVIES_MODE;
-                            sendUserSpecificRequest(States.FAVORITES_REQUEST);
-                            break;
-
-                        case R.id.watchlist_menu_btn:
-                            listMode = Constants.WATCHLIST_MODE;
-                            sendUserSpecificRequest(States.WATCHLIST_REQUEST);
-                            break;
-
-                        case R.id.profile_menu_btn:
-                            // TODO Sent profile request or smth like this
-                            break;
-                        default:
-                            break;
-                    }
-                } else {
-                    // show user have to be loged in
-                    Toast.makeText(this, R.string.please_login, Toast.LENGTH_LONG).show();
-                }
-            } else {
-                Toast.makeText(this, R.string.empty_movie_list_and_no_connection, Toast.LENGTH_LONG).show();
-            }
-        } else {
+        if (Util.getConnectionStatus(this) == Constants.CONNECTION_STATUS_OK) {
             switch (itemId) {
+                // Show all movies. Not necessary to be registered or loged in for it
+                case R.id.movies_menu_btn:
+                    listMode = Constants.MOVIES_MODE;
+                    sendMovieRequest();
+                    break;
+
+                // For this feature user have to be loged in
+                case R.id.favorites_menu_btn:
+                    if (Util.isUserLogedIn()) {
+                        listMode = Constants.FAVORITE_MOVIES_MODE;
+                        sendUserSpecificRequest(States.FAVORITES_REQUEST);
+                    } else {
+                        // show user have to be loged in
+                        Toast.makeText(this, R.string.please_login, Toast.LENGTH_LONG).show();
+                    }
+                    break;
+
+                // For this feature user have to be loged in
+                case R.id.watchlist_menu_btn:
+                    if (Util.isUserLogedIn()) {
+                        listMode = Constants.WATCHLIST_MODE;
+                        sendUserSpecificRequest(States.WATCHLIST_REQUEST);
+                    } else {
+                        // show user have to be loged in
+                        Toast.makeText(this, R.string.please_login, Toast.LENGTH_LONG).show();
+                    }
+                    break;
+
+                case R.id.profile_menu_btn:
+                    // TODO Sent profile request or smth like this
+                    break;
+
                 case R.id.about_us_menu_btn:
                     Intent intent = new Intent(MainActivity.this, AboutUsActivity.class);
                     startActivity(intent);
                     // Or suggest rate this app in google play
                     break;
+
+                case R.id.rate_app_menu_btn:
+                    // TODO open rate app window
+                    break;
+
                 case R.id.settings_menu_btn:
                     // TODO open Settings activity
                     break;
-            }
 
+                case R.id.login_logout_menu_btn:
+                    sendLoginRequest();
+                    break;
+
+//                case R.id.logout_menu_btn:
+//                    break;
+
+                default:
+                    break;
+            }
+        } else {
+            Toast.makeText(this, R.string.empty_movie_list_and_no_connection, Toast.LENGTH_LONG).show();
         }
     }
+
 
     // Sends user-specific request
     private void sendUserSpecificRequest(int RequestType) {
@@ -699,7 +711,6 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        menu_ = menu;
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
@@ -715,10 +726,6 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
         }
 
         int id = item.getItemId();
-
-        if (id == R.id.action_login) {
-            sendLoginRequest();
-        }
 
         if (id == R.id.action_filter) {
             mDrawerLayout.openDrawer(GravityCompat.END);
@@ -751,7 +758,6 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     private void hideDrawer() {
         mDrawerLayout.closeDrawer(GravityCompat.START);
     }
-
 
 
 //    private void openBrowser(String link) {

@@ -602,14 +602,18 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
                 // Show all movies. Not necessary to be registered or loged in for it
                 case R.id.movies_menu_btn:
                     listMode = Constants.MOVIES_MODE;
+                    setTitle(R.string.movies_actionbar_title);
                     sendMovieRequest();
+                    hideDrawer();
                     break;
 
                 // For this feature user have to be loged in
                 case R.id.favorites_menu_btn:
                     if (Util.isUserLogedIn()) {
                         listMode = Constants.FAVORITE_MOVIES_MODE;
+                        setTitle(R.string.favorites_actionbar_title);
                         sendUserSpecificRequest(States.FAVORITES_REQUEST);
+                        hideDrawer();
                     } else {
                         // show user have to be loged in
                         Toast.makeText(this, R.string.please_login, Toast.LENGTH_LONG).show();
@@ -620,16 +624,18 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
                 case R.id.watchlist_menu_btn:
                     if (Util.isUserLogedIn()) {
                         listMode = Constants.WATCHLIST_MODE;
+                        setTitle(R.string.watchlist_actionbar_title);
                         sendUserSpecificRequest(States.WATCHLIST_REQUEST);
+                        hideDrawer();
                     } else {
                         // show user have to be loged in
                         Toast.makeText(this, R.string.please_login, Toast.LENGTH_LONG).show();
                     }
                     break;
 
-                case R.id.profile_menu_btn:
-                    // TODO Sent profile request or smth like this
-                    break;
+//                case R.id.profile_menu_btn:
+//                    // TODO Sent profile request or smth like this
+//                    break;
 
                 case R.id.about_us_menu_btn:
                     Intent intent = new Intent(MainActivity.this, AboutUsActivity.class);

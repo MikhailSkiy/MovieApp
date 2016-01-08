@@ -104,6 +104,9 @@ public class CastDetailsActivity extends AppCompatActivity implements UpdateList
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
 
+        // Hide the hamburger menu
+        mDrawerToggle.setDrawerIndicatorEnabled(false);
+
         mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
         mAdapter = new CastViewPagerAdapter(getSupportFragmentManager(),this);
         mPager = (ViewPager) findViewById(R.id.view_pager);

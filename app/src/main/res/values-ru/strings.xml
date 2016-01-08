@@ -44,4 +44,9 @@
     <string name="added_to_favorits">lala</string>
     <string name="deleted_from_favorits">Данный фильм был удален из списка "Избранные"</string>
     <string name="deleted_from_watchlist">Данный фильм был удален из списка "Посмотрю позже"</string>
+
+    <!-- Action Bar titles -->
+    <string name="movies_actionbar_title">Фильмы</string>
+    <string name="favorites_actionbar_title">Избранное</string>
+    <string name="watchlist_actionbar_title">Посмотреть позже</string>
 </resources>

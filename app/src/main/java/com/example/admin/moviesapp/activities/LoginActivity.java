@@ -75,10 +75,17 @@ public class LoginActivity extends AppCompatActivity implements UpdateListener {
             public void onPageFinished(WebView view, String url) {
                 Timber.v("onPageFinished");
                 String fullUrl = view.getUrl();
-
+//mskiyatwork - The Movie Database (TMDb)
+                //https://www.themoviedb.org/account/mskiyatwork
                 if (fullUrl.toLowerCase().contains("https://www.themoviedb.org/account/")){
-                    manager_.sendMessage(manager_.obtainMessage(States.LOGIN_REQUEST));
-                    finish();
+                    if (!view.getTitle().equals("Sign Up - The Movie Database (TMDb)")) {
+                        if (view.getTitle().equals("Login - The Movie Database (TMDb)")){
+
+                        } else {
+                            manager_.sendMessage(manager_.obtainMessage(States.LOGIN_REQUEST));
+                            finish();
+                        }
+                    }
                 }
 //                if (!view.getTitle().equals("Login - The Movie Database (TMDb)") && (!view.getTitle().equals("Authenticate MovieApp? — The Movie Database (TMDb)"))){
 //

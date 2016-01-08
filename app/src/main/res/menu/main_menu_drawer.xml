@@ -14,10 +14,10 @@
             android:id="@+id/watchlist_menu_btn"
             android:icon="@drawable/ic_wunderlist_grey"
             android:title="@string/watchlist_main_menu_item"/>
-        <item
-            android:id="@+id/profile_menu_btn"
-            android:icon="@drawable/ic_account_circle_grey"
-            android:title="@string/profile_main_menu_item"/>
+        <!--<item-->
+            <!--android:id="@+id/profile_menu_btn"-->
+            <!--android:icon="@drawable/ic_account_circle_grey"-->
+            <!--android:title="@string/profile_main_menu_item"/>-->
         <item
             android:id="@+id/navigation_subheader"
             android:title="@string/more_main_menu_item">

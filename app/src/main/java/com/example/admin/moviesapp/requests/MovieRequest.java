@@ -17,6 +17,7 @@ import com.example.admin.moviesapp.helpers.States;
 import com.example.admin.moviesapp.managers.AppController;
 import com.example.admin.moviesapp.managers.RequestManager;
 import com.example.admin.moviesapp.models.Movie;
+import com.example.admin.moviesapp.models.network.GsonRequest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -29,6 +30,7 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import timber.log.Timber;
@@ -51,8 +53,8 @@ public class MovieRequest implements RequestFactory {
     private final String POPULARITY = "popularity.";
     private final String RATING = "rating.";
     private final String Revenue = "revenue.";
-   // private final String LANGUAGE_VALUE = "ru";
-   private final String LANGUAGE_VALUE = "en";
+    // private final String LANGUAGE_VALUE = "ru";
+    private final String LANGUAGE_VALUE = "en";
     //endregion
 
     private static RequestManager manager_;
@@ -69,15 +71,16 @@ public class MovieRequest implements RequestFactory {
     }
 
 
-
-    public MovieRequest(RequestManager manager){
+    public MovieRequest(RequestManager manager) {
         this.manager_ = manager;
     }
 
     public void postRequest(long id) {
         String url = createMoviesUrl();
         Timber.v("Created URL", url);
-        postGetRequest(url);
+        //postGetRequest(url);
+        doGetRequest(url);
+
     }
 
     public static void getMovieObjects(String response) {
@@ -91,7 +94,7 @@ public class MovieRequest implements RequestFactory {
         SharedPreferences sharedPreferences = applicationContext.getSharedPreferences(applicationContext.getString(R.string.filter_preferences), Context.MODE_PRIVATE);
         GenresMap map = new GenresMap();
         for (String s : map.genresMap.keySet()) {
-            int genreId = sharedPreferences.getInt(s,0);
+            int genreId = sharedPreferences.getInt(s, 0);
             if (genreId != 0) {
                 genres.add(genreId);
             }
@@ -99,7 +102,7 @@ public class MovieRequest implements RequestFactory {
         return genres;
     }
 
-    private String getSortTypeFromPreferences(){
+    private String getSortTypeFromPreferences() {
         Context applicationContext = MainActivity.getContextOfApplication();
         SharedPreferences sharedPreferences = applicationContext.getSharedPreferences(applicationContext.getString(R.string.filter_preferences), Context.MODE_PRIVATE);
         String sortType = sharedPreferences.getString("Sort_type", "popularity");
@@ -108,9 +111,9 @@ public class MovieRequest implements RequestFactory {
         return resultValue;
     }
 
-    private String createGenresString(List<Integer> genres){
+    private String createGenresString(List<Integer> genres) {
         String builtList = "";
-        for (int i=0;i<genres.size();i++){
+        for (int i = 0; i < genres.size(); i++) {
             builtList += Integer.toString(genres.get(i));
             if (i != genres.size() - 1) {
                 builtList = builtList + ",";
@@ -124,7 +127,7 @@ public class MovieRequest implements RequestFactory {
         String url = null;
         Uri builtUri = null;
         List<Integer> genres = getGenres();
-        if (genres.size()>0) {
+        if (genres.size() > 0) {
             builtUri = builtUriWithGenres(createGenresString(genres));
         } else {
             builtUri = builtUri();
@@ -135,18 +138,18 @@ public class MovieRequest implements RequestFactory {
         return url;
     }
 
-    private Uri builtUriWithGenres(String genres){
+    private Uri builtUriWithGenres(String genres) {
         Uri builtUri = Uri.parse(BASE_URL).buildUpon()
-                .appendQueryParameter(LANGUAGE,LANGUAGE_VALUE)
-                .appendQueryParameter(WITH_GENRES,genres)
+                .appendQueryParameter(LANGUAGE, LANGUAGE_VALUE)
+                .appendQueryParameter(WITH_GENRES, genres)
                 .appendQueryParameter(SORT_BY, getSortTypeFromPreferences())
-                .appendQueryParameter(PAGE,Integer.toString(page_))
+                .appendQueryParameter(PAGE, Integer.toString(page_))
                 .appendQueryParameter(API_KEY, getApiKey())
                 .build();
         return builtUri;
     }
 
-    private Uri builtUri(){
+    private Uri builtUri() {
         Uri builtUri = Uri.parse(BASE_URL).buildUpon()
                 .appendQueryParameter(LANGUAGE, LANGUAGE_VALUE)
                 .appendQueryParameter(SORT_BY, getSortTypeFromPreferences())
@@ -187,6 +190,29 @@ public class MovieRequest implements RequestFactory {
 
             AppController.getInstance().addToRequestQueue(jsonObjectRequest, tag);
         }
+    }
+
+    private void doGetRequest(final String url) {
+
+        GsonRequest<Movie[]> getMoviesJson =
+                new GsonRequest<Movie[]>(url, Movie[].class,
+
+                        new Response.Listener<Movie[]>() {
+                            @Override
+                            public void onResponse(Movie[] response) {
+                                List<Movie> movies = Arrays.asList(response);
+                                manager_.sendMessage(manager_.obtainMessage(States.MOVIES_REQUEST_WAS_PARSED, movies));
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        String errorMsg = error.getMessage();
+                        Timber.e(error.getMessage());
+                        manager_.sendMessage(manager_.obtainMessage(States.VOLLEY_REQUEST_FAILED, errorMsg));
+                    }
+                });
+
+        AppController.getInstance().addToRequestQueue(getMoviesJson);
     }
 
     private String getDataFromCache(String url) {

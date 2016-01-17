@@ -9,9 +9,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.ImageLoader;
 import com.example.admin.moviesapp.R;
 import com.example.admin.moviesapp.helpers.Util;
 import com.example.admin.moviesapp.interfaces.CustomItemClickListener;
+import com.example.admin.moviesapp.managers.AppController;
 import com.example.admin.moviesapp.models.Movie;
 
 import java.util.List;
@@ -25,6 +27,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
     private int rowLayout_;
     private Context context_;
     private static CustomItemClickListener listener_;
+    ImageLoader  mImageLoader =  AppController.getInstance().getImageLoader();
 
     public static class MoviesViewHolder extends RecyclerView.ViewHolder {
         public TextView movieName;
@@ -70,7 +73,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
     public void onBindViewHolder(MoviesViewHolder viewHolder, int i) {
         Movie movie = movies_.get(i);
         viewHolder.movieName.setText(movie.getTitle());
-        viewHolder.movieCover.setImageBitmap(Util.getBitmapFromBytes(movie.getCover()));
+        //viewHolder.movieCover.setImageBitmap(Util.getBitmapFromBytes(movie.getCover()));
+        mImageLoader.get(movie.getImageUrl(),ImageLoader.getImageListener(viewHolder.movieCover,R.drawable.plus,R.drawable.minus));
     }
 
     public void addMovie(Movie movie) {

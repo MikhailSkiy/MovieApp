@@ -1,12 +1,22 @@
 package com.example.admin.moviesapp.models;
 
+import android.net.Uri;
+
 import com.example.admin.moviesapp.helpers.States;
 import com.google.gson.annotations.SerializedName;
+
+import timber.log.Timber;
 
 /**
  * Created by Mikhail Valuyskiy on 01.09.2015.
  */
 public class Movie extends CommonMovie {
+
+    //region Keys for building query
+    public final String BASE_PHOTO_URL = "http://image.tmdb.org/t/p/";
+    public final String SIZE = "w185";
+    public final String SIZE_W342 = "w342";
+    //endregion
 
     @SerializedName("adult")
     private boolean adult_;
@@ -19,7 +29,7 @@ public class Movie extends CommonMovie {
     @SerializedName("release_date")
     private String releaseDate_;
     @SerializedName("poster_path")
-    private String posterPath_;
+    private String posterUrl_;
     @SerializedName("title")
     private String title_;
     @SerializedName("video")
@@ -104,11 +114,11 @@ public class Movie extends CommonMovie {
     }
 
     public String getPosterPath() {
-        return posterPath_;
+        return posterUrl_;
     }
 
     public void setPosterPath(String posterPath) {
-        this.posterPath_ = posterPath;
+        this.posterUrl_ = posterPath;
     }
 
     public byte[] getCover() {
@@ -125,6 +135,21 @@ public class Movie extends CommonMovie {
 
     public String getImagePath(){
         return getPosterPath();
+    }
+
+    public String getImageUrl(){
+       return createMoviesUrl(posterUrl_);
+    }
+
+    private String createMoviesUrl(String photoId) {
+        String url = null;
+        Uri builtUri = Uri.parse(BASE_PHOTO_URL).buildUpon()
+                .appendPath(SIZE_W342)
+                .appendEncodedPath(photoId)
+                .build();
+        url = builtUri.toString();
+        Timber.v(url);
+        return url;
     }
 
 }

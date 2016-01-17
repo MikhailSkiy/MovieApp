@@ -97,12 +97,13 @@ public class RequestManager extends Handler {
             case States.MOVIES_REQUEST_WAS_PARSED:
                 Timber.v("MOVIES_REQUEST_WAS_PARSED");
                 List<Movie> movieList = (List<Movie>) message.obj;
-                size = movieList.size();
-                for (counter = 0; counter < size; counter++) {
-                    imageRequest.postImageRequest(movieList.get(counter));
-                    String path = movieList.get(counter).getPosterPath();
-                    Timber.v(path);
-                }
+                EventBus.getDefault().post(new UpdateMoviesEvent(movieList));
+//                size = movieList.size();
+//                for (counter = 0; counter < size; counter++) {
+//                    imageRequest.postImageRequest(movieList.get(counter));
+//                    String path = movieList.get(counter).getPosterPath();
+//                    Timber.v(path);
+//                }
                 break;
 
             case States.IMAGE_DOWNLOADED:

@@ -41,6 +41,7 @@ public class ImageRequest {
         postMovieImageRequest(movie);
     }
 
+
     // Creates url for movies request
     private String createMoviesUrl(String photoId) {
         String url = null;
@@ -86,6 +87,7 @@ public class ImageRequest {
         }
 
     }
+
 
     private Bitmap getPhotoFromCache(String url) {
         Cache.Entry retrievedData = retrieveDataFromCache(url);

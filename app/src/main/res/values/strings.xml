@@ -73,7 +73,11 @@
     <!-- values for messages in Navigation Menu -->
     <string name="please_login">Please login in order to use this feature</string>
 
-
+    <!--> Movie details text <-->
+    <string name="i_just_saw">I just saw "</string>
+    <string name="a_great_movie">", a great movie!</string>
+    <string name="download_suggestion"> Download this app to know more inside details of movies.</string>
+    <string name="link"> Link: http://play.google.com</string>
 
     <!--> Details card view <-->
     <string name="details_label">Details</string>

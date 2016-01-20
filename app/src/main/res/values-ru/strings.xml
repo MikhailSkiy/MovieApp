@@ -19,6 +19,13 @@
     <string name="login_main_menu_item">Войти</string>
     <string name="logout_main_menu_item">Выйти</string>
 
+
+    <!--> Movie details text <-->
+    <string name="i_just_saw">Только что посмотрел </string>
+    <string name="a_great_movie"> великолепный фильм!</string>
+    <string name="download_suggestion"> Загрузи приложение, чтобы быть в курсе последних новинок кино.</string>
+    <string name="link"> Ссылка: http://play.google.com</string>
+
     <!--> Details card view <-->
     <string name="details_label">Детали</string>
     <string name="released_label">Дата выхода</string>

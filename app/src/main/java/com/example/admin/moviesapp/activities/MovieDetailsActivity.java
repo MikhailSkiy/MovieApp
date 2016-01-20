@@ -643,6 +643,24 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
             return true;
         }
 
+        if (id == R.id.action_share){
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, createReview());
+            sendIntent.setType("text/plain");
+            startActivity(Intent.createChooser(sendIntent, "Share text to..."));
+        }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    private String createReview(){
+        String message = getResources().getText(R.string.i_just_saw) +
+                movieDetails_.getTitle() +
+                getResources().getText(R.string.a_great_movie) +
+                getResources().getText(R.string.download_suggestion) +
+                getResources().getText(R.string.link);
+
+        return message;
     }
 }

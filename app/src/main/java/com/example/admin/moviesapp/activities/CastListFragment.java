@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -42,6 +43,7 @@ public class CastListFragment extends Fragment {
     private List<Cast> castList_ = new ArrayList<>();
     private DbHelper helper_;
     private long movieId_;
+    private CardView emtyCard_;
 
     public static CastListFragment newInstance(int pageNaumber) {
         CastListFragment fragment = new CastListFragment();
@@ -94,6 +96,7 @@ public class CastListFragment extends Fragment {
     }
 
     public void onEvent(UpdateCastListEvent e) {
+        hideEmptyCard();
         updateList(e.getCast());
     }
 
@@ -118,6 +121,8 @@ public class CastListFragment extends Fragment {
         listView_.setAdapter(adapter_);
         listView_.setItemAnimator(new DefaultItemAnimator());
         listView_.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        emtyCard_ = (CardView) view.findViewById(R.id.empty_card);
 
         return view;
     }
@@ -159,6 +164,10 @@ public class CastListFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
+    }
+
+    private void hideEmptyCard() {
+        emtyCard_.setVisibility(View.GONE);
     }
 
 }

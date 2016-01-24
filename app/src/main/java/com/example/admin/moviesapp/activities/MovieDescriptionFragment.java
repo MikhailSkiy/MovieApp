@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,7 @@ import com.example.admin.moviesapp.helpers.Util;
 import com.example.admin.moviesapp.managers.RequestManager;
 import com.example.admin.moviesapp.models.MovieDetails;
 import com.example.admin.moviesapp.models.Trailer;
+import com.example.admin.moviesapp.network.NetworkOperations;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,14 +53,18 @@ public class MovieDescriptionFragment extends Fragment {
     private TextView runtime_;
     private TextView genres_;
     private TextView language_;
-    private long movieId=0;
+    private long movieId = 0;
     private DbHelper helper_;
+    private CardView emptyCard_;
+    private CardView titleCard_;
+    private CardView detailsCard_;
+    private CardView tvCard_;
 
 
     public static MovieDescriptionFragment newInstance(int pageNumbaer) {
         MovieDescriptionFragment fragment = new MovieDescriptionFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_PAGE,pageNumbaer +1);
+        args.putInt(ARG_PAGE, pageNumbaer + 1);
         fragment.setArguments(args);
         return fragment;
     }
@@ -80,13 +86,19 @@ public class MovieDescriptionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         int pageNumber = getArguments().getInt(ARG_PAGE);
-        View view = inflater.inflate(R.layout.fragment_movie_description,container,false);
+        View view = inflater.inflate(R.layout.fragment_movie_description, container, false);
         tagline_ = (TextView) view.findViewById(R.id.movie_tagline);
-        description_ = (TextView)view.findViewById(R.id.movie_description_text);
-        runtime_ = (TextView)view.findViewById(R.id.runtime_value);
-        genres_ = (TextView)view.findViewById(R.id.genre_value);
-        language_ = (TextView)view.findViewById(R.id.language_value);
-        released_ = (TextView)view.findViewById(R.id.released_value);
+        description_ = (TextView) view.findViewById(R.id.movie_description_text);
+        runtime_ = (TextView) view.findViewById(R.id.runtime_value);
+        genres_ = (TextView) view.findViewById(R.id.genre_value);
+        language_ = (TextView) view.findViewById(R.id.language_value);
+        released_ = (TextView) view.findViewById(R.id.released_value);
+
+        emptyCard_ = (CardView) view.findViewById(R.id.empty_card);
+        titleCard_ = (CardView) view.findViewById(R.id.title_card);
+        detailsCard_ = (CardView) view.findViewById(R.id.details_card);
+        tvCard_ = (CardView) view.findViewById(R.id.tv_card);
+
         return view;
     }
 
@@ -96,13 +108,13 @@ public class MovieDescriptionFragment extends Fragment {
         // Get instance of RequestManger
         RequestManager manager = RequestManager.getInstance();
         // Initialize it by UpdateListener
-        manager.init((MovieDetailsActivity)getActivity());
+        manager.init((MovieDetailsActivity) getActivity());
 
         helper_ = new DbHelper(getActivity());
         // Get Movie details Object
         MovieDetails movieDetails = new MovieDetails();
         movieDetails = helper_.getMovieDetails(movieId);
-        if (movieDetails != null){
+        if (movieDetails != null) {
             Timber.v(movieDetails.getOriginalTitle());
             updateMovieDescription(movieDetails);
         } else {
@@ -134,12 +146,14 @@ public class MovieDescriptionFragment extends Fragment {
 
     }
 
-    public void onEvent(UpdateMovieDescriptionUI e){
+    public void onEvent(UpdateMovieDescriptionUI e) {
         updateMovieDescription(e.getMovieDescription());
     }
 
-    private void updateMovieDescription(MovieDetails result){
-        MovieDetails movie = (MovieDetails)result;
+    private void updateMovieDescription(MovieDetails result) {
+        hideEmptyCard();
+        makeCardsVisible();
+        MovieDetails movie = (MovieDetails) result;
         helper_.addMovieDetails(movie);
         movieId = movie.getId();
         helper_.addMovieDetails(movie);
@@ -155,7 +169,17 @@ public class MovieDescriptionFragment extends Fragment {
         EventBus.getDefault().post(new UpdateMovieDetailsImageEvent(movie));
     }
 
-    public void onEvent(UpdateMovieTrailersUI e){
+    private void makeCardsVisible() {
+        titleCard_.setVisibility(View.VISIBLE);
+        detailsCard_.setVisibility(View.VISIBLE);
+        tvCard_.setVisibility(View.VISIBLE);
+    }
+
+    private void hideEmptyCard() {
+        emptyCard_.setVisibility(View.GONE);
+    }
+
+    public void onEvent(UpdateMovieTrailersUI e) {
         updateMovieTrailers(e.getMovieTrailer());
     }
 

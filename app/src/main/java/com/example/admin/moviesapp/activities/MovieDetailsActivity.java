@@ -128,11 +128,12 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         cover_ = (ImageView) findViewById(R.id.coverImage);
         movieCard_ = (CardView) findViewById(R.id.movie_card);
 
-        progressBar = (ProgressBar)findViewById(R.id.progressBar);
+        // Set the progress bar for movie cover placeholder
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
         ObjectAnimator animation = ObjectAnimator.ofInt(progressBar, "progress", 0, 500); // see this max value coming back here, we animale towards that value
         animation.setDuration(5000); //in milliseconds
-        animation.setInterpolator (new DecelerateInterpolator());
-        animation.start ();
+        animation.setInterpolator(new DecelerateInterpolator());
+        animation.start();
 
         // Create new dialog
         setupRatingDialog();
@@ -407,9 +408,9 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         //rateMovieFloatingActionSubButton_.setImageDrawable(getDrawable(R.drawable.ic_star_grey600_24dp));
     }
 
-    private Drawable getButtonIcon(int iconId){
+    private Drawable getButtonIcon(int iconId) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-           return getResources().getDrawable(iconId, getApplicationContext().getTheme());
+            return getResources().getDrawable(iconId, getApplicationContext().getTheme());
         } else {
             return getResources().getDrawable(iconId);
         }
@@ -417,7 +418,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
 
     public void onEvent(RedirectionEvent e) {
         Timber.v("Redirection Event");
-        Intent loginIntent = new Intent(MovieDetailsActivity.this,LoginActivity.class);
+        Intent loginIntent = new Intent(MovieDetailsActivity.this, LoginActivity.class);
         loginIntent.putExtra("link", e.getUrl());
         startActivity(loginIntent);
     }
@@ -653,7 +654,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
             return true;
         }
 
-        if (id == R.id.action_share){
+        if (id == R.id.action_share) {
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
             sendIntent.putExtra(Intent.EXTRA_TEXT, createReview());
@@ -664,12 +665,20 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         return super.onOptionsItemSelected(item);
     }
 
-    private String createReview(){
-        String message = getResources().getText(R.string.i_just_saw) +
-                movieDetails_.getTitle() +
-                getResources().getText(R.string.a_great_movie) +
-                getResources().getText(R.string.download_suggestion) +
-                getResources().getText(R.string.link);
+    private String createReview() {
+        String message;
+        if (movieDetails_ != null) {
+            message = getResources().getText(R.string.i_just_saw) +
+                    movieDetails_.getTitle() +
+                    getResources().getText(R.string.a_great_movie) +
+                    getResources().getText(R.string.download_suggestion) +
+                    getResources().getText(R.string.link);
+
+
+        } else {
+            message = getResources().getText(R.string.download_suggestion) +
+                    getResources().getText(R.string.link).toString();
+        }
 
         return message;
     }

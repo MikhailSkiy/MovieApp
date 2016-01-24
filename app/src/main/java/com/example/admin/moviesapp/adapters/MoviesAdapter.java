@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.example.admin.moviesapp.R;
-import com.example.admin.moviesapp.helpers.Util;
 import com.example.admin.moviesapp.interfaces.CustomItemClickListener;
 import com.example.admin.moviesapp.managers.AppController;
 import com.example.admin.moviesapp.models.Movie;
@@ -27,7 +26,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
     private int rowLayout_;
     private Context context_;
     private static CustomItemClickListener listener_;
-    ImageLoader  mImageLoader =  AppController.getInstance().getImageLoader();
+    ImageLoader mImageLoader = AppController.getInstance().getImageLoader();
 
     public static class MoviesViewHolder extends RecyclerView.ViewHolder {
         public TextView movieName;
@@ -73,8 +72,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
     public void onBindViewHolder(MoviesViewHolder viewHolder, int i) {
         Movie movie = movies_.get(i);
         viewHolder.movieName.setText(movie.getTitle());
-        //viewHolder.movieCover.setImageBitmap(Util.getBitmapFromBytes(movie.getCover()));
-        mImageLoader.get(movie.getImageUrl(),ImageLoader.getImageListener(viewHolder.movieCover,R.drawable.plus,R.drawable.minus));
+        mImageLoader.get(movie.getImageUrl(), ImageLoader.getImageListener(viewHolder.movieCover, R.drawable.placeholder, R.drawable.placeholder));
+
     }
 
     public void addMovie(Movie movie) {

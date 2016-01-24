@@ -142,10 +142,13 @@
     <string name="about_invite_friends">Invite your friends</string>
     <string name="about_us">About us</string>
 
-    <!-- Action Bar titles -->
+    <!-- Action Bar titles in the main activity -->
     <string name="movies_actionbar_title">Movies</string>
     <string name="favorites_actionbar_title">Favorites</string>
     <string name="watchlist_actionbar_title">Watchlist</string>
+
+    <!-- Action Bar titles in others activity-->
+    <string name="login_actionbar_title">Login</string>
 
 
 </resources>

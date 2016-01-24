@@ -12,6 +12,7 @@
         android:label="@string/movies_actionbar_title"
         android:theme="@style/AppTheme" >
         <activity
+            android:screenOrientation="portrait"
             android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,19 +21,24 @@
             </intent-filter>
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".activities.MovieDetailsActivity"
             android:label="@string/title_activity_movie_details" >
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".activities.CastDetailsActivity"
             android:label="@string/title_activity_cast_details" >
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".activities.LoginActivity"
             android:label="@string/title_activity_login"
             android:theme="@style/AppTheme" >
         </activity>
-        <activity android:name=".activities.AboutUsActivity" >
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".activities.AboutUsActivity" >
         </activity>
     </application>
 

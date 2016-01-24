@@ -56,4 +56,8 @@
     <string name="movies_actionbar_title">Фильмы</string>
     <string name="favorites_actionbar_title">Избранное</string>
     <string name="watchlist_actionbar_title">Посмотреть позже</string>
+
+    <!-- Action Bar titles in others activity-->
+    <string name="login_actionbar_title">Регистрация</string>
+
 </resources>

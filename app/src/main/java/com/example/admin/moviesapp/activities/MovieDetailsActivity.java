@@ -608,7 +608,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
 
     @Override
     public void onErrorRaised(String errorMsg) {
-        Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show();
     }
 
     @Override

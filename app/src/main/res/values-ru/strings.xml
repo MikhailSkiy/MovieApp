@@ -23,9 +23,9 @@
 
 
     <!--> Movie details text <-->
-    <string name="i_just_saw">Только что посмотрел </string>
-    <string name="a_great_movie"> великолепный фильм!</string>
-    <string name="download_suggestion"> Загрузи приложение, чтобы быть в курсе последних новинок кино.</string>
+    <string name="i_just_saw">Только что посмотрел "</string>
+    <string name="a_great_movie">", великолепный фильм!</string>
+    <string name="download_suggestion"> Загрузи приложение, чтобы быть в курсе последних киноновинок.</string>
     <string name="link"> Ссылка: http://play.google.com</string>
 
     <!--> Details card view <-->

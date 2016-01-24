@@ -29,10 +29,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -91,6 +93,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
     private Button cancelBtn_;
     private TextView text_;
     private long currentMovieId_;
+    ProgressBar progressBar;
 
     private float offset1;
     private float offset2;
@@ -124,6 +127,12 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
 
         cover_ = (ImageView) findViewById(R.id.coverImage);
         movieCard_ = (CardView) findViewById(R.id.movie_card);
+
+        progressBar = (ProgressBar)findViewById(R.id.progressBar);
+        ObjectAnimator animation = ObjectAnimator.ofInt(progressBar, "progress", 0, 500); // see this max value coming back here, we animale towards that value
+        animation.setDuration(5000); //in milliseconds
+        animation.setInterpolator (new DecelerateInterpolator());
+        animation.start ();
 
         // Create new dialog
         setupRatingDialog();
@@ -461,6 +470,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
 
     public void onEvent(UpdateMovieDetailsImageEvent e) {
         Timber.v("Event in activity");
+        progressBar.clearAnimation();
         updateImage(e.getMovieDetails());
         movieDetails_ = e.getMovieDetails();
         currentMovieId_ = movieDetails_.getId();

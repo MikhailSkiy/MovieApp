@@ -25,6 +25,8 @@
             app:expandedTitleMarginStart="48dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
+            <include layout="@layout/progress_bar" />
+
             <ImageView
                 android:id="@+id/coverImage"
                 android:layout_width="match_parent"
@@ -78,7 +80,6 @@
 
     </android.support.v4.widget.NestedScrollView>
 
-
     <android.support.v4.view.ViewPager
         android:id="@+id/movie_details_view_pager"
         android:layout_width="match_parent"
@@ -115,7 +116,5 @@
         android:layout_gravity="bottom|right"
         android:layout_margin="@dimen/spacing_large"
         app:layout_behavior="com.example.admin.moviesapp.ui.ScrollAwareFABBehavior"/>
-
-
 
 </android.support.design.widget.CoordinatorLayout>

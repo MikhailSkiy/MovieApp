@@ -8,8 +8,8 @@
     <string name="title_activity_movie_details">MovieDetailsActivity</string>
 
     <!--> Values for drawer menu in main activity <-->
-    <string name="guest_login_tip">Вы вошли в качетсве гостя.</string>
-    <string name="sign_in_tip">Зарегистрируйтесь, чтобы воспользоваться всеми возможностями приложения.</string>
+    <string name="guest_login_tip">Вы вошли в качестве гостя.</string>
+    <string name="sign_in_tip">Зарегистрируйтесь, для использования дополнительных возможностей.</string>
     <string name="movies_main_menu_item">Все фильмы</string>
     <string name="watchlist_main_menu_item">Посмотрю позже</string>
     <string name="favorites_main_menu_item">Избранные</string>
@@ -36,6 +36,11 @@
     <string name="original_language_label">Язык оригинала</string>
     <string name="runtime_tag">мин</string>
 
+    <!--> Labels for Movie Description Details in ViewPager <-->
+    <string name="view_pager_movie_description_title">Описание</string>
+    <string name="view_pager_cast_list_title">Актеры</string>
+    <string name="view_pager_crew_list_title">Команда</string>
+
     <!--> Trailers card view <-->
     <string name="trailers_label">Трейлеры</string>
 
@@ -61,5 +66,8 @@
 
     <!-- Action Bar titles in others activity-->
     <string name="login_actionbar_title">Регистрация</string>
+
+    <!-- Empty Movies -->
+    <string name="empty_movie_list_and_no_connection">Информация об этом фильме недоступна. Проверьте интернет-подключение или повторите попытку позже.</string>">
 
 </resources>

@@ -8,6 +8,8 @@
     <string name="title_activity_movie_details">MovieDetailsActivity</string>
 
     <!--> Values for drawer menu in main activity <-->
+    <string name="guest_login_tip">Вы вошли в качетсве гостя.</string>
+    <string name="sign_in_tip">Зарегистрируйтесь, чтобы воспользоваться всеми возможностями приложения.</string>
     <string name="movies_main_menu_item">Все фильмы</string>
     <string name="watchlist_main_menu_item">Посмотрю позже</string>
     <string name="favorites_main_menu_item">Избранные</string>

@@ -8,6 +8,10 @@
     <string name="title_activity_movie_details">MovieDetailsActivity</string>
 
     <!--> Values for drawer menu in main activity <-->
+    <string name="username">Username</string>
+    <string name="name">Name</string>
+    <string name="guest_login_tip">You are logged in as guest.</string>
+    <string name="sign_in_tip">Sign in to access all features.</string>
     <string name="movies_main_menu_item">Movies</string>
     <string name="watchlist_main_menu_item">Watchlist</string>
     <string name="favorites_main_menu_item">Favorites</string>

@@ -30,6 +30,7 @@
 
     <!--> Details card view <-->
     <string name="details_label">Детали</string>
+    <string name="rating_label">Рейтинг</string>
     <string name="released_label">Дата выхода</string>
     <string name="runtime_label">Продолжительность</string>
     <string name="genres_label">Жанр</string>
@@ -67,7 +68,20 @@
     <!-- Action Bar titles in others activity-->
     <string name="login_actionbar_title">Регистрация</string>
 
+    <!-- Dialogs-->
+    <string name="dialog_bad_connection_title">Отсутствует интернет-соединение</string>
+    <string name="dialog_bad_connection_label">Проверьте интернет-соединение и попробуйте еще раз</string>
+    <string name="dialog_bad_connection_try_again">Еще раз</string>
+    <string name="dialog_bad_connection_cancel">Отмена</string>
+
+    <!-- values for messages in Navigation Menu -->
+    <string name="please_login">Зарегистрируйтесь для доступа к этим опциям</string>
+
+
     <!-- Empty Movies -->
     <string name="empty_movie_list_and_no_connection">Информация об этом фильме недоступна. Проверьте интернет-подключение или повторите попытку позже.</string>">
+
+    <!-- Loading -->
+    <string name="loading">Загрузка...</string>">
 
 </resources>

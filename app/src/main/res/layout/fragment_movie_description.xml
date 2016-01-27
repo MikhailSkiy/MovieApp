@@ -30,7 +30,12 @@
                 android:orientation="vertical">
 
                 <include android:id="@+id/empty_card"
-                    layout="@layout/card_empty"/>
+                    layout="@layout/card_empty"
+                    android:visibility="gone"/>
+
+                <include android:id="@+id/loading_card"
+                    layout="@layout/card_loading"
+                    android:visibility="gone"/>
 
 
                 <android.support.v7.widget.CardView
@@ -91,6 +96,33 @@
                             android:layout_marginTop="@dimen/spacing_large"
                             android:text="@string/details_label"
                             android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
+
+                        <RelativeLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent">
+
+                            <TextView
+                                android:id="@+id/rating_label"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/spacing_large"
+                                android:layout_marginRight="@dimen/spacing_large"
+                                android:layout_marginTop="@dimen/spacing_medium"
+                                android:text="@string/rating_label"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+
+                            <TextView
+                                android:id="@+id/rating_value"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_marginRight="@dimen/spacing_large"
+                                android:layout_marginTop="@dimen/spacing_medium"
+                                android:text="0.0"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+                        </RelativeLayout>
 
                         <RelativeLayout
                             android:layout_width="fill_parent"

@@ -19,6 +19,7 @@ import com.example.admin.moviesapp.adapters.CastListRecyclerViewAdapter;
 import com.example.admin.moviesapp.database.DbHelper;
 import com.example.admin.moviesapp.events.UpdateCastListEvent;
 import com.example.admin.moviesapp.helpers.States;
+import com.example.admin.moviesapp.helpers.Util;
 import com.example.admin.moviesapp.interfaces.ExploreMoreBtnListener;
 import com.example.admin.moviesapp.managers.RequestManager;
 import com.example.admin.moviesapp.models.Cast;
@@ -44,6 +45,7 @@ public class CastListFragment extends Fragment {
     private DbHelper helper_;
     private long movieId_;
     private CardView emtyCard_;
+    private CardView  loadingCard_;
 
     public static CastListFragment newInstance(int pageNaumber) {
         CastListFragment fragment = new CastListFragment();
@@ -97,6 +99,7 @@ public class CastListFragment extends Fragment {
 
     public void onEvent(UpdateCastListEvent e) {
         hideEmptyCard();
+        hideLoadingCard();
         updateList(e.getCast());
     }
 
@@ -122,7 +125,14 @@ public class CastListFragment extends Fragment {
         listView_.setItemAnimator(new DefaultItemAnimator());
         listView_.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        loadingCard_ = (CardView)view.findViewById(R.id.loading_card);
         emtyCard_ = (CardView) view.findViewById(R.id.empty_card);
+
+        if (Util.isNetworkAvailable(this.getActivity())){
+            loadingCard_.setVisibility(View.VISIBLE);
+        } else {
+            emtyCard_.setVisibility(View.VISIBLE);
+        }
 
         return view;
     }
@@ -169,5 +179,6 @@ public class CastListFragment extends Fragment {
     private void hideEmptyCard() {
         emtyCard_.setVisibility(View.GONE);
     }
+    private void hideLoadingCard(){loadingCard_.setVisibility(View.GONE);}
 
 }

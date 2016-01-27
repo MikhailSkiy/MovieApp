@@ -1,6 +1,7 @@
 package com.example.admin.moviesapp.activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -10,6 +11,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -76,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     boolean login = false;
     @Constants.MoviesActivityListMode
     int listMode = Constants.MOVIES_MODE;
+    boolean isFirstTime = true;
 
 
     @Override
@@ -117,9 +120,10 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
                 //totalItemCount = moviesList_.size();
                 pastVisiblesItems = layoutManager_.findFirstVisibleItemPosition();
                 if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-                    page_++;
+                    ++page_;
                     if (listMode == Constants.MOVIES_MODE) {
                         sendMovieRequest();
+                        Timber.d("sendMovieRequest_addOnScrollListener");
                     }
                     if (listMode == Constants.FAVORITE_MOVIES_MODE) {
                         sendUserSpecificRequest(States.FAVORITES_REQUEST);
@@ -145,6 +149,7 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
                 moviesAdapter_.notifyDataSetChanged();
 
                 sendMovieRequest();
+                Timber.d("sendMovieRequest_setNavigationItemSelectedListener");
                 return true;
             }
         });
@@ -198,13 +203,17 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
 //        }
 
 
-        sendMovieRequest();
+        // sendMovieRequest();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (Util.isNetworkAvailable(this)) {
+
+        if (!Util.isNetworkAvailable(this)) {
+            createDialog();
+        } else if (isFirstTime) {
+            isFirstTime = false;
             sendMovieRequest();
         }
     }
@@ -319,7 +328,11 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
 
     private void sendMovieRequest() {
         // TODO make reset page when genre is changed!
-        manager_.sendMessage(manager_.obtainMessage(States.MOVIES_REQUEST, page_));
+        if (Util.isNetworkAvailable(this)) {
+            manager_.sendMessage(manager_.obtainMessage(States.MOVIES_REQUEST, page_));
+        } else {
+            createDialog();
+        }
     }
 
     // Sends request to get request_token for authentification
@@ -607,6 +620,8 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
                     listMode = Constants.MOVIES_MODE;
                     setTitle(R.string.movies_actionbar_title);
                     sendMovieRequest();
+                    Timber.d("sendMovieRequest_executeSelectedAction");
+
                     hideDrawer();
                     break;
 
@@ -766,6 +781,24 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
 
     private void hideDrawer() {
         mDrawerLayout.closeDrawer(GravityCompat.START);
+    }
+
+    private void createDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(getResources().getString(R.string.dialog_bad_connection_title))
+                .setMessage(getResources().getString(R.string.dialog_bad_connection_label))
+                .setPositiveButton(getResources().getString(R.string.dialog_bad_connection_try_again), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        sendMovieRequest();
+                    }
+                })
+                .setNegativeButton(getResources().getString(R.string.dialog_bad_connection_cancel), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
 

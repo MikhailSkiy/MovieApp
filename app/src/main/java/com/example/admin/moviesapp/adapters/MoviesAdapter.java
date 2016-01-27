@@ -32,12 +32,14 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
         public TextView movieName;
         public ImageView movieCover;
         public CardView cardView_;
+        public ImageView badgeView_;
 
         public MoviesViewHolder(View view) {
             super(view);
             movieName = (TextView) view.findViewById(R.id.movie_title);
             movieCover = (ImageView) view.findViewById(R.id.movie_cover);
             cardView_ = (CardView) view.findViewById(R.id.movie_card);
+            badgeView_ = (ImageView) view.findViewById(R.id.movie_badge);
 
             cardView_.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -74,6 +76,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
         viewHolder.movieName.setText(movie.getTitle());
         mImageLoader.get(movie.getImageUrl(), ImageLoader.getImageListener(viewHolder.movieCover, R.drawable.placeholder, R.drawable.placeholder));
 
+//        if (movie.getVoteAverage() > 7.0) {
+//            viewHolder.badgeView_.setVisibility(View.VISIBLE);
+//        }
     }
 
     public void addMovie(Movie movie) {

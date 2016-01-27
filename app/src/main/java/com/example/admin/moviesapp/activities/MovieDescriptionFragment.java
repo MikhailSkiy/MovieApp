@@ -28,6 +28,8 @@ import com.example.admin.moviesapp.models.MovieDetails;
 import com.example.admin.moviesapp.models.Trailer;
 import com.example.admin.moviesapp.network.NetworkOperations;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,11 +52,13 @@ public class MovieDescriptionFragment extends Fragment {
     private TextView tagline_;
     private TextView description_;
     private TextView released_;
+    private TextView rating_;
     private TextView runtime_;
     private TextView genres_;
     private TextView language_;
     private long movieId = 0;
     private DbHelper helper_;
+    private CardView loadingCard_;
     private CardView emptyCard_;
     private CardView titleCard_;
     private CardView detailsCard_;
@@ -93,11 +97,19 @@ public class MovieDescriptionFragment extends Fragment {
         genres_ = (TextView) view.findViewById(R.id.genre_value);
         language_ = (TextView) view.findViewById(R.id.language_value);
         released_ = (TextView) view.findViewById(R.id.released_value);
+        rating_ = (TextView)view.findViewById(R.id.rating_value);
 
+        loadingCard_ = (CardView) view.findViewById(R.id.loading_card);
         emptyCard_ = (CardView) view.findViewById(R.id.empty_card);
         titleCard_ = (CardView) view.findViewById(R.id.title_card);
         detailsCard_ = (CardView) view.findViewById(R.id.details_card);
         tvCard_ = (CardView) view.findViewById(R.id.tv_card);
+
+        if (Util.isNetworkAvailable(this.getActivity())){
+            loadingCard_.setVisibility(View.VISIBLE);
+        } else {
+            emptyCard_.setVisibility(View.VISIBLE);
+        }
 
         return view;
     }
@@ -151,6 +163,7 @@ public class MovieDescriptionFragment extends Fragment {
     }
 
     private void updateMovieDescription(MovieDetails result) {
+        hideLoadingCard();
         hideEmptyCard();
         makeCardsVisible();
         MovieDetails movie = (MovieDetails) result;
@@ -161,6 +174,7 @@ public class MovieDescriptionFragment extends Fragment {
         description_.setText(movie.getOverview());
 
         released_.setText(Util.getUIFriendlyData(movie.getReleaseDate()));
+        rating_.setText(String.valueOf(movie.getVoteAverage()));
         runtime_.setText(Util.getUserFriendlyRuntime(Integer.toString(movie.getRuntime()), getActivity()));
         genres_.setText(Util.getGenres(movie.getGenres()));
         language_.setText(Util.getUserFriendlyOrigLanguage(movie.getOriginalLanguage(), getActivity()));
@@ -177,6 +191,10 @@ public class MovieDescriptionFragment extends Fragment {
 
     private void hideEmptyCard() {
         emptyCard_.setVisibility(View.GONE);
+    }
+
+    private void hideLoadingCard(){
+        loadingCard_.setVisibility(View.GONE);
     }
 
     public void onEvent(UpdateMovieTrailersUI e) {

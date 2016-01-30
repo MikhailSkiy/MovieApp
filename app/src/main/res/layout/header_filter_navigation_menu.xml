@@ -15,5 +15,5 @@
         android:layout_gravity="bottom"
         android:gravity="center"
         android:padding="16dp"
-        android:text="Filter"/>
+        android:text="@string/action_filter"/>
 </FrameLayout>

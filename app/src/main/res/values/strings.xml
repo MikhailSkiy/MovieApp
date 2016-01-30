@@ -110,6 +110,9 @@
     <string name="view_pager_movie_description_title">Description</string>
     <string name="view_pager_cast_list_title">Cast</string>
     <string name="view_pager_crew_list_title">Crew</string>
+    <string name="rate">Rate</string>
+
+    <string name="rate_success">Your Selected Ratings  :</string>
 
     <!--> Labels for Cast List Item in Movie Description Details in ViewPager <-->
     <string name="plain_text_for_preview">Preview</string>
@@ -139,7 +142,6 @@
     <string name="loading">Loading...</string>">
 
     <!-- Titles for toasts in MovieDetailsActivity -->
-    <string name="added_to_favorits">lala</string>
     <string name="deleted_from_favorits">This movie was deleted from your favorite list</string>
     <string name="deleted_from_watchlist">This movie was deleted from your watchlist</string>
     <string name="title_activity_login">LoginActivity</string>
@@ -163,6 +165,5 @@
 
     <!-- Action Bar titles in others activity-->
     <string name="login_actionbar_title">Login</string>
-
 
 </resources>

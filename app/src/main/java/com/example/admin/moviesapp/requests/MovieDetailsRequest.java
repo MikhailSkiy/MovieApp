@@ -9,6 +9,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.admin.moviesapp.helpers.Constants;
 import com.example.admin.moviesapp.helpers.States;
+import com.example.admin.moviesapp.helpers.Util;
 import com.example.admin.moviesapp.managers.AppController;
 import com.example.admin.moviesapp.managers.RequestManager;
 import com.example.admin.moviesapp.models.MovieDetails;
@@ -40,6 +41,7 @@ public class MovieDetailsRequest implements RequestFactory {
     //endregion
 
     private static RequestManager manager_;
+    private String language_;
 
     public MovieDetailsRequest(RequestManager manager){
         this.manager_ = manager;
@@ -60,10 +62,11 @@ public class MovieDetailsRequest implements RequestFactory {
     }
 
     private String createMovieDetailsUrl(long id){
+        language_ = Util.getLanguage();
         String url = null;
         Uri builtUri = Uri.parse(BASE_MOVIE_DETAILS_URL).buildUpon()
                 .appendPath(Long.toString(id))
-                .appendQueryParameter(LANGUAGE, LANGUAGE_VALUE)
+                .appendQueryParameter(LANGUAGE, language_)
                 .appendQueryParameter(API_KEY, getApiKey())
                 .build();
         url = builtUri.toString();

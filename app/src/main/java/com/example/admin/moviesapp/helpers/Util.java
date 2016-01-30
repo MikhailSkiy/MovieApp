@@ -30,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Mikhail Valuyskiy on 02.09.2015.
@@ -47,6 +48,18 @@ public class Util {
             originalLanguage = context.getResources().getString(R.string.original_en_language);
         }
         return originalLanguage;
+    }
+
+    public static String getLanguage(){
+        String local="";
+        String code = Locale.getDefault().getISO3Language();
+        if (code.equals("rus")){
+            local = "ru";
+        } else {
+            local = "en";
+        }
+
+        return local;
     }
 
     public static String getUIFriendlyData(String data) {

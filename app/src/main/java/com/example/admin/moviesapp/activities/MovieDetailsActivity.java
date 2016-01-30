@@ -197,7 +197,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
             public void onClick(View v) {
                 float rating = ratingBar_.getRating();
                 movieRatingGivenByUser_ = rating * 2;
-                Toast.makeText(getApplicationContext(), "Your Selected Ratings  : " + String.valueOf(rating * 2), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.rate_success) + String.valueOf(rating * 2), Toast.LENGTH_LONG).show();
                 ratingDialog_.dismiss();
 
                 List<String> attr = new ArrayList<String>();

@@ -69,7 +69,7 @@ public class LoginActivity extends AppCompatActivity implements UpdateListener {
 //mskiyatwork - The Movie Database (TMDb)
                 //https://www.themoviedb.org/account/mskiyatwork
                 if (fullUrl.toLowerCase().contains("https://www.themoviedb.org/account/")){
-                    if (!view.getTitle().equals("Sign Up - The Movie Database (TMDb)")) {
+                    if (!view.getTitle().equals("Sign Up - The Movie Database (TMDb)") && !view.getTitle().equals("Зарегистрироваться - The Movie Database (TMDb)")) {
                         if (view.getTitle().equals("Login - The Movie Database (TMDb)")){
 
                         } else {

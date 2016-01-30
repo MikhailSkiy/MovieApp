@@ -14,6 +14,7 @@ import com.example.admin.moviesapp.activities.MainActivity;
 import com.example.admin.moviesapp.helpers.Constants;
 import com.example.admin.moviesapp.helpers.GenresMap;
 import com.example.admin.moviesapp.helpers.States;
+import com.example.admin.moviesapp.helpers.Util;
 import com.example.admin.moviesapp.managers.AppController;
 import com.example.admin.moviesapp.managers.RequestManager;
 import com.example.admin.moviesapp.models.Movie;
@@ -61,6 +62,8 @@ public class MovieRequest implements RequestFactory {
 
     private int page_;
     private int id_;
+
+    private String language_ = "";
 
     public void setPage(int page) {
         this.page_ = page;
@@ -124,6 +127,8 @@ public class MovieRequest implements RequestFactory {
 
     // Creates url for movies request
     private String createMoviesUrl() {
+        language_ = Util.getLanguage();
+
         String url = null;
         Uri builtUri = null;
         List<Integer> genres = getGenres();
@@ -140,7 +145,7 @@ public class MovieRequest implements RequestFactory {
 
     private Uri builtUriWithGenres(String genres) {
         Uri builtUri = Uri.parse(BASE_URL).buildUpon()
-                .appendQueryParameter(LANGUAGE, LANGUAGE_VALUE)
+                .appendQueryParameter(LANGUAGE, language_)
                 .appendQueryParameter(WITH_GENRES, genres)
                 .appendQueryParameter(SORT_BY, getSortTypeFromPreferences())
                 .appendQueryParameter(PAGE, Integer.toString(page_))
@@ -151,7 +156,7 @@ public class MovieRequest implements RequestFactory {
 
     private Uri builtUri() {
         Uri builtUri = Uri.parse(BASE_URL).buildUpon()
-                .appendQueryParameter(LANGUAGE, LANGUAGE_VALUE)
+                .appendQueryParameter(LANGUAGE, language_)
                 .appendQueryParameter(SORT_BY, getSortTypeFromPreferences())
                 .appendQueryParameter(PAGE, Integer.toString(page_))
                 .appendQueryParameter(API_KEY, getApiKey())

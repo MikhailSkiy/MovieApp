@@ -21,6 +21,35 @@
     <string name="login_main_menu_item">Войти</string>
     <string name="logout_main_menu_item">Выйти</string>
 
+    <!--> Values for filter navigation menu in main activity <-->
+    <string name="genres_filter_menu_item">Жанры</string>
+    <string name="action_filter_menu_item">Экшн</string>
+    <string name="adventure_filter_menu_item">Приключения</string>
+    <string name="animation_filter_menu_item">Анимация</string>
+    <string name="comedy_filter_menu_item">Комедия</string>
+    <string name="crime_filter_menu_item">Криминал</string>
+    <string name="documentary_filter_menu_item">Документальный</string>
+    <string name="drama_filter_menu_item">Драма</string>
+    <string name="family_filter_menu_item">Семейный</string>
+    <string name="fantasy_filter_menu_item">Фэнтези</string>
+    <string name="foreign_filter_menu_item">Иностранный</string>
+    <string name="history_filter_menu_item">Исторический</string>
+    <string name="horror_filter_menu_item">Ужасы</string>
+    <string name="music_filter_menu_item">Мюзикл</string>
+    <string name="mystery_filter_menu_item">Мистика</string>
+    <string name="romance_filter_menu_item">Романтический</string>
+    <string name="science_fiction_filter_menu_item">Научная фантастика</string>
+    <string name="tv_movie_filter_menu_item">ТВ фильмы</string>
+    <string name="thriller_filter_menu_item">Триллер</string>
+    <string name="war_filter_menu_item">Военный</string>
+    <string name="western_filter_menu_item">Вестерн</string>
+
+    <string name="sort_by_filter_menu_item">Сортировать по</string>
+
+    <string name="popularity_filter_menu_item">Популярности</string>
+    <string name="rating_filter_menu_item">Рэйтингу</string>
+    <string name="revenue_filter_menu_item">Кассовые сборы</string>
+
 
     <!--> Movie details text <-->
     <string name="i_just_saw">Только что посмотрел "</string>
@@ -41,6 +70,12 @@
     <string name="view_pager_movie_description_title">Описание</string>
     <string name="view_pager_cast_list_title">Актеры</string>
     <string name="view_pager_crew_list_title">Команда</string>
+    <string name="rate">Оценить</string>
+
+    <!-- Titles for toasts in MovieDetailsActivity -->
+    <string name="rate_success">Выбранный рейтинг  :</string>
+    <string name="deleted_from_favorits">Данный фильм был удален из списка "Избранные"</string>
+    <string name="deleted_from_watchlist">Данный фильм был удален из списка "Посмотрю позже"</string>
 
     <!--> Trailers card view <-->
     <string name="trailers_label">Трейлеры</string>
@@ -54,11 +89,6 @@
 
     <!--> Details Casts card view <-->
     <string name="biography_label">Биография</string>
-
-    <!-- Titles for toasts in MovieDetailsActivity -->
-    <string name="added_to_favorits">lala</string>
-    <string name="deleted_from_favorits">Данный фильм был удален из списка "Избранные"</string>
-    <string name="deleted_from_watchlist">Данный фильм был удален из списка "Посмотрю позже"</string>
 
     <!-- Action Bar titles -->
     <string name="movies_actionbar_title">Фильмы</string>

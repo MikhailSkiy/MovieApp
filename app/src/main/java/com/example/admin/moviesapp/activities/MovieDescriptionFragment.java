@@ -32,6 +32,7 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import de.greenrobot.event.EventBus;
 import timber.log.Timber;
@@ -63,6 +64,7 @@ public class MovieDescriptionFragment extends Fragment {
     private CardView titleCard_;
     private CardView detailsCard_;
     private CardView tvCard_;
+    private String randomString_;
 
 
     public static MovieDescriptionFragment newInstance(int pageNumbaer) {
@@ -104,6 +106,11 @@ public class MovieDescriptionFragment extends Fragment {
         titleCard_ = (CardView) view.findViewById(R.id.title_card);
         detailsCard_ = (CardView) view.findViewById(R.id.details_card);
         tvCard_ = (CardView) view.findViewById(R.id.tv_card);
+
+        TextView factText = (TextView)loadingCard_.findViewById(R.id.fact_text);
+        String[] arrayOfStrings = this.getResources().getStringArray(R.array.facts);
+        randomString_ = arrayOfStrings[new Random().nextInt(arrayOfStrings.length)];
+        factText.setText(randomString_);
 
         if (Util.isNetworkAvailable(this.getActivity())){
             loadingCard_.setVisibility(View.VISIBLE);

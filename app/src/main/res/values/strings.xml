@@ -166,4 +166,19 @@
     <!-- Action Bar titles in others activity-->
     <string name="login_actionbar_title">Login</string>
 
+    <string name="star_wars_1">In "Star Wars" many of the buildings constructed to be used in shots of Tatooine are still standing in Tunisia. In fact, some of them are still used by locals.</string>
+    <string name="star_wars_2">In "Star Wars" the Jawa language is based on a sped-up version of the Zulu language.</string>
+    <string name="star_wars_3">Star Wars: Episode II - Attack of the Clones was labelled as “Cue Ball” when it shipped to theaters.</string>
+    <string name="star_wars_4">The cow-like creature seen grazing in the fields behind Anakin and Padmé in Star Wars: Episode II - Attack of the Clones can be seen again as an asteroid later in the film.</string>
+    <string name="star_wars_5">Star Wars: Episode III - Revenge of the Sith was labelled as “The Bridge” when it shipped to theaters.</string>
+
+    <string name="hunger_games_1">The Hunger Games is currently the third-most highlighted Kindle book of all time. The Bible is first.</string>
+    <string name="hunger_games_2">The first Hunger Games movie was banned in Vietnam.</string>
+    <string name="hunger_games_3">The Hunger Games has been translated in 51 different languages.</string>
+
+    <string name="jurassic_park_1">In "Jurassic Park" in order to create the ripple effect in the glass of water, a guitar string was attached to the underside of the dashboard of the jeep and strung.</string>
+    <string name="jurassic_park_2">In "Jurassic Park" the screams in this scene are genuine — the animatronic T. rex was not supposed to break the plexiglass.</string>
+    <string name="jurassic_park_3">The "Jurassic Park" has a running time of 127 minutes — but includes only 15 minutes of actual dinosaur footage.</string>
+    <string name="jurassic_park_4">In "Jurassic Park" Harrison Ford turned down the role of Dr. Alan Grant. </string>
+
 </resources>

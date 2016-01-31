@@ -24,4 +24,22 @@
         <item>3</item>
     </array>
 
+
+    <string-array name="facts">
+        <item>@string/star_wars_1</item>
+        <item>@string/star_wars_2</item>
+        <item>@string/star_wars_3</item>
+        <item>@string/star_wars_4</item>
+        <item>@string/star_wars_5</item>
+        <item>@string/hunger_games_1</item>
+        <item>@string/hunger_games_2</item>
+        <item>@string/hunger_games_3</item>
+        <item>@string/jurassic_park_1</item>
+        <item>@string/jurassic_park_2</item>
+        <item>@string/jurassic_park_3</item>
+        <item>@string/jurassic_park_4</item>
+
+    </string-array>
+
+
 </resources>

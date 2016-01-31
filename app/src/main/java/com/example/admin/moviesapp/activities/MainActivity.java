@@ -655,19 +655,19 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
 //                    // TODO Sent profile request or smth like this
 //                    break;
 
-                case R.id.about_us_menu_btn:
-                    Intent intent = new Intent(MainActivity.this, AboutUsActivity.class);
-                    startActivity(intent);
-                    // Or suggest rate this app in google play
-                    break;
+//                case R.id.about_us_menu_btn:
+//                    Intent intent = new Intent(MainActivity.this, AboutUsActivity.class);
+//                    startActivity(intent);
+//                    // Or suggest rate this app in google play
+//                    break;
 
                 case R.id.rate_app_menu_btn:
                     // TODO open rate app window
                     break;
 
-                case R.id.settings_menu_btn:
-                    // TODO open Settings activity
-                    break;
+//                case R.id.settings_menu_btn:
+//                    // TODO open Settings activity
+//                    break;
 
                 case R.id.login_logout_menu_btn:
                     sendLoginRequest();

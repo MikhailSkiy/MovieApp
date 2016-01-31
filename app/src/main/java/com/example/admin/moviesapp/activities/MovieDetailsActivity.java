@@ -650,9 +650,9 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
 
         if (id == R.id.action_share) {
             Intent sendIntent = new Intent();

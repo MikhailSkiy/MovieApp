@@ -91,7 +91,7 @@
         android:layout_gravity="bottom|right"
         app:fabSize="mini"
         android:visibility="visible"
-        app:layout_behavior="com.example.admin.moviesapp.ui.ScrollAwareFABBehavior"/>
+        app:layout_behavior="com.mikhailskiy.www.wovies.ui.ScrollAwareFABBehavior"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/watchlist_fab"
@@ -99,7 +99,7 @@
         app:fabSize="mini"
         android:visibility="visible"
         android:layout_gravity="bottom|right"
-        app:layout_behavior="com.example.admin.moviesapp.ui.ScrollAwareFABBehavior"/>
+        app:layout_behavior="com.mikhailskiy.www.wovies.ui.ScrollAwareFABBehavior"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/list_fab"
@@ -107,13 +107,13 @@
         app:fabSize="mini"
         android:layout_gravity="bottom|right"
         android:visibility="visible"
-        app:layout_behavior="com.example.admin.moviesapp.ui.ScrollAwareFABBehavior"/>
+        app:layout_behavior="com.mikhailskiy.www.wovies.ui.ScrollAwareFABBehavior"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/main_fab"
         style="@style/FabStyle"
         android:layout_gravity="bottom|right"
         android:layout_margin="@dimen/spacing_large"
-        app:layout_behavior="com.example.admin.moviesapp.ui.ScrollAwareFABBehavior"/>
+        app:layout_behavior="com.mikhailskiy.www.wovies.ui.ScrollAwareFABBehavior"/>
 
 </android.support.design.widget.CoordinatorLayout>

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:clipToPadding="false"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.admin.moviesapp.activities.BiographyFragment">
+    tools:context="com.mikhailskiy.www.wovies.activities.BiographyFragment">
 
     <FrameLayout
         android:layout_width="match_parent"

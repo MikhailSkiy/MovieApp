@@ -16,7 +16,7 @@
         android:fitsSystemWindows="true"
         tools:context=".MainActivity">
 
-        <com.example.admin.moviesapp.ui.RecyclerViewEmptySupport
+        <com.mikhailskiy.www.wovies.ui.RecyclerViewEmptySupport
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

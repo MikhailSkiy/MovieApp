@@ -81,7 +81,7 @@
     <string name="i_just_saw">I just saw "</string>
     <string name="a_great_movie">", a great movie!</string>
     <string name="download_suggestion"> Download this app to know more inside details of movies.</string>
-    <string name="link"> Link: http://play.google.com</string>
+    <string name="link"> Link: https://play.google.com/store/apps/details?id=com.mikhailskiy.www.wovies</string>
 
     <!--> Details card view <-->
     <string name="details_label">Details</string>
@@ -94,9 +94,6 @@
 
     <!--> Trailers card view <-->
     <string name="trailers_label">Trailers</string>
-
-    <!--> Casts card view <-->
-    <string name="casts_label">Casts</string>
 
     <!--> Values for original language <-->
     <string name="original_en_language">English</string>
@@ -125,8 +122,6 @@
     <string name="biography_label">Biography</string>
 
 
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!--> Preference key <-->
     <string name="filter_preferences" translatable="false">filter_preferences</string>

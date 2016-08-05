@@ -8,6 +8,8 @@
     <string name="title_activity_movie_details">MovieDetailsActivity</string>
 
     <!--> Values for drawer menu in main activity <-->
+    <string name="username">Имя пользователя</string>
+    <string name="name">Имя</string>
     <string name="guest_login_tip">Вы вошли в качестве гостя.</string>
     <string name="sign_in_tip">Зарегистрируйтесь, для использования дополнительных возможностей.</string>
     <string name="movies_main_menu_item">Все фильмы</string>
@@ -55,7 +57,7 @@
     <string name="i_just_saw">Только что посмотрел "</string>
     <string name="a_great_movie">", великолепный фильм!</string>
     <string name="download_suggestion"> Загрузи приложение, чтобы быть в курсе последних киноновинок.</string>
-    <string name="link"> Ссылка: http://play.google.com</string>
+    <string name="link"> Ссылка: https://play.google.com/store/apps/details?id=com.mikhailskiy.www.wovies</string>
 
     <!--> Details card view <-->
     <string name="details_label">Детали</string>
@@ -65,6 +67,19 @@
     <string name="genres_label">Жанр</string>
     <string name="original_language_label">Язык оригинала</string>
     <string name="runtime_tag">мин</string>
+
+    <string name="title_activity_cast_details">CastDetailsActivity</string>
+
+    <string name="drawer_open">Открыть</string>
+    <string name="drawer_close">Закрыть</string>
+
+    <!--> Labels for Cast List Item in Movie Description Details in ViewPager <-->
+    <string name="plain_text_for_preview">Превью</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="about_rate_app">Оценить приложение в Play Store</string>
+    <string name="about_share_your_ideas">Помогите улучшить приложение</string>
+    <string name="about_invite_friends">Пригласить друзей</string>
+    <string name="about_us">О нас</string>
 
     <!--> Labels for Movie Description Details in ViewPager <-->
     <string name="view_pager_movie_description_title">Описание</string>
@@ -109,7 +124,8 @@
 
 
     <!-- Empty Movies -->
-    <string name="empty_movie_list_and_no_connection">Информация об этом фильме недоступна. Проверьте интернет-подключение или повторите попытку позже.</string>">
+    <string name="empty_movie_list_and_no_connection">Информация об этом фильме недоступна. Проверьте интернет-подключение или повторите попытку позже.</string>
+    ">
 
     <!-- Loading -->
     <string name="loading">Загрузка...</string>">
@@ -129,6 +145,11 @@
     <string name="jurassic_park_2">В фильме  "Парк юрского периода" дрожание воды в стакане при приближении тираннозавра было достигнуто с помощью струны гитары, прикреплённой снизу к подносу, на котором стоял стакан.</string>
     <string name="jurassic_park_3">В фильме  "Парк юрского периода" рёв тираннозавра состоял из соединённых вместе голосов слонёнка, тигра и аллигатора, а для его дыхания были использованы звуки выдыхания воздуха китом.</string>
     <string name="jurassic_park_4">В фильме  "Парк юрского перио для сцены, где тираннозавр выхватывает динозавра из стаи галлимимусов и пожирает его, был использован звук собаки, трясущей игрушку в своей пасти. </string>
+
+
+    <string name="ga_trackingId">UA-73077482-1</string>
+    <string name="gcm_defaultSenderId">752419092537</string>
+    <string name="google_app_id">1:752419092537:android:c032d5204c719b62</string>
 
 
 </resources>

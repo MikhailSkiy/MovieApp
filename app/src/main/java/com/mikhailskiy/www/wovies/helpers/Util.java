@@ -5,6 +5,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -115,28 +116,7 @@ public class Util {
     }
 
     public static Bitmap getRoundedCroppedBitmap(Bitmap bitmap, int radius) {
-        Bitmap finalBitmap;
-        if (bitmap.getWidth() != radius || bitmap.getHeight() != radius)
-            finalBitmap = Bitmap.createScaledBitmap(bitmap, radius, radius, false);
-        else
-            finalBitmap = bitmap;
-        Bitmap output = Bitmap.createBitmap(finalBitmap.getWidth(), finalBitmap.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(output);
-
-        final Paint paint = new Paint();
-        final Rect rect = new Rect(0, 0, finalBitmap.getWidth(), finalBitmap.getHeight());
-        paint.setAntiAlias(true);
-        paint.setFilterBitmap(true);
-        paint.setDither(true);
-        canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(Color.parseColor("#BAB399"));
-        canvas.drawCircle(finalBitmap.getWidth() / 2 + 0.7f,
-                finalBitmap.getHeight() / 2 + 0.7f,
-                finalBitmap.getWidth() / 2 + 0.1f, paint);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(finalBitmap, rect, rect, paint);
-
-        return output;
+        return transform(bitmap);
     }
 
     /**
@@ -149,6 +129,32 @@ public class Util {
             decodedImage = BitmapFactory.decodeStream(imageStream);
         }
         return decodedImage;
+    }
+
+    public static Bitmap transform(Bitmap source) {
+        int size = Math.min(source.getWidth(), source.getHeight());
+
+        int x = (source.getWidth() - size) / 2;
+        int y = (source.getHeight() - size) / 2;
+
+        Bitmap squaredBitmap = Bitmap.createBitmap(source, x, y, size, size);
+        if (squaredBitmap != source) {
+            source.recycle();
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(size, size, source.getConfig());
+
+        Canvas canvas = new Canvas(bitmap);
+        Paint paint = new Paint();
+        BitmapShader shader = new BitmapShader(squaredBitmap, BitmapShader.TileMode.CLAMP, BitmapShader.TileMode.CLAMP);
+        paint.setShader(shader);
+        paint.setAntiAlias(true);
+
+        float r = size / 2f;
+        canvas.drawCircle(r, r, r, paint);
+
+        squaredBitmap.recycle();
+        return bitmap;
     }
 
     public static int getIconId(int itemId){

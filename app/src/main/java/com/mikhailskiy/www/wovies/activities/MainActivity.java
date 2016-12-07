@@ -308,8 +308,8 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     }
 
     private void switchToLogout() {
-        mainNavigationMenu_.getMenu().findItem(R.id.login_logout_menu_btn).setIcon(R.drawable.ic_logout_white_24dp);
-        mainNavigationMenu_.getMenu().findItem(R.id.login_logout_menu_btn).setTitle(R.string.logout_main_menu_item);
+       // mainNavigationMenu_.getMenu().findItem(R.id.login_logout_menu_btn).setIcon(R.drawable.ic_logout_white_24dp);
+       // mainNavigationMenu_.getMenu().findItem(R.id.login_logout_menu_btn).setTitle(R.string.logout_main_menu_item);
 
         // Tricky solution http://stackoverflow.com/questions/31181024/cant-change-icons-for-subitems-in-navigationview
         // So resetting the title of top level item will update UI
@@ -637,30 +637,30 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
                     break;
 
                 // For this feature user have to be loged in
-                case R.id.favorites_menu_btn:
-                    if (Util.isUserLogedIn()) {
-                        listMode = Constants.FAVORITE_MOVIES_MODE;
-                        setTitle(R.string.favorites_actionbar_title);
-                        sendUserSpecificRequest(States.FAVORITES_REQUEST);
-                        hideDrawer();
-                    } else {
-                        // show user have to be loged in
-                        Toast.makeText(this, R.string.please_login, Toast.LENGTH_LONG).show();
-                    }
-                    break;
+//                case R.id.favorites_menu_btn:
+//                    if (Util.isUserLogedIn()) {
+//                        listMode = Constants.FAVORITE_MOVIES_MODE;
+//                        setTitle(R.string.favorites_actionbar_title);
+//                        sendUserSpecificRequest(States.FAVORITES_REQUEST);
+//                        hideDrawer();
+//                    } else {
+//                        // show user have to be loged in
+//                        Toast.makeText(this, R.string.please_login, Toast.LENGTH_LONG).show();
+//                    }
+//                    break;
 
                 // For this feature user have to be loged in
-                case R.id.watchlist_menu_btn:
-                    if (Util.isUserLogedIn()) {
-                        listMode = Constants.WATCHLIST_MODE;
-                        setTitle(R.string.watchlist_actionbar_title);
-                        sendUserSpecificRequest(States.WATCHLIST_REQUEST);
-                        hideDrawer();
-                    } else {
-                        // show user have to be loged in
-                        Toast.makeText(this, R.string.please_login, Toast.LENGTH_LONG).show();
-                    }
-                    break;
+//                case R.id.watchlist_menu_btn:
+//                    if (Util.isUserLogedIn()) {
+//                        listMode = Constants.WATCHLIST_MODE;
+//                        setTitle(R.string.watchlist_actionbar_title);
+//                        sendUserSpecificRequest(States.WATCHLIST_REQUEST);
+//                        hideDrawer();
+//                    } else {
+//                        // show user have to be loged in
+//                        Toast.makeText(this, R.string.please_login, Toast.LENGTH_LONG).show();
+//                    }
+//                    break;
 
 //                case R.id.profile_menu_btn:
 //                    // TODO Sent profile request or smth like this
@@ -682,9 +682,9 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
 //                    // TODO open Settings activity
 //                    break;
 
-                case R.id.login_logout_menu_btn:
-                    sendLoginRequest();
-                    break;
+//                case R.id.login_logout_menu_btn:
+//                    sendLoginRequest();
+//                    break;
 
 //                case R.id.logout_menu_btn:
 //                    break;
@@ -777,9 +777,10 @@ public class MainActivity extends AppCompatActivity implements UpdateListener {
     }
 
     private boolean didUserSeeDrawer() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        mUserSawDrawer = sharedPreferences.getBoolean(FIRST_TIME, false);
-        return mUserSawDrawer;
+//        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+//        mUserSawDrawer = sharedPreferences.getBoolean(FIRST_TIME, false);
+//        return mUserSawDrawer;
+        return true;
     }
 
     private void markDrawerSeen() {

@@ -26,7 +26,7 @@
         android:layout_above="@+id/guest_text_2"
         android:text="@string/guest_login_tip"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/guest_text_2"
@@ -36,7 +36,7 @@
         android:layout_centerVertical="true"
         android:text="@string/sign_in_tip"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
 
     <TextView

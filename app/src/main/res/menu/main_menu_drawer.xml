@@ -6,14 +6,14 @@
             android:id="@+id/movies_menu_btn"
             android:icon="@drawable/ic_movie_grey"
             android:title="@string/movies_main_menu_item"/>
-        <item
-            android:id="@+id/favorites_menu_btn"
-            android:icon="@drawable/ic_heart_outline_grey"
-            android:title="@string/favorites_main_menu_item"/>
-        <item
-            android:id="@+id/watchlist_menu_btn"
-            android:icon="@drawable/ic_wunderlist_grey"
-            android:title="@string/watchlist_main_menu_item"/>
+        <!--<item-->
+            <!--android:id="@+id/favorites_menu_btn"-->
+            <!--android:icon="@drawable/ic_heart_outline_grey"-->
+            <!--android:title="@string/favorites_main_menu_item"/>-->
+        <!--<item-->
+            <!--android:id="@+id/watchlist_menu_btn"-->
+            <!--android:icon="@drawable/ic_wunderlist_grey"-->
+            <!--android:title="@string/watchlist_main_menu_item"/>-->
         <!--<item-->
             <!--android:id="@+id/profile_menu_btn"-->
             <!--android:icon="@drawable/ic_account_circle_grey"-->
@@ -34,10 +34,10 @@
                     <!--android:id="@+id/settings_menu_btn"-->
                     <!--android:icon="@drawable/ic_settings_grey"-->
                     <!--android:title="@string/settings_main_menu_item"/>-->
-                <item
-                    android:id="@+id/login_logout_menu_btn"
-                    android:icon="@drawable/ic_login_grey"
-                    android:title="@string/login_main_menu_item"/>
+                <!--<item-->
+                    <!--android:id="@+id/login_logout_menu_btn"-->
+                    <!--android:icon="@drawable/ic_login_grey"-->
+                    <!--android:title="@string/login_main_menu_item"/>-->
             </menu>
         </item>
     </group>

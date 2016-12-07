@@ -137,8 +137,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
 
         // Create new dialog
         setupRatingDialog();
-        setupFAB();
-        setInitialFabState();
+       // setupFAB();
+       // setInitialFabState();
 
 
         String itemTitle = "Item Name";
@@ -254,92 +254,92 @@ public class MovieDetailsActivity extends AppCompatActivity implements UpdateLis
     }
 
 
-    private void setupFAB() {
-        mainFloatingActionButton_ = (FloatingActionButton) findViewById(R.id.main_fab);
-        // Init all subbuttons
-        addToFavoriteFloatingActionSubButton_ = (FloatingActionButton) findViewById(R.id.favorite_fab);
-        addToWatchlistFloatingActionSubButton_ = (FloatingActionButton) findViewById(R.id.watchlist_fab);
-        rateMovieFloatingActionSubButton_ = (FloatingActionButton) findViewById(R.id.list_fab);
-
-        final ViewGroup fabContainer = (ViewGroup) findViewById(R.id.root_coordinator);
-
-
-        // Mark current movie if user clicked on favorite button
-        addToFavoriteFloatingActionSubButton_.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Checks is the user loged in
-                if (SharedPrefUtil.isUserLogedIn()) {
-                    // If there are no such movie in favorite list, add it. Otherwise delete it.
-                    if (!helper_.isMovieIsFavorite(movieDetails_.getId())) {
-                        manager_.sendMessage(manager_.obtainMessage(States.MARK_AS_FAVORITE, selectedMovieId_));
-                    } else {
-                        manager_.sendMessage(manager_.obtainMessage(States.DELETE_FROM_FAVORITS, selectedMovieId_));
-                    }
-                }
-                // Otherwise send request for login
-                else {
-                    manager_.sendMessage(manager_.obtainMessage(States.LOGIN_REQUEST));
-                }
-
-            }
-        });
-
-        // Add current movie into user watchlist when he ckicked to button
-        addToWatchlistFloatingActionSubButton_.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (SharedPrefUtil.isUserLogedIn()) {
-                    // If there are no such movie in watchlist, add it. Otherwise delete it
-                    if (!helper_.isMovieInWatchlist(movieDetails_.getId())) {
-                        manager_.sendMessage(manager_.obtainMessage(States.ADD_TO_WATCHLIST, selectedMovieId_));
-                    } else {
-                        manager_.sendMessage(manager_.obtainMessage(States.DELETE_FROM_WATCHLIST, selectedMovieId_));
-                    }
-                } else {
-                    manager_.sendMessage(manager_.obtainMessage(States.LOGIN_REQUEST));
-                }
-            }
-        });
-
-        // Rate current movie
-        rateMovieFloatingActionSubButton_.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO ADD LOGIN FOR RATING
-                ratingDialog_.show();
-            }
-        });
-
-        mainFloatingActionButton_.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                expanded = !expanded;
-                if (expanded) {
-                    expandFab();
-                } else {
-                    collapseFab();
-                }
-            }
-        });
-
-        fabContainer.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                fabContainer.getViewTreeObserver().removeOnPreDrawListener(this);
-                offset1 = mainFloatingActionButton_.getY() - rateMovieFloatingActionSubButton_.getY();
-
-                rateMovieFloatingActionSubButton_.setTranslationY(offset1);
-                offset2 = mainFloatingActionButton_.getY() - addToWatchlistFloatingActionSubButton_.getY();
-                addToWatchlistFloatingActionSubButton_.setTranslationY(offset2);
-
-                offset3 = mainFloatingActionButton_.getY() - addToFavoriteFloatingActionSubButton_.getY();
-                addToFavoriteFloatingActionSubButton_.setTranslationY(offset3);
-                return true;
-            }
-        });
-
-    }
+//    private void setupFAB() {
+//        mainFloatingActionButton_ = (FloatingActionButton) findViewById(R.id.main_fab);
+//        // Init all subbuttons
+//        addToFavoriteFloatingActionSubButton_ = (FloatingActionButton) findViewById(R.id.favorite_fab);
+//        addToWatchlistFloatingActionSubButton_ = (FloatingActionButton) findViewById(R.id.watchlist_fab);
+//        rateMovieFloatingActionSubButton_ = (FloatingActionButton) findViewById(R.id.list_fab);
+//
+//        final ViewGroup fabContainer = (ViewGroup) findViewById(R.id.root_coordinator);
+//
+//
+//        // Mark current movie if user clicked on favorite button
+//        addToFavoriteFloatingActionSubButton_.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // Checks is the user loged in
+//                if (SharedPrefUtil.isUserLogedIn()) {
+//                    // If there are no such movie in favorite list, add it. Otherwise delete it.
+//                    if (!helper_.isMovieIsFavorite(movieDetails_.getId())) {
+//                        manager_.sendMessage(manager_.obtainMessage(States.MARK_AS_FAVORITE, selectedMovieId_));
+//                    } else {
+//                        manager_.sendMessage(manager_.obtainMessage(States.DELETE_FROM_FAVORITS, selectedMovieId_));
+//                    }
+//                }
+//                // Otherwise send request for login
+//                else {
+//                    manager_.sendMessage(manager_.obtainMessage(States.LOGIN_REQUEST));
+//                }
+//
+//            }
+//        });
+//
+//        // Add current movie into user watchlist when he ckicked to button
+//        addToWatchlistFloatingActionSubButton_.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (SharedPrefUtil.isUserLogedIn()) {
+//                    // If there are no such movie in watchlist, add it. Otherwise delete it
+//                    if (!helper_.isMovieInWatchlist(movieDetails_.getId())) {
+//                        manager_.sendMessage(manager_.obtainMessage(States.ADD_TO_WATCHLIST, selectedMovieId_));
+//                    } else {
+//                        manager_.sendMessage(manager_.obtainMessage(States.DELETE_FROM_WATCHLIST, selectedMovieId_));
+//                    }
+//                } else {
+//                    manager_.sendMessage(manager_.obtainMessage(States.LOGIN_REQUEST));
+//                }
+//            }
+//        });
+//
+//        // Rate current movie
+//        rateMovieFloatingActionSubButton_.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // TODO ADD LOGIN FOR RATING
+//                ratingDialog_.show();
+//            }
+//        });
+//
+//        mainFloatingActionButton_.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                expanded = !expanded;
+//                if (expanded) {
+//                    expandFab();
+//                } else {
+//                    collapseFab();
+//                }
+//            }
+//        });
+//
+//        fabContainer.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+//            @Override
+//            public boolean onPreDraw() {
+//                fabContainer.getViewTreeObserver().removeOnPreDrawListener(this);
+//                offset1 = mainFloatingActionButton_.getY() - rateMovieFloatingActionSubButton_.getY();
+//
+//                rateMovieFloatingActionSubButton_.setTranslationY(offset1);
+//                offset2 = mainFloatingActionButton_.getY() - addToWatchlistFloatingActionSubButton_.getY();
+//                addToWatchlistFloatingActionSubButton_.setTranslationY(offset2);
+//
+//                offset3 = mainFloatingActionButton_.getY() - addToFavoriteFloatingActionSubButton_.getY();
+//                addToFavoriteFloatingActionSubButton_.setTranslationY(offset3);
+//                return true;
+//            }
+//        });
+//
+//    }
 
     private void collapseFab() {
         mainFloatingActionButton_.setImageResource(R.drawable.animated_minus);
